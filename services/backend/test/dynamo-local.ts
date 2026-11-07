@@ -22,9 +22,7 @@ export function dynamoLocalClient(): DynamoDBClient | null {
   });
 }
 
-export async function createLocalTables(
-  client: DynamoDBClient,
-): Promise<{
+export async function createLocalTables(client: DynamoDBClient): Promise<{
   store: DynamoStore;
   names: TableNames;
   drop: () => Promise<void>;
