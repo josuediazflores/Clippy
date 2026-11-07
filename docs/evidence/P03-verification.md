@@ -2,7 +2,7 @@
 
 Date: 2026-11-07. Evidence class: local synthetic adapters and iPhone Simulator only.
 
-The phase handoff records commands, toolchains, failure coverage, and limitations. `P03-local-report.json` records the deterministic two-snapshot result and the UI run's server-side write assertions. The final revision record identifies the accepted code commit.
+The phase handoff records commands, toolchains, failure coverage, and limitations. `P03-local-report.json` records the deterministic two-snapshot result and the UI run's server-side write assertions. Accepted implementation commit: `5785f5f5f53d53e1811826a7b92d74450f0adc39`. P01 is `cb3ed600dc3d0dac80c3987698d38e65124b5c81`; P02 is `18bd283d69fd1c63d848755b139ede14988aee6a`. This revision-record update changes only documentation/evidence metadata; executable source is unchanged from the accepted clean run.
 
 ## Accepted checks
 

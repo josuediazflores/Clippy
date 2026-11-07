@@ -5,7 +5,7 @@
 - Phase/work package: local capture-to-recap vertical slice and shared foundation acceptance.
 - Owner: Codex coordinator.
 - Starting commit: `18bd283d69fd1c63d848755b139ede14988aee6a` (accepted P02).
-- Result commit/branch: `foundation/p01-p03`; the final revision record identifies the tested source commit.
+- Result commit/branch: `5785f5f5f53d53e1811826a7b92d74450f0adc39` on `foundation/p01-p03`, accepted for merge to `main`. Later revision-record edits are documentation only.
 - Files owned/changed: local backend/object/persistence adapters, deterministic processing providers, Python upload simulator/checkpoints, iPhone repositories/cache/views/UI tests, shared validation/tools, synthetic UI fixtures, evidence and documentation.
 - Dependencies checked: P01 `cb3ed600dc3d0dac80c3987698d38e65124b5c81`; P02 `18bd283d69fd1c63d848755b139ede14988aee6a`.
 - Status: local_complete after the checks recorded below. No service or hardware completion is claimed.

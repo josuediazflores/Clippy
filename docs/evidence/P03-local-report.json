@@ -19,5 +19,7 @@
   ],
   "ui": "passed",
   "uiWritesVerified": true,
-  "simulator": "80875337-2700-4A9B-A21A-8465504042B0"
+  "simulator": "80875337-2700-4A9B-A21A-8465504042B0",
+  "implementationCommit": "5785f5f5f53d53e1811826a7b92d74450f0adc39",
+  "cleanSourceExport": "passed"
 }
