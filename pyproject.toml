@@ -1,0 +1,25 @@
+[project]
+name = "clippy-device-simulator"
+version = "0.1.0"
+requires-python = "==3.12.*"
+dependencies = ["jsonschema==4.25.1", "openapi-spec-validator==0.7.2"]
+
+[project.scripts]
+clippy-device = "clippy_device.simulator:main"
+
+[build-system]
+requires = ["hatchling==1.27.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["device/clippy_device"]
+
+[dependency-groups]
+dev = ["ruff==0.14.3"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

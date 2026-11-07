@@ -1,0 +1,14 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.build/
+.build-local/
+.local/
+cdk.out/
+.env
+.env.*
+!.env.example
+.DS_Store
+xcuserdata/
+*.xcuserstate

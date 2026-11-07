@@ -1,0 +1,52 @@
+name: Clippy
+options:
+  minimumXcodeGenVersion: 2.44.1
+  deploymentTarget:
+    iOS: '18.0'
+settings:
+  base:
+    SWIFT_VERSION: '6.0'
+    CODE_SIGNING_ALLOWED: NO
+    TARGETED_DEVICE_FAMILY: '1'
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+packages:
+  ClippyCore:
+    path: Core
+targets:
+  Clippy:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - path: ../../fixtures/valid/day.json
+        buildPhase: resources
+      - path: ../../contracts/schema.json
+        buildPhase: resources
+      - path: ../../contracts/transitions.json
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.clippy.local
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Clippy Local
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking: YES
+    dependencies:
+      - package: ClippyCore
+  ClippyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: UITests
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.clippy.local.uitests
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: Clippy
+schemes:
+  Clippy:
+    build:
+      targets:
+        Clippy: all
+    test:
+      targets: [ClippyUITests]

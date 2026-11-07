@@ -5,7 +5,7 @@ Updated: 2026-11-07.
 ## Current position
 
 - **Completed work:** P00 architecture and implementation documentation.
-- **Next phase:** P02, runnable local projects.
+- **Next phase:** P03, local end-to-end flow.
 - **Active implementation owner:** Codex coordinator, branch `foundation/p01-p03`, starting at `db4b6c1`. Scope: contracts/fixtures, then local projects and P03 integration. Checks: schema/state/time cases, three-language decoding, local builds/synth, failure tests, simulator UI.
 - **Repository baseline:** the repository was empty when inspected. It now contains planning documentation only.
 - **Live state:** no application, hardware installation, AWS deployment, account connection, or recurring job has been created by this planning work.
@@ -14,8 +14,8 @@ Updated: 2026-11-07.
 
 - P00: `complete`. Architecture, draft contracts, staged plan, decisions, verification gates, and handoff guidance prepared. Evidence: [P00 handoff](handoffs/P00-plan.md).
 - P01: `complete`. Executable v1 contracts and semantic rules validated. Evidence: [P01 handoff](handoffs/P01-contracts.md).
-- P02: `ready`. Depends on accepted P01 contracts.
-- P03: `not_started`. Depends on P02.
+- P02: `local_complete`. Projects build, shared fixtures agree in three languages, empty CDK synth passes. Evidence: [P02 handoff](handoffs/P02-projects.md).
+- P03: `ready`. P02 local prerequisites accepted.
 - P04: `not_started`. Depends on P03.
 - P05: `not_started`. Depends on P03.
 - P06: `not_started`. Depends on P03.

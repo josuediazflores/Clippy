@@ -1,0 +1,1 @@
+{"name":"@clippy/infra","private":true,"version":"0.1.0","dependencies":{"aws-cdk-lib":"2.275.0","constructs":"10.8.1"}}
