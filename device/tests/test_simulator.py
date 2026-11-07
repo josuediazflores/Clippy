@@ -12,6 +12,6 @@ class SimulatorTests(unittest.TestCase):
             first = generate(output)
             self.assertEqual(first, generate(output))
             for capture in first:
-                data = (output / (capture['captureId'] + '.png')).read_bytes()
-                self.assertEqual(capture['sha256'], hashlib.sha256(data).hexdigest())
-                self.assertEqual(capture['byteLength'], len(data))
+                data = (output / (capture["captureId"] + ".png")).read_bytes()
+                self.assertEqual(capture["sha256"], hashlib.sha256(data).hexdigest())
+                self.assertEqual(capture["byteLength"], len(data))

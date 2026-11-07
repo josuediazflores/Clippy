@@ -1,4 +1,5 @@
 """Hardware boundaries. Real implementations belong to P05/P07."""
+
 from typing import Protocol
 
 

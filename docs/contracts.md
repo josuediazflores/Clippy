@@ -172,7 +172,7 @@ Processing input contains small references, not raw images or the entire day. Us
 
 **Deletion:** `requested -> tombstoned -> deleting_cloud -> waiting_for_clients -> complete`, with bounded retry/error states. A cloud-cleanup milestone can complete while device cleanup is pending; do not conflate them.
 
-P01 must create transition tests for every legal path and rejection tests for invalid/stale transitions. Keep UI labels separate from stable protocol enum values.
+The exhaustive transition fixtures now cover every state pair and stale revisions; P03 applies sync/job transitions in the local engine. Keep UI labels separate from stable protocol enum values.
 
 ## 7. Calendar snapshots and evidence
 

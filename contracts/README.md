@@ -1,6 +1,6 @@
 # Contract v1.0.0
 
-`openapi.json` (OpenAPI 3.1) and `schema.json` (JSON Schema 2020-12) are authoritative wire definitions. `transitions.json` defines legal state changes. `fixtures/index.json` declares accepted/rejected examples; `fixtures/transitions.json` tests every state pair plus a stale revision. JSON Schema covers structure; the semantic constraints below are also mandatory. `tools/validate_contracts.py` is the initial executable semantic reference. P02 adds TypeScript/Swift agreement checks.
+`openapi.json` (OpenAPI 3.1) and `schema.json` (JSON Schema 2020-12) are authoritative wire definitions. `transitions.json` defines legal state changes. `fixtures/index.json` declares accepted/rejected examples; `fixtures/transitions.json` tests every state pair plus a stale revision. JSON Schema covers structure; the semantic constraints below are also mandatory. `tools/validate_contracts.py` is the initial executable semantic reference. P02 added TypeScript/Swift agreement checks; P03 exercises ownership, bytes, receipts, deletion and publication against local adapters.
 
 ## Compatibility and limits
 
@@ -57,3 +57,9 @@ Deletion tombstones immediately, increments deletion generation, removes generat
 ## Local gate
 
 Run `uv run --python 3.12.13 --with jsonschema==4.25.1 --with openapi-spec-validator==0.7.2 python tools/validate_contracts.py` for P01. P02 pins these in the workspace lock and adds `npm run check:contracts` and Swift fixture tests. No command deploys or schedules work.
+
+## P03 consumer notes
+
+The wire version is unchanged. Generated Swift names `ZoneName` and `CaptureObservation` avoid collisions with Foundation and the Observation framework; JSON names remain unchanged. Stable local moment IDs use `moment_` plus a capture ID when it fits, otherwise a deterministic hash. Consumers treat the result as opaque. Recap revision counters remain monotonic even when deletion clears the current generated body. Operation receipts hold immutable copies rather than references to evolving sync records.
+
+Routes marked P04/P05/P07/P09/P10 in OpenAPI remain contract definitions and return `NOT_IMPLEMENTED` locally. Local HTTP transport, synchronous explicit mock processing, fixed synthetic time, JSON file persistence, and synthetic actor tokens are P03 adapters only. The app's offline state is presentation state over a saved `Day`, not an additional server enum.

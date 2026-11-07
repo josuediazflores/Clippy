@@ -7,12 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		033EF137939A2A6B17E097AB /* partial.json in Resources */ = {isa = PBXBuildFile; fileRef = D989419BB807280925D0E1D0 /* partial.json */; };
 		25678389F22BCA0201EC7902 /* ClippyCore in Frameworks */ = {isa = PBXBuildFile; productRef = 425B26839F5D6873FDCED889 /* ClippyCore */; };
 		32361099116C00AA54BEBBD9 /* transitions.json in Resources */ = {isa = PBXBuildFile; fileRef = 19EE9970C469772966D1A612 /* transitions.json */; };
+		344CED1B98249F1C5BDEE2AB /* pending.json in Resources */ = {isa = PBXBuildFile; fileRef = 8C5AE324E5C28624F21BA29D /* pending.json */; };
 		3C0DCDAEBA49C3E8455E1168 /* schema.json in Resources */ = {isa = PBXBuildFile; fileRef = F1EFA282DFD19FC5B37F7576 /* schema.json */; };
 		5052271673178DAAB06AFC13 /* ClippyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFB52B1A08F3B881E1099C00 /* ClippyApp.swift */; };
-		ADCB3DDB26E7696FFFFAD463 /* day.json in Resources */ = {isa = PBXBuildFile; fileRef = C7F5B68F2430D482A831229E /* day.json */; };
+		6A3EDB75D4C99C0A904F39F8 /* empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 61C45A4D479D4D0703A4E4B0 /* empty.json */; };
+		9147DDD700DBDB0DE956B0DB /* ready.json in Resources */ = {isa = PBXBuildFile; fileRef = 85C4A7477E74A3B6FB7B0FA9 /* ready.json */; };
 		BDD09D91EE84015B73E030CF /* ClippyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318187FBABEDF9D9A5C5C869 /* ClippyUITests.swift */; };
+		C768BBCBE6EA84F59EDB8AED /* JournalModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A294DFED4B22374B4F57A67 /* JournalModel.swift */; };
+		D38F10F1FFDF2E4157AD0CB3 /* failure.json in Resources */ = {isa = PBXBuildFile; fileRef = C359E78122CB770340050668 /* failure.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,12 +31,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0A4FAB89D11D0341733799F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		19EE9970C469772966D1A612 /* transitions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = transitions.json; sourceTree = "<group>"; };
 		318187FBABEDF9D9A5C5C869 /* ClippyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClippyUITests.swift; sourceTree = "<group>"; };
+		61C45A4D479D4D0703A4E4B0 /* empty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = empty.json; sourceTree = "<group>"; };
+		85C4A7477E74A3B6FB7B0FA9 /* ready.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ready.json; sourceTree = "<group>"; };
+		8A294DFED4B22374B4F57A67 /* JournalModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalModel.swift; sourceTree = "<group>"; };
+		8C5AE324E5C28624F21BA29D /* pending.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pending.json; sourceTree = "<group>"; };
 		9B700C71C9677080442E92A6 /* Core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Core; path = Core; sourceTree = SOURCE_ROOT; };
 		A746DD5E203584E78CD5A64B /* Clippy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Clippy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFCB27F50A03544A16AFF5E4 /* ClippyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ClippyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		C7F5B68F2430D482A831229E /* day.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = day.json; sourceTree = "<group>"; };
+		C359E78122CB770340050668 /* failure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = failure.json; sourceTree = "<group>"; };
+		D989419BB807280925D0E1D0 /* partial.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = partial.json; sourceTree = "<group>"; };
 		F1EFA282DFD19FC5B37F7576 /* schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
 		FFB52B1A08F3B881E1099C00 /* ClippyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClippyApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -52,6 +63,8 @@
 			isa = PBXGroup;
 			children = (
 				FFB52B1A08F3B881E1099C00 /* ClippyApp.swift */,
+				0A4FAB89D11D0341733799F8 /* Info.plist */,
+				8A294DFED4B22374B4F57A67 /* JournalModel.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -74,25 +87,29 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
-		3C790E530AA0293B90226CA3 /* valid */ = {
-			isa = PBXGroup;
-			children = (
-				C7F5B68F2430D482A831229E /* day.json */,
-			);
-			name = valid;
-			path = ../../fixtures/valid;
-			sourceTree = "<group>";
-		};
 		6083234C117015841192D5F0 = {
 			isa = PBXGroup;
 			children = (
 				09B3944DD428D7D5C6EB0D46 /* App */,
 				2799F12A777C3C48060BD661 /* contracts */,
 				3080E0D54EE19A6C38CF2E6C /* Packages */,
+				64FEB1510E682E69AD23B198 /* ui */,
 				B4B02DFE6500BECE98FE3A21 /* UITests */,
-				3C790E530AA0293B90226CA3 /* valid */,
 				6F5C17B0E3A1CC256231CFCE /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		64FEB1510E682E69AD23B198 /* ui */ = {
+			isa = PBXGroup;
+			children = (
+				61C45A4D479D4D0703A4E4B0 /* empty.json */,
+				C359E78122CB770340050668 /* failure.json */,
+				D989419BB807280925D0E1D0 /* partial.json */,
+				8C5AE324E5C28624F21BA29D /* pending.json */,
+				85C4A7477E74A3B6FB7B0FA9 /* ready.json */,
+			);
+			name = ui;
+			path = ../../fixtures/ui;
 			sourceTree = "<group>";
 		};
 		6F5C17B0E3A1CC256231CFCE /* Products */ = {
@@ -195,7 +212,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ADCB3DDB26E7696FFFFAD463 /* day.json in Resources */,
+				6A3EDB75D4C99C0A904F39F8 /* empty.json in Resources */,
+				D38F10F1FFDF2E4157AD0CB3 /* failure.json in Resources */,
+				033EF137939A2A6B17E097AB /* partial.json in Resources */,
+				344CED1B98249F1C5BDEE2AB /* pending.json in Resources */,
+				9147DDD700DBDB0DE956B0DB /* ready.json in Resources */,
 				3C0DCDAEBA49C3E8455E1168 /* schema.json in Resources */,
 				32361099116C00AA54BEBBD9 /* transitions.json in Resources */,
 			);
@@ -217,6 +238,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5052271673178DAAB06AFC13 /* ClippyApp.swift in Sources */,
+				C768BBCBE6EA84F59EDB8AED /* JournalModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,17 +258,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Clippy Local";
-				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.clippy.local;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -255,17 +275,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Clippy Local";
-				INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = App/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.clippy.local;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};

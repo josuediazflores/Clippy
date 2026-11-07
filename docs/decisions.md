@@ -78,3 +78,11 @@ Future entries should state the decision, reason, owner, affected contracts/phas
 - D12: All unresolved hardware/transport choices are named interfaces in `docs/hardware-adapters.md`. Real pairing and physical proof remain P07 blockers. Apple Calendar uses staged complete windows; EventKit access is P09. Mail remains deferred.
 
 These are documented defaults authorized for this local implementation task. They do not resolve Pi hardware, AWS account/region/budget, paid model selection, or real-data privacy decisions.
+
+## P02/P03 implementation choices (2026-11-07)
+
+- D13: Pin Node 22.23.4/npm 11.8.0, CPython 3.12.13/uv 0.11.21, Xcode 26.6/Swift 6.3.3, and exact package locks. The iOS minimum remains 18; the installed simulator runtime is 26.5.
+- D14: Local server persistence is single-process atomic JSON replacement plus immutable object files. Python checkpoints retain all synthetic images and reconcile an acknowledgement lost before the local checkpoint. This proves process restart behavior, not hardware power-loss durability. P04 replaces persistence with conditional cloud transactions/outbox; P05 owns SQLite/encryption.
+- D15: The local app reads/writes through `JournalRepository`, uses a small JSON cache for this slice, and preserves operation IDs across in-session retries. Full SwiftData migrations, persistent edit outbox, authentication, pairing, and permission flows remain P06/P07/P09. This narrows the P00 SwiftData proposal for the P03 demo only.
+- D16: `npm run demo` is a finite test harness, with explicit mock processing and no automatic timers other than process lifetime limits. The word nightly identifies a synthetic second snapshot only. No future work is activated.
+- D17: Person 1 owns `device/` and `apps/ios/`; Person 2 owns `services/backend/`, `services/processing/`, and `infra/`. One coordinator owns shared contracts, fixtures, lockfiles, root tools, and STATUS. These lanes may begin from the accepted P03 foundation; P04 and later are still unimplemented.

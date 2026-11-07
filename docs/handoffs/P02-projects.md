@@ -5,7 +5,7 @@
 - Phase/work package: reproducible local projects.
 - Owner: Codex coordinator.
 - Starting commit: `cb3ed600dc3d0dac80c3987698d38e65124b5c81` (accepted P01).
-- Result commit/branch: commit titled `Establish P02 local Swift TypeScript and Python projects` on `foundation/p01-p03`; exact SHA recorded in P03.
+- Result commit/branch: `18bd283d69fd1c63d848755b139ede14988aee6a` on `foundation/p01-p03`.
 - Files owned/changed: root toolchain/lock/config files, `apps/ios/`, `device/`, `services/`, `infra/`, `tools/`, setup/status documentation.
 - Dependencies checked: P01 schema/OpenAPI gate, 32 fixtures, 363 transition cases.
 - Status: local_complete.

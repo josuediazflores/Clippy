@@ -5,7 +5,7 @@
 - Phase/work package: executable contracts and interface decisions.
 - Owner: Codex coordinator.
 - Starting commit: `db4b6c192150ec80ce09b0a08601598d4d065728`.
-- Result commit/branch: commit titled `Freeze P01 executable contracts and simulator boundaries` on `foundation/p01-p03`; exact SHA recorded by the P02 handoff.
+- Result commit/branch: `cb3ed600dc3d0dac80c3987698d38e65124b5c81` on `foundation/p01-p03`.
 - Files owned/changed: `contracts/`, `fixtures/`, `tools/validate_contracts.py`, contract/adapter/decision/status docs.
 - Dependencies checked: P00 documentation read; current remote was still the P00 baseline.
 - Status: complete (contract gate only).

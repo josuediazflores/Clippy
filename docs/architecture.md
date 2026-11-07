@@ -1,6 +1,6 @@
 # Clippy architecture
 
-Status: proposed implementation baseline, 2026-11-07. Confirmed product requirements are in [decisions](decisions.md). Technical defaults below guide implementation; changes must be recorded with a reason.
+Status: architecture baseline with P01-P03 implemented locally, 2026-11-07. See [STATUS](STATUS.md) for actual evidence and [local development](local-development.md) for runnable commands. AWS, hardware, and platform integrations below remain later-phase designs. Confirmed product requirements are in [decisions](decisions.md). Technical defaults below guide implementation; changes must be recorded with a reason.
 
 ## 1. Experience and boundaries
 

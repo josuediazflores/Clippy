@@ -1,6 +1,6 @@
 # Verification and release gates
 
-This file describes required future verification. The only checks currently runnable against the repository are documentation checks. P02 creates and documents actual build/test commands. Do not report planned commands or proposed targets as passed results.
+P01-P03 local checks are implemented. See [local development](local-development.md), the [P03 evidence report](evidence/P03-local-report.json), and [phase handoffs](handoffs/P03-local-flow.md). The remaining gates below apply to later phases and are not claimed by local mocks.
 
 ## Evidence levels
 

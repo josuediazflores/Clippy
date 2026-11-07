@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "dayId": "day_20261107",
+  "timeZone": "UTC",
+  "startAt": "2026-11-07T00:00:00Z",
+  "endAt": "2026-11-08T00:00:00Z",
+  "inputRevision": 1,
+  "deletionGeneration": 0,
+  "state": "partial",
+  "calendarFreshness": "unavailable",
+  "recap": {
+    "schemaVersion": 1,
+    "dayId": "day_20261107",
+    "inputRevision": 1,
+    "recapRevision": 1,
+    "deletionGeneration": 0,
+    "state": "partial",
+    "summary": "1 captured moment from this synthetic day. Some observations are unavailable.",
+    "moments": [
+      {
+        "schemaVersion": 1,
+        "momentId": "moment_cap_sample_001",
+        "capturedAt": "2026-11-07T09:00:00Z",
+        "title": "Moment 1",
+        "detail": "A synthetic color sample was captured.",
+        "evidence": [
+          {
+            "type": "capture",
+            "id": "cap_sample_001"
+          }
+        ]
+      }
+    ],
+    "reflectionPrompt": "What would you like to remember about this day?",
+    "coverage": {
+      "captured": 2,
+      "observed": 1,
+      "missing": 1,
+      "throughAt": "2026-11-07T10:00:00Z"
+    },
+    "providerVersion": "mock-1",
+    "promptVersion": "mock-1"
+  },
+  "corrections": [],
+  "reflections": [],
+  "failureCode": null
+}

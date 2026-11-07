@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+export PYTHONPATH="$PWD/device"
 uv run python tools/generate_models.py --check
 uv run python tools/validate_contracts.py
 npm run check:contracts

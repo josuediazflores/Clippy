@@ -1,0 +1,23 @@
+{
+  "evidence": "local synthetic adapters only",
+  "firstSnapshotMoments": 2,
+  "secondSnapshotMoments": 3,
+  "uniqueMoments": 3,
+  "inputRevision": 3,
+  "recapRevision": 2,
+  "reflectionPreserved": true,
+  "correctionPreserved": true,
+  "duplicateReplayPassed": true,
+  "interruptedUploadResumed": true,
+  "states": [
+    "empty",
+    "pending",
+    "partial",
+    "ready",
+    "failure",
+    "offline"
+  ],
+  "ui": "passed",
+  "uiWritesVerified": true,
+  "simulator": "80875337-2700-4A9B-A21A-8465504042B0"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "dayId": "day_20261107",
+  "timeZone": "UTC",
+  "startAt": "2026-11-07T00:00:00Z",
+  "endAt": "2026-11-08T00:00:00Z",
+  "inputRevision": 0,
+  "deletionGeneration": 0,
+  "state": "empty",
+  "calendarFreshness": "unavailable",
+  "recap": null,
+  "corrections": [],
+  "reflections": [],
+  "failureCode": null
+}

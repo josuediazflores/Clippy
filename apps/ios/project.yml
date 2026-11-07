@@ -18,19 +18,24 @@ targets:
     platform: iOS
     sources:
       - App
-      - path: ../../fixtures/valid/day.json
+      - path: ../../fixtures/ui
         buildPhase: resources
       - path: ../../contracts/schema.json
         buildPhase: resources
       - path: ../../contracts/transitions.json
         buildPhase: resources
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Clippy Local
+        UILaunchScreen: {}
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
     settings:
       base:
+        TARGETED_DEVICE_FAMILY: '1'
         PRODUCT_BUNDLE_IDENTIFIER: com.clippy.local
-        GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Clippy Local
-        INFOPLIST_KEY_UILaunchScreen_Generation: YES
-        INFOPLIST_KEY_NSAppTransportSecurity_NSAllowsLocalNetworking: YES
+        GENERATE_INFOPLIST_FILE: NO
     dependencies:
       - package: ClippyCore
   ClippyUITests:

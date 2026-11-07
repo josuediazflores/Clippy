@@ -16,6 +16,13 @@ public struct Location: Codable, Sendable {
     public var `accuracyMeters`: Double
     public var `sampledAt`: Instant
     public var `source`: String
+    public init(`latitude`: Double, `longitude`: Double, `accuracyMeters`: Double, `sampledAt`: Instant, `source`: String) {
+        self.`latitude` = `latitude`
+        self.`longitude` = `longitude`
+        self.`accuracyMeters` = `accuracyMeters`
+        self.`sampledAt` = `sampledAt`
+        self.`source` = `source`
+    }
 }
 
 public struct DeviceIdentity: Codable, Sendable {
@@ -27,6 +34,16 @@ public struct DeviceIdentity: Codable, Sendable {
     public var `claimState`: String
     public var `configurationRevision`: Int
     public var `appliedRevision`: Int
+    public init(`schemaVersion`: Int, `deviceId`: Id, `ownershipEpoch`: Int, `protocolVersion`: Int, `firmwareVersion`: String, `claimState`: String, `configurationRevision`: Int, `appliedRevision`: Int) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`protocolVersion` = `protocolVersion`
+        self.`firmwareVersion` = `firmwareVersion`
+        self.`claimState` = `claimState`
+        self.`configurationRevision` = `configurationRevision`
+        self.`appliedRevision` = `appliedRevision`
+    }
 }
 
 public struct DeviceState: Codable, Sendable {
@@ -42,6 +59,20 @@ public struct DeviceState: Codable, Sendable {
     public var `clockQuality`: String
     public var `appliedRevision`: Int
     public var `observedAt`: Instant
+    public init(`schemaVersion`: Int, `deviceId`: Id, `ownershipEpoch`: Int, `captureState`: String, `batteryPercent`: Int?, `charging`: Bool?, `queuedCaptures`: Int?, `queuedBytes`: Int?, `connectivity`: String, `clockQuality`: String, `appliedRevision`: Int, `observedAt`: Instant) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`captureState` = `captureState`
+        self.`batteryPercent` = `batteryPercent`
+        self.`charging` = `charging`
+        self.`queuedCaptures` = `queuedCaptures`
+        self.`queuedBytes` = `queuedBytes`
+        self.`connectivity` = `connectivity`
+        self.`clockQuality` = `clockQuality`
+        self.`appliedRevision` = `appliedRevision`
+        self.`observedAt` = `observedAt`
+    }
 }
 
 public struct Capture: Codable, Sendable {
@@ -58,6 +89,21 @@ public struct Capture: Codable, Sendable {
     public var `sha256`: Hash
     public var `contentType`: String
     public var `location`: Location?
+    public init(`schemaVersion`: Int, `captureId`: Id, `deviceId`: Id, `ownershipEpoch`: Int, `sequence`: Int, `capturedAt`: Instant, `timeZone`: ZoneName, `utcOffsetSeconds`: Int, `clockQuality`: String, `byteLength`: Int, `sha256`: Hash, `contentType`: String, `location`: Location?) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`captureId` = `captureId`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`sequence` = `sequence`
+        self.`capturedAt` = `capturedAt`
+        self.`timeZone` = `timeZone`
+        self.`utcOffsetSeconds` = `utcOffsetSeconds`
+        self.`clockQuality` = `clockQuality`
+        self.`byteLength` = `byteLength`
+        self.`sha256` = `sha256`
+        self.`contentType` = `contentType`
+        self.`location` = `location`
+    }
 }
 
 public struct ManifestEntry: Codable, Sendable {
@@ -75,12 +121,33 @@ public struct ManifestEntry: Codable, Sendable {
     public var `contentType`: String
     public var `location`: Location?
     public var `uploadId`: Id
+    public init(`schemaVersion`: Int, `captureId`: Id, `deviceId`: Id, `ownershipEpoch`: Int, `sequence`: Int, `capturedAt`: Instant, `timeZone`: ZoneName, `utcOffsetSeconds`: Int, `clockQuality`: String, `byteLength`: Int, `sha256`: Hash, `contentType`: String, `location`: Location?, `uploadId`: Id) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`captureId` = `captureId`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`sequence` = `sequence`
+        self.`capturedAt` = `capturedAt`
+        self.`timeZone` = `timeZone`
+        self.`utcOffsetSeconds` = `utcOffsetSeconds`
+        self.`clockQuality` = `clockQuality`
+        self.`byteLength` = `byteLength`
+        self.`sha256` = `sha256`
+        self.`contentType` = `contentType`
+        self.`location` = `location`
+        self.`uploadId` = `uploadId`
+    }
 }
 
 public struct Gap: Codable, Sendable {
     public var `sequenceStart`: Int
     public var `sequenceEnd`: Int
     public var `reason`: String
+    public init(`sequenceStart`: Int, `sequenceEnd`: Int, `reason`: String) {
+        self.`sequenceStart` = `sequenceStart`
+        self.`sequenceEnd` = `sequenceEnd`
+        self.`reason` = `reason`
+    }
 }
 
 public struct BeginSync: Codable, Sendable {
@@ -95,6 +162,19 @@ public struct BeginSync: Codable, Sendable {
     public var `sequenceEnd`: Int
     public var `captureCount`: Int
     public var `configurationRevision`: Int
+    public init(`schemaVersion`: Int, `deviceId`: Id, `ownershipEpoch`: Int, `syncRequestId`: Id?, `trigger`: String, `startedAt`: Instant, `cutoffAt`: Instant, `sequenceStart`: Int, `sequenceEnd`: Int, `captureCount`: Int, `configurationRevision`: Int) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`syncRequestId` = `syncRequestId`
+        self.`trigger` = `trigger`
+        self.`startedAt` = `startedAt`
+        self.`cutoffAt` = `cutoffAt`
+        self.`sequenceStart` = `sequenceStart`
+        self.`sequenceEnd` = `sequenceEnd`
+        self.`captureCount` = `captureCount`
+        self.`configurationRevision` = `configurationRevision`
+    }
 }
 
 public struct Snapshot: Codable, Sendable {
@@ -103,6 +183,13 @@ public struct Snapshot: Codable, Sendable {
     public var `syncRequestId`: Id
     public var `deviceId`: Id
     public var `ownershipEpoch`: Int
+    public init(`schemaVersion`: Int, `snapshotId`: Id, `syncRequestId`: Id, `deviceId`: Id, `ownershipEpoch`: Int) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`snapshotId` = `snapshotId`
+        self.`syncRequestId` = `syncRequestId`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+    }
 }
 
 public struct Manifest: Codable, Sendable {
@@ -119,6 +206,21 @@ public struct Manifest: Codable, Sendable {
     public var `captureCount`: Int
     public var `captures`: [ManifestEntry]
     public var `gaps`: [Gap]
+    public init(`schemaVersion`: Int, `snapshotId`: Id, `syncRequestId`: Id, `deviceId`: Id, `ownershipEpoch`: Int, `trigger`: String, `startedAt`: Instant, `cutoffAt`: Instant, `sequenceStart`: Int, `sequenceEnd`: Int, `captureCount`: Int, `captures`: [ManifestEntry], `gaps`: [Gap]) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`snapshotId` = `snapshotId`
+        self.`syncRequestId` = `syncRequestId`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`trigger` = `trigger`
+        self.`startedAt` = `startedAt`
+        self.`cutoffAt` = `cutoffAt`
+        self.`sequenceStart` = `sequenceStart`
+        self.`sequenceEnd` = `sequenceEnd`
+        self.`captureCount` = `captureCount`
+        self.`captures` = `captures`
+        self.`gaps` = `gaps`
+    }
 }
 
 public struct GrantItem: Codable, Sendable {
@@ -127,6 +229,13 @@ public struct GrantItem: Codable, Sendable {
     public var `byteLength`: Int
     public var `sha256`: Hash
     public var `contentType`: String
+    public init(`kind`: String, `captureId`: Id?, `byteLength`: Int, `sha256`: Hash, `contentType`: String) {
+        self.`kind` = `kind`
+        self.`captureId` = `captureId`
+        self.`byteLength` = `byteLength`
+        self.`sha256` = `sha256`
+        self.`contentType` = `contentType`
+    }
 }
 
 public struct GrantRequest: Codable, Sendable {
@@ -134,6 +243,12 @@ public struct GrantRequest: Codable, Sendable {
     public var `deviceId`: Id
     public var `ownershipEpoch`: Int
     public var `items`: [GrantItem]
+    public init(`schemaVersion`: Int, `deviceId`: Id, `ownershipEpoch`: Int, `items`: [GrantItem]) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`items` = `items`
+    }
 }
 
 public struct UploadGrant: Codable, Sendable {
@@ -144,11 +259,24 @@ public struct UploadGrant: Codable, Sendable {
     public var `putURL`: String
     public var `expiresAt`: Instant
     public var `requiredHeaders`: UploadGrantRequiredHeaders
+    public init(`schemaVersion`: Int, `uploadId`: Id, `kind`: String, `captureId`: Id?, `putURL`: String, `expiresAt`: Instant, `requiredHeaders`: UploadGrantRequiredHeaders) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`uploadId` = `uploadId`
+        self.`kind` = `kind`
+        self.`captureId` = `captureId`
+        self.`putURL` = `putURL`
+        self.`expiresAt` = `expiresAt`
+        self.`requiredHeaders` = `requiredHeaders`
+    }
 }
 
 public struct UploadGrants: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `items`: [UploadGrant]
+    public init(`schemaVersion`: Int, `items`: [UploadGrant]) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`items` = `items`
+    }
 }
 
 public struct CompleteSync: Codable, Sendable {
@@ -157,6 +285,13 @@ public struct CompleteSync: Codable, Sendable {
     public var `ownershipEpoch`: Int
     public var `manifestUploadId`: Id
     public var `manifestSHA256`: Hash
+    public init(`schemaVersion`: Int, `deviceId`: Id, `ownershipEpoch`: Int, `manifestUploadId`: Id, `manifestSHA256`: Hash) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`manifestUploadId` = `manifestUploadId`
+        self.`manifestSHA256` = `manifestSHA256`
+    }
 }
 
 public struct Receipt: Codable, Sendable {
@@ -168,11 +303,25 @@ public struct Receipt: Codable, Sendable {
     public var `effectiveDigest`: Hash
     public var `verifiedAt`: Instant
     public var `dayIds`: [Id]
+    public init(`schemaVersion`: Int, `snapshotId`: Id, `syncRequestId`: Id, `acceptedCaptureIds`: [Id], `suppressedCaptureIds`: [Id], `effectiveDigest`: Hash, `verifiedAt`: Instant, `dayIds`: [Id]) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`snapshotId` = `snapshotId`
+        self.`syncRequestId` = `syncRequestId`
+        self.`acceptedCaptureIds` = `acceptedCaptureIds`
+        self.`suppressedCaptureIds` = `suppressedCaptureIds`
+        self.`effectiveDigest` = `effectiveDigest`
+        self.`verifiedAt` = `verifiedAt`
+        self.`dayIds` = `dayIds`
+    }
 }
 
 public struct SyncRequestInput: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `trigger`: String
+    public init(`schemaVersion`: Int, `trigger`: String) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`trigger` = `trigger`
+    }
 }
 
 public struct SyncRequest: Codable, Sendable {
@@ -185,6 +334,17 @@ public struct SyncRequest: Codable, Sendable {
     public var `revision`: Int
     public var `createdAt`: Instant
     public var `expiresAt`: Instant
+    public init(`schemaVersion`: Int, `syncRequestId`: Id, `deviceId`: Id, `ownershipEpoch`: Int, `trigger`: String, `state`: String, `revision`: Int, `createdAt`: Instant, `expiresAt`: Instant) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`syncRequestId` = `syncRequestId`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`trigger` = `trigger`
+        self.`state` = `state`
+        self.`revision` = `revision`
+        self.`createdAt` = `createdAt`
+        self.`expiresAt` = `expiresAt`
+    }
 }
 
 public typealias Command = JSONValue
@@ -197,6 +357,15 @@ public struct Acknowledgement: Codable, Sendable {
     public var `state`: String
     public var `reason`: String?
     public var `observedAt`: Instant
+    public init(`schemaVersion`: Int, `commandId`: Id, `deviceId`: Id, `ownershipEpoch`: Int, `state`: String, `reason`: String?, `observedAt`: Instant) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`commandId` = `commandId`
+        self.`deviceId` = `deviceId`
+        self.`ownershipEpoch` = `ownershipEpoch`
+        self.`state` = `state`
+        self.`reason` = `reason`
+        self.`observedAt` = `observedAt`
+    }
 }
 
 public struct Configuration: Codable, Sendable {
@@ -208,14 +377,28 @@ public struct Configuration: Codable, Sendable {
     public var `nightlyLocalTime`: String?
     public var `timeZone`: ZoneName
     public var `preferCharging`: Bool
+    public init(`schemaVersion`: Int, `expectedRevision`: Int, `captureIntervalSeconds`: Int, `pauseResumePolicy`: String, `automaticSyncEnabled`: Bool, `nightlyLocalTime`: String?, `timeZone`: ZoneName, `preferCharging`: Bool) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`expectedRevision` = `expectedRevision`
+        self.`captureIntervalSeconds` = `captureIntervalSeconds`
+        self.`pauseResumePolicy` = `pauseResumePolicy`
+        self.`automaticSyncEnabled` = `automaticSyncEnabled`
+        self.`nightlyLocalTime` = `nightlyLocalTime`
+        self.`timeZone` = `timeZone`
+        self.`preferCharging` = `preferCharging`
+    }
 }
 
 public struct Evidence: Codable, Sendable {
     public var `type`: String
     public var `id`: Id
+    public init(`type`: String, `id`: Id) {
+        self.`type` = `type`
+        self.`id` = `id`
+    }
 }
 
-public struct Observation: Codable, Sendable {
+public struct CaptureObservation: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `captureId`: Id
     public var `providerVersion`: String
@@ -226,6 +409,18 @@ public struct Observation: Codable, Sendable {
     public var `inferredActivity`: String?
     public var `uncertainty`: String
     public var `evidence`: [Evidence]
+    public init(`schemaVersion`: Int, `captureId`: Id, `providerVersion`: String, `promptVersion`: String, `preprocessingVersion`: String, `status`: String, `visibleFacts`: [String], `inferredActivity`: String?, `uncertainty`: String, `evidence`: [Evidence]) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`captureId` = `captureId`
+        self.`providerVersion` = `providerVersion`
+        self.`promptVersion` = `promptVersion`
+        self.`preprocessingVersion` = `preprocessingVersion`
+        self.`status` = `status`
+        self.`visibleFacts` = `visibleFacts`
+        self.`inferredActivity` = `inferredActivity`
+        self.`uncertainty` = `uncertainty`
+        self.`evidence` = `evidence`
+    }
 }
 
 public struct Moment: Codable, Sendable {
@@ -235,6 +430,14 @@ public struct Moment: Codable, Sendable {
     public var `title`: String
     public var `detail`: String
     public var `evidence`: [Evidence]
+    public init(`schemaVersion`: Int, `momentId`: Id, `capturedAt`: Instant, `title`: String, `detail`: String, `evidence`: [Evidence]) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`momentId` = `momentId`
+        self.`capturedAt` = `capturedAt`
+        self.`title` = `title`
+        self.`detail` = `detail`
+        self.`evidence` = `evidence`
+    }
 }
 
 public struct Coverage: Codable, Sendable {
@@ -242,6 +445,12 @@ public struct Coverage: Codable, Sendable {
     public var `observed`: Int
     public var `missing`: Int
     public var `throughAt`: Instant?
+    public init(`captured`: Int, `observed`: Int, `missing`: Int, `throughAt`: Instant?) {
+        self.`captured` = `captured`
+        self.`observed` = `observed`
+        self.`missing` = `missing`
+        self.`throughAt` = `throughAt`
+    }
 }
 
 public struct Recap: Codable, Sendable {
@@ -257,6 +466,20 @@ public struct Recap: Codable, Sendable {
     public var `coverage`: Coverage
     public var `providerVersion`: String
     public var `promptVersion`: String
+    public init(`schemaVersion`: Int, `dayId`: Id, `inputRevision`: Int, `recapRevision`: Int, `deletionGeneration`: Int, `state`: String, `summary`: String, `moments`: [Moment], `reflectionPrompt`: String, `coverage`: Coverage, `providerVersion`: String, `promptVersion`: String) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`dayId` = `dayId`
+        self.`inputRevision` = `inputRevision`
+        self.`recapRevision` = `recapRevision`
+        self.`deletionGeneration` = `deletionGeneration`
+        self.`state` = `state`
+        self.`summary` = `summary`
+        self.`moments` = `moments`
+        self.`reflectionPrompt` = `reflectionPrompt`
+        self.`coverage` = `coverage`
+        self.`providerVersion` = `providerVersion`
+        self.`promptVersion` = `promptVersion`
+    }
 }
 
 public struct EditInput: Codable, Sendable {
@@ -265,6 +488,13 @@ public struct EditInput: Codable, Sendable {
     public var `expectedRevision`: Int
     public var `text`: String
     public var `deleted`: Bool
+    public init(`schemaVersion`: Int, `operationId`: Id, `expectedRevision`: Int, `text`: String, `deleted`: Bool) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`operationId` = `operationId`
+        self.`expectedRevision` = `expectedRevision`
+        self.`text` = `text`
+        self.`deleted` = `deleted`
+    }
 }
 
 public struct Reflection: Codable, Sendable {
@@ -276,6 +506,16 @@ public struct Reflection: Codable, Sendable {
     public var `text`: String
     public var `deleted`: Bool
     public var `updatedAt`: Instant
+    public init(`schemaVersion`: Int, `operationId`: Id, `recordId`: Id, `dayId`: Id, `revision`: Int, `text`: String, `deleted`: Bool, `updatedAt`: Instant) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`operationId` = `operationId`
+        self.`recordId` = `recordId`
+        self.`dayId` = `dayId`
+        self.`revision` = `revision`
+        self.`text` = `text`
+        self.`deleted` = `deleted`
+        self.`updatedAt` = `updatedAt`
+    }
 }
 
 public struct Correction: Codable, Sendable {
@@ -288,6 +528,17 @@ public struct Correction: Codable, Sendable {
     public var `deleted`: Bool
     public var `updatedAt`: Instant
     public var `momentId`: Id
+    public init(`schemaVersion`: Int, `operationId`: Id, `recordId`: Id, `dayId`: Id, `revision`: Int, `text`: String, `deleted`: Bool, `updatedAt`: Instant, `momentId`: Id) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`operationId` = `operationId`
+        self.`recordId` = `recordId`
+        self.`dayId` = `dayId`
+        self.`revision` = `revision`
+        self.`text` = `text`
+        self.`deleted` = `deleted`
+        self.`updatedAt` = `updatedAt`
+        self.`momentId` = `momentId`
+    }
 }
 
 public struct Day: Codable, Sendable {
@@ -304,6 +555,21 @@ public struct Day: Codable, Sendable {
     public var `corrections`: [Correction]
     public var `reflections`: [Reflection]
     public var `failureCode`: String?
+    public init(`schemaVersion`: Int, `dayId`: Id, `timeZone`: ZoneName, `startAt`: Instant, `endAt`: Instant, `inputRevision`: Int, `deletionGeneration`: Int, `state`: String, `calendarFreshness`: String, `recap`: Recap?, `corrections`: [Correction], `reflections`: [Reflection], `failureCode`: String?) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`dayId` = `dayId`
+        self.`timeZone` = `timeZone`
+        self.`startAt` = `startAt`
+        self.`endAt` = `endAt`
+        self.`inputRevision` = `inputRevision`
+        self.`deletionGeneration` = `deletionGeneration`
+        self.`state` = `state`
+        self.`calendarFreshness` = `calendarFreshness`
+        self.`recap` = `recap`
+        self.`corrections` = `corrections`
+        self.`reflections` = `reflections`
+        self.`failureCode` = `failureCode`
+    }
 }
 
 public struct CalendarOccurrence: Codable, Sendable {
@@ -316,6 +582,17 @@ public struct CalendarOccurrence: Codable, Sendable {
     public var `timeZone`: ZoneName
     public var `allDay`: Bool
     public var `location`: String?
+    public init(`occurrenceId`: Id, `calendarId`: Id, `sourceEventId`: Id, `title`: String, `startAt`: Instant, `endAt`: Instant, `timeZone`: ZoneName, `allDay`: Bool, `location`: String?) {
+        self.`occurrenceId` = `occurrenceId`
+        self.`calendarId` = `calendarId`
+        self.`sourceEventId` = `sourceEventId`
+        self.`title` = `title`
+        self.`startAt` = `startAt`
+        self.`endAt` = `endAt`
+        self.`timeZone` = `timeZone`
+        self.`allDay` = `allDay`
+        self.`location` = `location`
+    }
 }
 
 public struct CalendarSnapshot: Codable, Sendable {
@@ -329,6 +606,18 @@ public struct CalendarSnapshot: Codable, Sendable {
     public var `windowEnd`: Instant
     public var `pageCount`: Int
     public var `refreshedAt`: Instant
+    public init(`schemaVersion`: Int, `snapshotId`: Id, `sourceId`: Id, `sourceGeneration`: Int, `consentRevision`: Int, `selectedCalendarIds`: [Id], `windowStart`: Instant, `windowEnd`: Instant, `pageCount`: Int, `refreshedAt`: Instant) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`snapshotId` = `snapshotId`
+        self.`sourceId` = `sourceId`
+        self.`sourceGeneration` = `sourceGeneration`
+        self.`consentRevision` = `consentRevision`
+        self.`selectedCalendarIds` = `selectedCalendarIds`
+        self.`windowStart` = `windowStart`
+        self.`windowEnd` = `windowEnd`
+        self.`pageCount` = `pageCount`
+        self.`refreshedAt` = `refreshedAt`
+    }
 }
 
 public struct CalendarPage: Codable, Sendable {
@@ -336,12 +625,23 @@ public struct CalendarPage: Codable, Sendable {
     public var `snapshotId`: Id
     public var `pageNumber`: Int
     public var `occurrences`: [CalendarOccurrence]
+    public init(`schemaVersion`: Int, `snapshotId`: Id, `pageNumber`: Int, `occurrences`: [CalendarOccurrence]) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`snapshotId` = `snapshotId`
+        self.`pageNumber` = `pageNumber`
+        self.`occurrences` = `occurrences`
+    }
 }
 
 public struct CalendarComplete: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `pageHashes`: [Hash]
     public var `completionDigest`: Hash
+    public init(`schemaVersion`: Int, `pageHashes`: [Hash], `completionDigest`: Hash) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`pageHashes` = `pageHashes`
+        self.`completionDigest` = `completionDigest`
+    }
 }
 
 public struct CalendarBundle: Codable, Sendable {
@@ -349,6 +649,12 @@ public struct CalendarBundle: Codable, Sendable {
     public var `snapshot`: CalendarSnapshot
     public var `pages`: [CalendarPage]
     public var `completion`: CalendarComplete
+    public init(`schemaVersion`: Int, `snapshot`: CalendarSnapshot, `pages`: [CalendarPage], `completion`: CalendarComplete) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`snapshot` = `snapshot`
+        self.`pages` = `pages`
+        self.`completion` = `completion`
+    }
 }
 
 public struct DeletionJob: Codable, Sendable {
@@ -359,11 +665,24 @@ public struct DeletionJob: Codable, Sendable {
     public var `revision`: Int
     public var `cloudComplete`: Bool
     public var `pendingDeviceIds`: [Id]
+    public init(`schemaVersion`: Int, `jobId`: Id, `targetId`: Id, `state`: String, `revision`: Int, `cloudComplete`: Bool, `pendingDeviceIds`: [Id]) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`jobId` = `jobId`
+        self.`targetId` = `targetId`
+        self.`state` = `state`
+        self.`revision` = `revision`
+        self.`cloudComplete` = `cloudComplete`
+        self.`pendingDeviceIds` = `pendingDeviceIds`
+    }
 }
 
 public struct APIError: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `error`: APIErrorError
+    public init(`schemaVersion`: Int, `error`: APIErrorError) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`error` = `error`
+    }
 }
 
 public struct Profile: Codable, Sendable {
@@ -372,6 +691,13 @@ public struct Profile: Codable, Sendable {
     public var `revision`: Int
     public var `retentionDays`: Int
     public var `consentRevision`: Int
+    public init(`schemaVersion`: Int, `journalTimeZone`: ZoneName, `revision`: Int, `retentionDays`: Int, `consentRevision`: Int) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`journalTimeZone` = `journalTimeZone`
+        self.`revision` = `revision`
+        self.`retentionDays` = `retentionDays`
+        self.`consentRevision` = `consentRevision`
+    }
 }
 
 public struct Preferences: Codable, Sendable {
@@ -379,17 +705,32 @@ public struct Preferences: Codable, Sendable {
     public var `expectedRevision`: Int
     public var `journalTimeZone`: ZoneName
     public var `retentionDays`: Int
+    public init(`schemaVersion`: Int, `expectedRevision`: Int, `journalTimeZone`: ZoneName, `retentionDays`: Int) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`expectedRevision` = `expectedRevision`
+        self.`journalTimeZone` = `journalTimeZone`
+        self.`retentionDays` = `retentionDays`
+    }
 }
 
 public struct ClaimInput: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `deviceId`: Id
     public var `challengeId`: Id
+    public init(`schemaVersion`: Int, `deviceId`: Id, `challengeId`: Id) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`deviceId` = `deviceId`
+        self.`challengeId` = `challengeId`
+    }
 }
 
 public struct ClaimProof: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `proofHandle`: String
+    public init(`schemaVersion`: Int, `proofHandle`: String) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`proofHandle` = `proofHandle`
+    }
 }
 
 public struct Claim: Codable, Sendable {
@@ -398,6 +739,13 @@ public struct Claim: Codable, Sendable {
     public var `deviceId`: Id
     public var `state`: String
     public var `expiresAt`: Instant
+    public init(`schemaVersion`: Int, `claimId`: Id, `deviceId`: Id, `state`: String, `expiresAt`: Instant) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`claimId` = `claimId`
+        self.`deviceId` = `deviceId`
+        self.`state` = `state`
+        self.`expiresAt` = `expiresAt`
+    }
 }
 
 public struct PushInstallation: Codable, Sendable {
@@ -406,12 +754,24 @@ public struct PushInstallation: Codable, Sendable {
     public var `platform`: String
     public var `token`: String
     public var `environment`: String
+    public init(`schemaVersion`: Int, `expectedRevision`: Int, `platform`: String, `token`: String, `environment`: String) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`expectedRevision` = `expectedRevision`
+        self.`platform` = `platform`
+        self.`token` = `token`
+        self.`environment` = `environment`
+    }
 }
 
 public struct ReadGrant: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `readURL`: String
     public var `expiresAt`: Instant
+    public init(`schemaVersion`: Int, `readURL`: String, `expiresAt`: Instant) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`readURL` = `readURL`
+        self.`expiresAt` = `expiresAt`
+    }
 }
 
 public struct DeviceDetail: Codable, Sendable {
@@ -419,24 +779,45 @@ public struct DeviceDetail: Codable, Sendable {
     public var `identity`: DeviceIdentity
     public var `state`: DeviceState?
     public var `activeSync`: SyncRequest?
+    public init(`schemaVersion`: Int, `identity`: DeviceIdentity, `state`: DeviceState?, `activeSync`: SyncRequest?) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`identity` = `identity`
+        self.`state` = `state`
+        self.`activeSync` = `activeSync`
+    }
 }
 
 public struct Days: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `items`: [Day]
     public var `nextCursor`: String?
+    public init(`schemaVersion`: Int, `items`: [Day], `nextCursor`: String?) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`items` = `items`
+        self.`nextCursor` = `nextCursor`
+    }
 }
 
 public struct Devices: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `items`: [DeviceIdentity]
     public var `nextCursor`: String?
+    public init(`schemaVersion`: Int, `items`: [DeviceIdentity], `nextCursor`: String?) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`items` = `items`
+        self.`nextCursor` = `nextCursor`
+    }
 }
 
 public struct Moments: Codable, Sendable {
     public var `schemaVersion`: Int
     public var `items`: [Moment]
     public var `nextCursor`: String?
+    public init(`schemaVersion`: Int, `items`: [Moment], `nextCursor`: String?) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`items` = `items`
+        self.`nextCursor` = `nextCursor`
+    }
 }
 
 public struct Transition: Codable, Sendable {
@@ -446,12 +827,25 @@ public struct Transition: Codable, Sendable {
     public var `to`: String
     public var `revision`: Int
     public var `expectedRevision`: Int
+    public init(`schemaVersion`: Int, `machine`: String, `from`: String, `to`: String, `revision`: Int, `expectedRevision`: Int) {
+        self.`schemaVersion` = `schemaVersion`
+        self.`machine` = `machine`
+        self.`from` = `from`
+        self.`to` = `to`
+        self.`revision` = `revision`
+        self.`expectedRevision` = `expectedRevision`
+    }
 }
 
 public struct UploadGrantRequiredHeaders: Codable, Sendable {
     public var `If-None-Match`: String
     public var `X-Clippy-SHA256`: Hash
     public var `Content-Type`: String
+    public init(`If-None-Match`: String, `X-Clippy-SHA256`: Hash, `Content-Type`: String) {
+        self.`If-None-Match` = `If-None-Match`
+        self.`X-Clippy-SHA256` = `X-Clippy-SHA256`
+        self.`Content-Type` = `Content-Type`
+    }
 }
 
 public struct APIErrorError: Codable, Sendable {
@@ -461,6 +855,14 @@ public struct APIErrorError: Codable, Sendable {
     public var `retryable`: Bool
     public var `currentRevision`: Int?
     public var `itemIds`: [Id]?
+    public init(`code`: String, `message`: String, `requestId`: Id, `retryable`: Bool, `currentRevision`: Int?, `itemIds`: [Id]?) {
+        self.`code` = `code`
+        self.`message` = `message`
+        self.`requestId` = `requestId`
+        self.`retryable` = `retryable`
+        self.`currentRevision` = `currentRevision`
+        self.`itemIds` = `itemIds`
+    }
 }
 
 public enum WireDecoder {
@@ -517,7 +919,7 @@ public enum WireDecoder {
 
         case "Evidence": _ = try JSONDecoder().decode(Evidence.self, from: data)
 
-        case "Observation": _ = try JSONDecoder().decode(Observation.self, from: data)
+        case "Observation": _ = try JSONDecoder().decode(CaptureObservation.self, from: data)
 
         case "Moment": _ = try JSONDecoder().decode(Moment.self, from: data)
 

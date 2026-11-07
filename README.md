@@ -1,35 +1,35 @@
 # Clippy
 
-Clippy is a wearable camera companion and iPhone journal. It captures selected moments during the day, uploads them on demand or overnight, and produces a daily recap that the user can correct and reflect on.
+Clippy is a wearable camera companion and iPhone journal. P01-P03 now provide a local foundation: executable contracts, three runnable projects, and a synthetic capture-to-recap flow with corrections, reflections, resumable uploads, and simulator UI evidence.
 
-This repository currently contains the architecture and implementation plan. Application code, cloud infrastructure, device firmware, and automated jobs have not been implemented or deployed.
+No AWS resources, real account connections, device installations, app uploads, paid model calls, or recurring jobs are active.
+
+## Run locally
+
+Use the pinned prerequisites and clean-checkout steps in [local development](docs/local-development.md).
+
+```sh
+npm ci --no-audit --no-fund
+uv sync --locked
+npm run check
+npm run demo
+```
+
+`npm run demo` runs two synthetic snapshots through the Python simulator and local TypeScript ingestion/processing service, builds/tests the SwiftUI iPhone app, verifies its edits on the server, and exports screenshots and a report. It stops its server when finished. No nightly job is activated; `nightly` is only the second snapshot's test trigger.
 
 ## Start here
 
-1. Read [current progress](docs/STATUS.md) to find the next available phase.
-2. Read the [architecture](docs/architecture.md) for the system design and responsibilities.
-3. Follow the [implementation plan](docs/implementation-plan.md), one phase or assigned work package at a time.
-4. Use the [contracts](docs/contracts.md) for app, backend, and device boundaries.
-5. Check the [verification and release gates](docs/verification.md) before calling a phase complete.
+- [Current progress and evidence](docs/STATUS.md)
+- [Two-person handoff and ownership](docs/handoffs/P03-local-flow.md)
+- [Implementation plan](docs/implementation-plan.md) and [architecture](docs/architecture.md)
+- [Executable contract rules](contracts/README.md), [OpenAPI](contracts/openapi.json), and [JSON Schema](contracts/schema.json)
+- [Decisions and remaining inputs](docs/decisions.md)
+- [Verification and release gates](docs/verification.md)
 
-Agents must also read [AGENTS.md](AGENTS.md). Use the [handoff template](docs/handoffs/TEMPLATE.md) when passing work to another agent. [Decisions](docs/decisions.md) distinguishes confirmed requirements, proposed defaults, and unresolved inputs. [Sources](docs/sources.md) records the platform documentation behind the plan.
+Agents must read [AGENTS.md](AGENTS.md). Shared contracts and project configuration stay under one coordinator. Person 1 can begin P05 device software and P06 iPhone work. Person 2 can begin P04 backend/infra, then P08 processing once P04's local gate passes. P07 pairing and P09 Calendar remain coordinated dependency work. P04 and later were not implemented by this foundation task.
 
 ## Product scope
 
-- Native iPhone app with Home, History, and Device tabs.
-- Daily recap and reflection as the primary experience.
-- Periodic photos, optional location context, and a local privacy pause gesture.
-- Automatic nightly upload with a user-controlled schedule and a daytime Sync now action.
-- Apple Calendar integration through EventKit and explicit permission.
-- Optional mail integration only after provider access and permissions are validated.
-- AWS device identity, storage, processing, API, and notifications.
+The intended product captures periodic photos, supports daytime Sync now and an optional nightly routine, and produces daily recaps the user can correct and reflect on. Apple Calendar is the first optional integration. Mail remains deferred pending provider feasibility.
 
-The hardware owner designs the enclosure, Raspberry Pi configuration, camera, IMU, screen, battery, charging, and location hardware. Software work begins with adapters and a simulator so it can proceed before the physical prototype is ready.
-
-## First complete demonstration
-
-A user pairs one device, records a small set of sample moments, pauses capture, triggers Sync now, sees Today so far, corrects a moment, and writes a reflection. A simulated nightly sync adds new moments to the same day without duplicates or losing the user's edits. The approved hardware/cloud integration later repeats this flow on real equipment.
-
-## Operating boundaries
-
-The plan describes future behavior. It does not activate schedules, install background services, create cloud resources, or authorize a release. Prepare and verify each concrete deployment or installation before requesting its specific approval. Source changes and their review are separate from deployment.
+Real camera/IMU/location/display/BLE, secure local storage, Cognito/IoT/S3/Step Functions/Bedrock, EventKit, notifications, and production retention are later adapters and gates. [Hardware boundaries](docs/hardware-adapters.md) identify their owners and missing inputs. Local mocks do not verify live service permissions or hardware reliability.

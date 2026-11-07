@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "dayId": "day_20261107",
+  "timeZone": "UTC",
+  "startAt": "2026-11-07T00:00:00Z",
+  "endAt": "2026-11-08T00:00:00Z",
+  "inputRevision": 3,
+  "deletionGeneration": 0,
+  "state": "ready",
+  "calendarFreshness": "unavailable",
+  "recap": {
+    "schemaVersion": 1,
+    "dayId": "day_20261107",
+    "inputRevision": 3,
+    "recapRevision": 2,
+    "deletionGeneration": 0,
+    "state": "ready",
+    "summary": "3 captured moments from this synthetic day. Your recap is up to date with this snapshot.",
+    "moments": [
+      {
+        "schemaVersion": 1,
+        "momentId": "moment_cap_sample_001",
+        "capturedAt": "2026-11-07T09:00:00Z",
+        "title": "A quiet break",
+        "detail": "A synthetic color sample was captured.",
+        "evidence": [
+          {
+            "type": "capture",
+            "id": "cap_sample_001"
+          }
+        ]
+      },
+      {
+        "schemaVersion": 1,
+        "momentId": "moment_cap_sample_002",
+        "capturedAt": "2026-11-07T10:00:00Z",
+        "title": "Moment 2",
+        "detail": "A synthetic color sample was captured.",
+        "evidence": [
+          {
+            "type": "capture",
+            "id": "cap_sample_002"
+          }
+        ]
+      },
+      {
+        "schemaVersion": 1,
+        "momentId": "moment_cap_sample_003",
+        "capturedAt": "2026-11-07T11:00:00Z",
+        "title": "Moment 3",
+        "detail": "A synthetic color sample was captured.",
+        "evidence": [
+          {
+            "type": "capture",
+            "id": "cap_sample_003"
+          }
+        ]
+      }
+    ],
+    "reflectionPrompt": "What would you like to remember about this day?",
+    "coverage": {
+      "captured": 3,
+      "observed": 3,
+      "missing": 0,
+      "throughAt": "2026-11-07T11:00:00Z"
+    },
+    "providerVersion": "mock-1",
+    "promptVersion": "mock-1"
+  },
+  "corrections": [
+    {
+      "schemaVersion": 1,
+      "operationId": "scenario_correction",
+      "recordId": "correction_moment_cap_sample_001",
+      "dayId": "day_20261107",
+      "revision": 1,
+      "text": "A quiet break",
+      "deleted": false,
+      "updatedAt": "2026-11-07T20:00:00Z",
+      "momentId": "moment_cap_sample_001"
+    }
+  ],
+  "reflections": [
+    {
+      "schemaVersion": 1,
+      "operationId": "scenario_reflection",
+      "recordId": "reflection_main",
+      "dayId": "day_20261107",
+      "revision": 1,
+      "text": "I made time for a quiet break.",
+      "deleted": false,
+      "updatedAt": "2026-11-07T20:00:00Z"
+    }
+  ],
+  "failureCode": null
+}
