@@ -18,6 +18,8 @@ Status: **ready to ship, not approved.** Nothing in this packet has been deploye
 | Budget alert | An AWS Budget with an owner email, for example USD 10/month | Alarm actions and budget notifications need a named owner (not created by this stack) |
 | Alarm owner | Who receives the four alarms | Alarms are created without actions |
 
+Found read-only on 2026-11-07: the available credentials are the team SSO account (`ClippyHackers` permission set). CloudFormation is explicitly denied there in us-east-2 and us-west-2, so **us-east-1 is the only workable region**. us-east-1 has no CDK bootstrap and already contains other teams' DataZone stacks, so it is a shared account. Josue chose to hold off on deployment (2026-11-07). Whether the permission set allows IAM role, KMS, Cognito, IoT and Step Functions creation is unknown until a `cdk deploy` is attempted, so expect possible partial failure and have rollback ready.
+
 ## 3. Exact changes, in order (each needs its own approval)
 
 1. **CDK bootstrap** (`npx cdk bootstrap aws://ACCOUNT/REGION`): creates the `CDKToolkit` stack (staging S3 bucket, ECR repository, deploy/lookup/publishing roles). One-time per account and region.

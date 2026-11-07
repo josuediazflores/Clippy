@@ -2,6 +2,12 @@
 
 Status: **proposed, not approved. No paid call has been made.** The runner refuses to start without an approved plan file, verified models for the plan's region, list prices for every model, and a worst-case estimate under the spend ceiling.
 
+## Environment found (read-only, 2026-11-07)
+
+- The team SSO account (`ClippyHackers` permission set) allows CloudFormation only in **us-east-1**; us-east-2 and us-west-2 are explicitly denied. us-east-1 has no CDK bootstrap.
+- `anthropic.claude-haiku-5-5`, `anthropic.claude-opus-5-5` and `anthropic.claude-sonnet-5-5` are listed in us-east-1, with `us.` and `global.` inference profiles. Listing is not invocation access, so models stay `verified: null` until an approved minimal call succeeds. Whether the SSO role has `bedrock-mantle:CreateInference` is also unverified.
+- Production estimate at 96 photos a day (1280x960): observation about $0.03 per user-day (Haiku 5.5), synthesis about $0.06 (Sonnet 5.5) or $0.11 (Opus 5.5).
+
 ## What is compared
 
 - Observation: one Haiku-class vision candidate (`CANDIDATES.observation` in `src/config.ts`).
@@ -18,7 +24,8 @@ Status: **proposed, not approved. No paid call has been made.** The runner refus
 | Max output tokens | Observation 600, synthesis 4,000 (config defaults)                                                                                                                                                             |
 | Concurrency       | 1 (sequential)                                                                                                                                                                                                 |
 | Worst-case tokens | About 26k input / 10k output for observation; 25k input / 48k output for synthesis                                                                                                                             |
-| Spend ceiling     | **USD 5**. Worst case at illustrative list prices (Haiku-class USD 1/5, Sonnet-class 3/15, Opus-class 5/25 per million tokens) is about USD 1.20. Fill the real Bedrock prices into the plan at approval time. |
+| Prices | us-east-1 regional on-demand, per million tokens (AWS Price List, 2026-11-07): Haiku 5.5 $0.11 in / $0.55 out; Sonnet 5.5 $2.20 / $11.00; Opus 5.5 $4.40 / $22.00. `global.` inference profiles are about 10% cheaper. |
+| Spend ceiling | **USD 2 proposed.** The worst case at these prices is about USD 0.88 (Haiku $0.01, Opus $0.58, Sonnet $0.29), assuming every call retries once and synthesis uses its full 4,000 output tokens. |
 | Stopping rule     | Stop after 5 or more calls if more than 20% have failed. Diagnose before any rerun, and ask before an expensive rerun.                                                                                         |
 
 ## Real device image size

@@ -59,7 +59,7 @@ Environment as in the P04 handoff (Node 25.6.0 against a 22.23.4 pin, DynamoDB L
 
 ## Remaining work and risks
 
-- **Evaluation gate (blocked on approval).** It needs:
+- **Evaluation gate (blocked on approval).** Read-only discovery on 2026-11-07 found that us-east-1 is the only allowed region, all three candidates are listed there, and real prices give a worst case of about USD 0.88 (USD 2 cap proposed). Josue chose to wait. It still needs:
   - the region;
   - verification of the candidate Bedrock IDs in that region;
   - real prices;
@@ -74,7 +74,7 @@ Environment as in the P04 handoff (Node 25.6.0 against a 22.23.4 pin, DynamoDB L
   - The system prompts are below the cache minimum, so prompt caching is not used.
   - Calendar context (P09) is not part of synthesis input yet.
   - Place labels are implemented but unverified against the live Amazon Location service (pricing tier, label quality).
-  - The real camera output size has not been measured; see the capture profile in `device-integration.md`.
+  - Camera output was measured on the prototype: 126 KB at 1280x960 and 776 KB at full resolution (see `device-integration.md`); the capture profile is still a proposal.
 - **Notifications.** The `recap.published` entries accumulate as pending until P10 adds a notifier; the recovery command reports them as pending.
 - **Consumers.**
   - P09 adds calendar context to `synthesisInput` and the prompt (a new prompt version).
