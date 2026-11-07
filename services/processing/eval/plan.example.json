@@ -1,0 +1,16 @@
+{
+  "approvedBy": "",
+  "approvedAt": "",
+  "region": "REGION",
+  "samples": 8,
+  "repetitions": 3,
+  "maxUsd": 5,
+  "observationModels": [
+    { "id": "anthropic.claude-haiku-5-5", "maxOutputTokens": 600, "timeoutMs": 60000, "verified": null }
+  ],
+  "synthesisModels": [
+    { "id": "anthropic.claude-opus-5-5", "maxOutputTokens": 4000, "timeoutMs": 120000, "verified": null },
+    { "id": "anthropic.claude-sonnet-5-5", "maxOutputTokens": 4000, "timeoutMs": 120000, "verified": null }
+  ],
+  "prices": {}
+}

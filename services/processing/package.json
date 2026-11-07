@@ -1,1 +1,9 @@
-{"name":"@clippy/processing","private":true,"version":"0.1.0","dependencies":{"@anthropic-ai/bedrock-sdk":"1.1.0","@anthropic-ai/sdk":"1.3.0"}}
+{
+  "name": "@clippy/processing",
+  "private": true,
+  "version": "0.1.0",
+  "dependencies": {
+    "@anthropic-ai/bedrock-sdk": "1.1.0",
+    "@anthropic-ai/sdk": "1.3.0"
+  }
+}

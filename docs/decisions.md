@@ -103,3 +103,16 @@ Owner: Person 2 lane (backend/infra), branch `p04-backend`. These refine the P00
 - D27: The Cognito user pool lives in the retained Data stack because replacing it would change every owner subject. Development users are admin-created only; the app client is public with authorization code and PKCE.
 - D28: Point-in-time recovery and S3 versioning are off in development so explicit deletion removes the only copy. Enabling either requires a deletion-ledger replay procedure and an approved retention window.
 - D29: One media bucket with server-assigned `u/<owner>/s/<snapshot>/<upload>` keys. There are no S3 event triggers, so no processing loop exists; P08 decides whether derived artifacts get a separate prefix or bucket.
+
+## P08 recap pipeline decisions (2026-11-07)
+
+Owner: Person 2 lane, branch `p08-processing`. Wire contract unchanged.
+
+- D30: Recap work runs as replay-safe engine steps (`beginJob`, `observeCapture`, `synthesisInput`, `saveCandidate`, `publishCandidate`, `failJob`). The local driver and a Step Functions Standard workflow share them. Execution history carries IDs, status words and counts only. Observations, candidates and recaps live in DynamoDB; candidates sit under the job's `JOB#` sort key so job cleanup removes them.
+- D31: Models are called through the official Anthropic SDK. On AWS that is `AnthropicBedrockMantle` with the Lambda role's SigV4 credentials (`bedrock-mantle:CreateInference`). Output is a forced, strict tool call. No sampling parameters are sent. SDK retries are off, so the workflow owns bounded retries with full jitter.
+- D32: Models contribute text only. Observations are server-built from a draft and clipped to schema bounds. Synthesis writes the summary, reflection prompt and optional titles. Moments map one-to-one to ready observations, owner corrections override titles, and coverage is computed by the server. An unknown or duplicate source is invalid output: one retry, then `SYNTHESIS_INVALID`.
+- D33: Stop rule: more than 20% provider failures in a job ends it as `PROVIDER_BATCH_FAILURE` before synthesis spend. Zero observations gives `NO_OBSERVATIONS`; a refusal gives `SYNTHESIS_DECLINED` and is not retried. Stale or deleted work ends `superseded`, never as a failure or a paid retry.
+- D34: Images are screened before any call: the format must parse as the declared type, the size bound is 3.75 MB, and frames under 32 px are not sent. Resizing and normalization are deferred to P05 device-side normalization or a later preprocessing version.
+- D35: The pipeline version derives from model IDs plus prompt and preprocessing versions, so a change creates new job identities and observation caches. The default deployment uses deterministic mock models (no spend). A Bedrock configuration is refused at synthesis unless both models carry a verification record for the target region.
+- D36: Publication atomically enqueues `recap.published`. It stays pending until P10 provides a notifier, so a notification can only follow a committed, valid publication.
+- D37: The contract caps a recap at 200 moments. A day with more than 200 observed captures fails as `MOMENT_LIMIT` rather than silently dropping moments.
