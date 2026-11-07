@@ -4,14 +4,15 @@ import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { createLocalServer } from "../src/http";
-import { setup, upload, capture, app, device } from "./helpers";
+import { setup, upload, capture, app, device, count, patch } from "./helpers";
+import { keys } from "../src/store/keys";
 import { validate } from "../src/contracts";
 import {
   MockObservationProvider,
   MockRecapProvider,
 } from "../../processing/src/mock";
 
-async function serve(engine: ReturnType<typeof setup>["engine"]) {
+async function serve(engine: Awaited<ReturnType<typeof setup>>["engine"]) {
   const server = createLocalServer(engine);
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   const address = server.address();
@@ -38,10 +39,10 @@ async function runPython(args: string[]): Promise<void> {
 }
 
 test("HTTP denies missing/unknown credentials and cross-user access in every local resource family", async (t) => {
-  const { engine } = setup(t);
-  const flow = upload(engine, [capture(1)]);
-  flow.finish();
-  engine.process(
+  const { engine } = await setup(t);
+  const flow = await upload(engine, [capture(1)]);
+  await flow.finish();
+  await engine.process(
     app.owner,
     "day_20261107",
     new MockObservationProvider(),
@@ -92,6 +93,7 @@ test("HTTP denies missing/unknown credentials and cross-user access in every loc
     ],
     ["DELETE", "/v1/captures/cap_sample_001"],
     ["DELETE", "/v1/days/day_20261107"],
+    ["POST", "/v1/captures/cap_sample_001/read-url"],
   ];
   for (const [method, route, payload] of cases) {
     const response = await fetch(url + route, {
@@ -139,14 +141,16 @@ test("HTTP denies missing/unknown credentials and cross-user access in every loc
     ).status,
     404,
   );
-  const deletion = engine.mutate(
-    app,
-    "DELETE",
-    "/capture",
-    "delete_http",
-    null,
-    202,
-    () => engine.delete(app, "cap_sample_001"),
+  const deletion = (
+    await engine.mutate(
+      app,
+      "DELETE",
+      "/capture",
+      "delete_http",
+      null,
+      202,
+      (tx) => engine.delete(app, { kind: "capture", id: "cap_sample_001" }, tx),
+    )
   ).body;
   assert.equal(
     (
@@ -179,7 +183,7 @@ test("Python processes restart at four upload checkpoints and receive exactly on
     "receipt-before-checkpoint",
   ];
   for (const [index, stop] of stops.entries()) {
-    const { engine, directory, restart } = setup(t);
+    const { engine, directory, restart } = await setup(t);
     let hosted = await serve(engine);
     t.after(() => {
       hosted.server.closeAllConnections();
@@ -201,7 +205,7 @@ test("Python processes restart at four upload checkpoints and receive exactly on
     ) as { acknowledged: boolean };
     assert.equal(pending.acknowledged, false);
     await new Promise<void>((resolve) => hosted.server.close(() => resolve()));
-    const resumed = restart();
+    const resumed = await restart();
     hosted = await serve(resumed);
     args[1] = hosted.url;
     try {
@@ -211,12 +215,20 @@ test("Python processes restart at four upload checkpoints and receive exactly on
         fs.readFileSync(path.join(directory, "queue/checkpoint.json"), "utf8"),
       ) as { acknowledged: boolean };
       assert.equal(checkpoint.acknowledged, true);
-      assert.equal(Object.keys(resumed.state.captures).length, 2);
+      const store = resumed.store as Parameters<typeof count>[0];
+      assert.equal(count(store, "CAP#"), 2);
       assert.equal(
-        Object.values(resumed.state.snapshots).filter((s) => s.receipt).length,
+        store
+          .all("operations")
+          .filter(
+            (i) => i.sk === "SNAP" && (i.data as { receipt: unknown }).receipt,
+          ).length,
         1,
       );
-      assert.equal(resumed.getDay(app, "day_20261107").inputRevision, 1);
+      assert.equal(
+        (await resumed.getDay(app, "day_20261107")).inputRevision,
+        1,
+      );
       assert.equal(
         fs
           .readdirSync(path.join(directory, "queue"))
@@ -233,21 +245,26 @@ test("Python processes restart at four upload checkpoints and receive exactly on
 });
 
 test("expired grants renew the same upload identity without trusting an existing-object 412", async (t) => {
-  const { engine } = setup(t);
-  const flow = upload(engine, [capture(1)], { omit: "cap_sample_001" }),
+  const { engine, store } = await setup(t);
+  const flow = await upload(engine, [capture(1)], { omit: "cap_sample_001" }),
     g = flow.grants[0]!;
-  engine.state.grants[g.uploadId]!.expiresAt = "2026-11-07T19:00:00Z";
-  assert.throws(
-    () =>
-      engine.put(device, g.uploadId, capture(1).bytes, {
-        "if-none-match": "*",
-        "x-clippy-sha256": capture(1).value.sha256,
-        "content-type": "image/png",
-      }),
+  await patch<{ expiresAt: string }>(store, keys.grant(g.uploadId), (grant) => {
+    grant.expiresAt = "2026-11-07T19:00:00Z";
+  });
+  await assert.rejects(
+    engine.put(device, g.uploadId, capture(1).bytes, {
+      "if-none-match": "*",
+      "x-clippy-sha256": capture(1).value.sha256,
+      "content-type": "image/png",
+    }),
     /EXPIRED/,
   );
-  const item = engine.state.grants[g.uploadId]!.item;
-  const renewed = engine.grants(
+  const item = (
+    (await store.get(keys.grant(g.uploadId)))!.data as {
+      item: import("../src/Wire").GrantItem;
+    }
+  ).item;
+  const renewed = await engine.grants(
     device,
     flow.snapshot.snapshotId,
     {
@@ -259,4 +276,10 @@ test("expired grants renew the same upload identity without trusting an existing
     "http://127.0.0.1:8787",
   );
   assert.equal(renewed.items[0]!.uploadId, g.uploadId);
+  assert.ok(renewed.items[0]!.expiresAt > "2026-11-07T19:00:00Z");
+  await engine.put(device, g.uploadId, capture(1).bytes, {
+    "if-none-match": "*",
+    "x-clippy-sha256": capture(1).value.sha256,
+    "content-type": "image/png",
+  });
 });

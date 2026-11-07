@@ -1,17 +1,20 @@
-import fs from "node:fs";
-import path from "node:path";
 import crypto from "node:crypto";
+import path from "node:path";
 import Ajv2020 from "ajv/dist/2020";
 import addFormats from "ajv-formats";
 import type { Capture, Manifest, CalendarBundle, Transition } from "./Wire";
 
+// Static imports so bundled Lambda code carries the frozen contracts without filesystem paths.
+import schemaJson from "../../../contracts/schema.json";
+import transitionsJson from "../../../contracts/transitions.json";
+
+/** Repository root for local tools. Bundled Lambda code does not read files from it. */
 export const root = path.resolve(__dirname, "../../..");
-const schema = JSON.parse(
-  fs.readFileSync(path.join(root, "contracts/schema.json"), "utf8"),
-);
-export const transitions: Record<string, Record<string, string[]>> = JSON.parse(
-  fs.readFileSync(path.join(root, "contracts/transitions.json"), "utf8"),
-);
+const schema = schemaJson as { $id: string } & Record<string, unknown>;
+export const transitions = transitionsJson as Record<
+  string,
+  Record<string, string[]>
+>;
 const ajv = new Ajv2020({ allErrors: true, strict: true });
 addFormats(ajv);
 ajv.addSchema(schema);
