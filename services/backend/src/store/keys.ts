@@ -143,6 +143,12 @@ export const keys = {
     pk: `${user(owner)}#DAY#${dayId}`,
     sk: `JOB#${jobId}`,
   }),
+  /** Stored under the job's sort-key prefix so job cleanup removes it too. */
+  candidate: (owner: string, dayId: string, jobId: string): Key => ({
+    table: "journal",
+    pk: `${user(owner)}#DAY#${dayId}`,
+    sk: `JOB#${jobId}#CANDIDATE`,
+  }),
   capturesPartition: (owner: string) => `${user(owner)}#CAPTURES`,
   capture: (owner: string, captureId: string): Key => ({
     table: "journal",

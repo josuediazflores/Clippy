@@ -23,6 +23,11 @@ import type { Construct } from "constructs";
 import openapi from "../../contracts/openapi.json";
 import type { DataStack } from "./data-stack";
 import { TABLES } from "../../services/backend/src/store/store";
+import {
+  pipelineVersion,
+  type PipelineConfig,
+} from "../../services/processing/src/config";
+import { RecapWorkflow } from "./workflow";
 
 export interface RuntimeStackProps extends StackProps {
   envName: string;
@@ -30,7 +35,8 @@ export interface RuntimeStackProps extends StackProps {
   /** Event-driven activation is opt-in per deployment approval (AGENTS.md). */
   dispatcherEnabled: boolean;
   deviceRuleEnabled: boolean;
-  recapStateMachineArn: string | null;
+  /** Recap pipeline configuration (P08). The default uses free deterministic mock models. */
+  pipeline: PipelineConfig;
   apiRateLimit: number;
   apiBurstLimit: number;
 }
@@ -61,6 +67,9 @@ export function implementedAppRoutes(): Array<{
 export class RuntimeStack extends Stack {
   readonly api: apigwv2.HttpApi;
   readonly recovery: sqs.Queue;
+  readonly workflow: RecapWorkflow;
+  readonly workflowConcurrency: number;
+  readonly workflowProvider: PipelineConfig["provider"];
 
   constructor(scope: Construct, id: string, props: RuntimeStackProps) {
     super(scope, id, props);
@@ -78,7 +87,7 @@ export class RuntimeStack extends Stack {
       CLIPPY_TABLE_JOURNAL: data.tables.journal.tableName,
       CLIPPY_TABLE_OPERATIONS: data.tables.operations.tableName,
       CLIPPY_MEDIA_BUCKET: data.media.bucketName,
-      CLIPPY_RECAP_STATE_MACHINE_ARN: props.recapStateMachineArn ?? "",
+      CLIPPY_PIPELINE_VERSION: pipelineVersion(props.pipeline),
       NODE_OPTIONS: "--enable-source-maps",
     };
     const fn = (
@@ -184,13 +193,50 @@ export class RuntimeStack extends Stack {
         conditions: { StringLike: { "s3:prefix": ["u/*"] } },
       }),
     );
-    if (props.recapStateMachineArn)
-      dispatcherFn.addToRolePolicy(
-        new iam.PolicyStatement({
-          actions: ["states:StartExecution"],
-          resources: [props.recapStateMachineArn],
-        }),
-      );
+    // Recap workflow (P08). Its task function reads journal state and image bytes only.
+    const workflow = new RecapWorkflow(this, "RecapWorkflow", {
+      config: props.pipeline,
+      environment,
+      grant: (f) => {
+        f.addToRolePolicy(
+          new iam.PolicyStatement({
+            actions: itemActions,
+            resources: tableArns,
+          }),
+        );
+        f.addToRolePolicy(
+          kmsUse("kms:Decrypt", "kms:Encrypt", "kms:GenerateDataKey"),
+        );
+        f.addToRolePolicy(
+          new iam.PolicyStatement({
+            actions: ["s3:GetObject"],
+            resources: [media],
+          }),
+        );
+      },
+    });
+    this.workflow = workflow;
+    this.workflowConcurrency = props.pipeline.concurrency;
+    this.workflowProvider = props.pipeline.provider;
+    dispatcherFn.addEnvironment(
+      "CLIPPY_RECAP_STATE_MACHINE_ARN",
+      workflow.stateMachine.stateMachineArn,
+    );
+    dispatcherFn.addToRolePolicy(
+      new iam.PolicyStatement({
+        actions: ["states:StartExecution"],
+        resources: [workflow.stateMachine.stateMachineArn],
+      }),
+    );
+    new cloudwatch.Alarm(this, "WorkflowFailures", {
+      metric: workflow.stateMachine.metricFailed({
+        period: Duration.minutes(5),
+      }),
+      threshold: 0,
+      comparisonOperator: cloudwatch.ComparisonOperator.GREATER_THAN_THRESHOLD,
+      evaluationPeriods: 1,
+      treatMissingData: cloudwatch.TreatMissingData.NOT_BREACHING,
+    });
 
     // Outbox stream: only INSERTs of outbox items; disabled until activation is approved.
     dispatcherFn.addEventSource(

@@ -172,7 +172,14 @@ test("corrections and capture deletion enqueue reprocessing; reflections do not"
     new MockObservationProvider(),
     new MockRecapProvider(),
   );
-  const before = (await pending(h)).length;
+  const reprocess = async () =>
+    (await pending(h)).filter((o) => o.kind === "day.process").length;
+  const before = await reprocess();
+  // A committed publication also leaves exactly one notification entry.
+  assert.equal(
+    (await pending(h)).filter((o) => o.kind === "recap.published").length,
+    1,
+  );
   await engine.saveEdit(
     app,
     "reflection",
@@ -180,7 +187,7 @@ test("corrections and capture deletion enqueue reprocessing; reflections do not"
     "reflection_main",
     edit("r1", "Text"),
   );
-  assert.equal((await pending(h)).length, before);
+  assert.equal(await reprocess(), before);
   await engine.saveEdit(
     app,
     "correction",
@@ -188,12 +195,9 @@ test("corrections and capture deletion enqueue reprocessing; reflections do not"
     "c1",
     edit("c1", "Fix"),
   );
-  assert.equal((await pending(h)).length, before + 1);
+  assert.equal(await reprocess(), before + 1);
   await engine.delete(app, { kind: "capture", id: "cap_sample_002" });
-  assert.equal(
-    (await pending(h)).filter((o) => o.kind === "day.process").length,
-    before + 2,
-  );
+  assert.equal(await reprocess(), before + 2);
 });
 
 test("deferred deletion tombstones immediately and removes content when dispatched", async (t) => {

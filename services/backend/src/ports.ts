@@ -53,8 +53,25 @@ export interface JobStarter {
   }): Promise<void>;
 }
 
+/** Bounded access to one capture's bytes, supplied by the engine to observation providers. */
+export interface CaptureSource {
+  readonly contentType: Capture["contentType"];
+  readonly byteLength: number;
+  read(maxBytes: number): Promise<Uint8Array | undefined>;
+}
 export interface ObservationProvider {
-  observe(capture: Capture): Observation | Promise<Observation>;
+  observe(
+    capture: Capture,
+    source?: CaptureSource,
+  ): Observation | Promise<Observation>;
+}
+/** Sends a content-free "recap ready" notification after a committed publication. */
+export interface Notifier {
+  recapReady(input: {
+    owner: string;
+    dayId: string;
+    recapRevision: number;
+  }): Promise<void>;
 }
 export interface RecapProvider {
   compose(

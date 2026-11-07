@@ -2,12 +2,41 @@ import assert from "node:assert/strict";
 import { Match, Template } from "aws-cdk-lib/assertions";
 import type { DataStack } from "./data-stack";
 import { implementedAppRoutes, type RuntimeStack } from "./runtime-stack";
+import { POLICY } from "../../services/processing/src/policy";
 
 type Resource = {
   Type: string;
   Properties?: Record<string, unknown>;
   DeletionPolicy?: string;
 };
+
+/** Joins a Fn::Join definition, replacing deploy-time tokens with a placeholder string. */
+function renderDefinition(value: unknown): Record<string, unknown> {
+  const join = (value as { "Fn::Join": [string, unknown[]] })["Fn::Join"];
+  const text = join[1]
+    .map((part) => (typeof part === "string" ? part : "TOKEN"))
+    .join(join[0]);
+  return JSON.parse(text) as Record<string, unknown>;
+}
+function allStates(
+  definition: Record<string, unknown>,
+): Record<string, unknown> {
+  const found: Record<string, unknown> = {};
+  const walk = (node: unknown) => {
+    if (!node || typeof node !== "object") return;
+    const states = (node as { States?: Record<string, unknown> }).States;
+    if (states)
+      for (const [name, state] of Object.entries(states)) {
+        found[name] = state;
+        walk((state as { ItemProcessor?: unknown }).ItemProcessor);
+        walk((state as { Iterator?: unknown }).Iterator);
+      }
+  };
+  walk(definition);
+  return found;
+}
+const pipelineConcurrency = (runtime: RuntimeStack) =>
+  runtime.workflowConcurrency;
 
 /** Focused safety assertions run on every synth. Failing any of them blocks deployment. */
 export function assertTemplates(data: DataStack, runtime: RuntimeStack) {
@@ -237,8 +266,20 @@ export function assertTemplates(data: DataStack, runtime: RuntimeStack) {
         if (s.Resource === "*")
           for (const action of actions)
             assert.ok(
-              // Actions AWS does not scope to resources: endpoint discovery and stream listing.
-              ["iot:DescribeEndpoint", "dynamodb:ListStreams"].includes(action),
+              // Actions AWS does not scope to resources: endpoint discovery, stream listing,
+              // and the CloudWatch vended-log delivery Step Functions logging requires.
+              [
+                "iot:DescribeEndpoint",
+                "dynamodb:ListStreams",
+                "logs:CreateLogDelivery",
+                "logs:GetLogDelivery",
+                "logs:UpdateLogDelivery",
+                "logs:DeleteLogDelivery",
+                "logs:ListLogDeliveries",
+                "logs:PutResourcePolicy",
+                "logs:DescribeResourcePolicies",
+                "logs:DescribeLogGroups",
+              ].includes(action),
               `unscoped ${action}`,
             );
       }
@@ -295,6 +336,95 @@ export function assertTemplates(data: DataStack, runtime: RuntimeStack) {
     assert.ok(text.includes("${iot:Connection.Thing.ThingName}"));
     assert.ok(text.includes("iot:Connection.Thing.IsAttached"));
     assert.ok(!/"Resource":"\*"/.test(text));
+  });
+  // Recap workflow (P08): Standard, bounded fan-out, shared retry policy, no content in history.
+  const machine = Object.values(runtimeResources).find(
+    (x) => x.Type === "AWS::StepFunctions::StateMachine",
+  )!;
+  const definition = renderDefinition(machine.Properties!.DefinitionString);
+  const states = allStates(definition);
+  check(() => {
+    assert.equal(machine.Properties!.StateMachineType, "STANDARD");
+    const logging = machine.Properties!.LoggingConfiguration as {
+      IncludeExecutionData: boolean;
+      Level: string;
+    };
+    assert.equal(logging.IncludeExecutionData, false);
+    assert.equal(logging.Level, "ERROR");
+  });
+  check(() => {
+    const map = states.ObserveCaptures as { MaxConcurrency: number };
+    assert.equal(
+      map.MaxConcurrency,
+      runtime.workflow.stateMachine && pipelineConcurrency(runtime),
+    );
+  });
+  check(() => {
+    for (const [name, rules] of [
+      ["Observe", POLICY.observe],
+      ["Synthesize", POLICY.synthesize],
+      ["Begin", POLICY.step],
+      ["Publish", POLICY.step],
+      ["MarkFailed", POLICY.step],
+    ] as const) {
+      const retry = (states[name] as { Retry: Array<Record<string, unknown>> })
+        .Retry;
+      assert.deepEqual(
+        retry.map((r) => [
+          r.ErrorEquals,
+          r.IntervalSeconds,
+          r.MaxAttempts,
+          r.BackoffRate,
+          r.MaxDelaySeconds,
+          r.JitterStrategy,
+        ]),
+        rules.map((r) => [
+          r.errors,
+          r.intervalSeconds,
+          r.maxAttempts,
+          r.backoffRate,
+          r.maxDelaySeconds,
+          "FULL",
+        ]),
+        name,
+      );
+    }
+  });
+  check(() => {
+    const text = JSON.stringify(definition);
+    assert.ok(
+      !text.includes("Cause"),
+      "error causes are not copied into state",
+    );
+    for (const state of Object.values(states) as Array<{
+      Type: string;
+      Parameters?: { Payload?: Record<string, unknown> };
+    }>)
+      if (state.Type === "Task")
+        for (const key of Object.keys(state.Parameters?.Payload ?? {}))
+          assert.ok(
+            [
+              "action",
+              "owner.$",
+              "dayId.$",
+              "jobId.$",
+              "inputRevision.$",
+              "captureId.$",
+              "observations.$",
+              "error.$",
+            ].includes(key),
+            `payload field ${key}`,
+          );
+  });
+  check(() => {
+    const text = JSON.stringify(r.toJSON());
+    const bedrock = text.includes("bedrock-mantle:CreateInference");
+    assert.equal(
+      bedrock,
+      runtime.workflowProvider === "bedrock",
+      "model permission only for a Bedrock pipeline",
+    );
+    assert.ok(!/"bedrock:\*"|"bedrock-mantle:\*"/.test(text));
   });
   return {
     checks,

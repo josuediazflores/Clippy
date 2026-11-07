@@ -4,6 +4,7 @@ import type * as W from "./Wire";
 import type {
   GrantSigner,
   JobStarter,
+  Notifier,
   ObjectStore,
   ObservationProvider,
   RecapProvider,
@@ -114,7 +115,10 @@ interface DeletionRecord {
   receiptSk: string | null;
 }
 export type OutboxKind =
-  "snapshot.accepted" | "day.process" | "deletion.requested";
+  | "snapshot.accepted"
+  | "day.process"
+  | "deletion.requested"
+  | "recap.published";
 export interface OutboxRecord {
   id: string;
   kind: OutboxKind;
@@ -124,6 +128,14 @@ export interface OutboxRecord {
   createdAt: string;
   dispatchedAt: string | null;
   outcome: string | null;
+}
+export interface JobUsage {
+  observationCalls: number;
+  cachedObservations: number;
+  failedObservations: number;
+  synthesisCalls: number;
+  inputTokens: number;
+  outputTokens: number;
 }
 export interface Job {
   id: string;
@@ -135,6 +147,15 @@ export interface Job {
   stages: string[];
   nextRecapRevision: number;
   pipeline: string;
+  usage: JobUsage | null;
+  failureCode: string | null;
+}
+/** Model output that fails validation. The name is the Step Functions retry match key. */
+export class InvalidProviderOutput extends Error {
+  override readonly name = "ProviderInvalidOutput";
+  constructor(readonly what: string) {
+    super(`Invalid provider output: ${what}`);
+  }
 }
 /** Stores receipts without secrets (signed URLs) and restores them on replay. */
 export interface ReceiptCodec<T> {
@@ -214,6 +235,8 @@ export interface EngineOptions {
   /** inline: run outbox work right after commit (local). deferred: a stream dispatcher runs it (AWS). */
   dispatch?: "inline" | "deferred";
   jobs?: JobStarter | null;
+  /** Generic recap-ready push (P10). Absent until notifications are implemented. */
+  notifier?: Notifier | null;
   pipeline?: string;
   /** Called with safe metadata only (IDs, codes, counts). */
   log?: (event: string, fields: Record<string, string | number>) => void;
@@ -228,6 +251,7 @@ export class Engine {
   private readonly ids: (prefix: string) => string;
   private readonly dispatchMode: "inline" | "deferred";
   private readonly jobs: JobStarter | null;
+  private readonly notifier: Notifier | null;
   private readonly log: NonNullable<EngineOptions["log"]>;
 
   constructor(options: EngineOptions) {
@@ -238,6 +262,7 @@ export class Engine {
     this.ids = options.ids ?? randomId;
     this.dispatchMode = options.dispatch ?? "inline";
     this.jobs = options.jobs ?? null;
+    this.notifier = options.notifier ?? null;
     this.pipeline = options.pipeline ?? "mock_1";
     this.log = options.log ?? (() => {});
   }
@@ -1310,6 +1335,8 @@ export class Engine {
         stages: ["queued"],
         nextRecapRevision: meta.recapRevisionCounter + 1,
         pipeline: this.pipeline,
+        usage: null,
+        failureCode: null,
       };
       t.put(keys.job(owner, dayId, id), job);
       return job;
@@ -1328,6 +1355,336 @@ export class Engine {
     job.revision++;
     job.stages.push(to);
   }
+  private async loadJob(
+    owner: string,
+    dayId: string,
+    jobId: string,
+  ): Promise<Job> {
+    const job = (await this.store.get(keys.job(owner, dayId, jobId)))?.data as
+      Job | undefined;
+    if (!job) throw new Fault(404, "NOT_FOUND");
+    return job;
+  }
+  private async supersede(
+    owner: string,
+    dayId: string,
+    jobId: string,
+  ): Promise<void> {
+    await this.run(async (t) => {
+      const key = keys.job(owner, dayId, jobId);
+      const stored = await t.get<Job>(key);
+      if (!stored || TERMINAL_JOB.includes(stored.state)) return;
+      this.jobTransition(stored, "superseded");
+      t.put(key, stored);
+    });
+  }
+
+  /**
+   * Pipeline step 1. Freezes the job for the requested revision and moves it to observing.
+   * A stale revision, deleted day or different pipeline version returns superseded so a
+   * duplicate or late execution ends without model calls.
+   */
+  async beginJob(input: {
+    owner: string;
+    dayId: string;
+    jobId: string;
+    inputRevision: number;
+  }): Promise<{
+    status: "observing" | "superseded" | "done";
+    captureIds: string[];
+  }> {
+    const { owner, dayId, jobId } = input;
+    const superseded = async () => {
+      await this.supersede(owner, dayId, jobId);
+      return { status: "superseded" as const, captureIds: [] };
+    };
+    const [meta, ...deleted] = await new Tx(this.store).getMany<unknown>([
+      keys.dayMeta(owner, dayId),
+      tomb(owner, ACCOUNT),
+      tomb(owner, { kind: "day", id: dayId }),
+    ]);
+    if (
+      !meta ||
+      deleted.some(Boolean) ||
+      (meta as DayMeta).day.inputRevision !== input.inputRevision ||
+      jobIdFor(owner, dayId, input.inputRevision, this.pipeline) !== jobId
+    )
+      return superseded();
+    const job = await this.prepareJob(owner, dayId);
+    if (job.id !== jobId) return superseded();
+    if (["ready", "partial"].includes(job.state))
+      return { status: "done", captureIds: [] };
+    if (TERMINAL_JOB.includes(job.state))
+      return { status: "superseded", captureIds: [] };
+    await this.run(async (t) => {
+      const key = keys.job(owner, dayId, jobId);
+      const stored = (await t.get<Job>(key))!;
+      if (stored.state === "failed_retryable")
+        this.jobTransition(stored, "queued");
+      if (stored.state === "queued") {
+        this.jobTransition(stored, "observing");
+        t.put(key, stored);
+      }
+    });
+    return {
+      status: "observing",
+      captureIds: job.captures.map((c) => c.captureId),
+    };
+  }
+
+  /** Pipeline step 2, one capture. Ready observations are cached; failures are not. */
+  async observeCapture(
+    owner: string,
+    dayId: string,
+    jobId: string,
+    captureId: string,
+    provider: ObservationProvider,
+  ): Promise<{
+    captureId: string;
+    status: "ready" | "cached" | "failed" | "skipped";
+    reason: string | null;
+  }> {
+    const job = await this.loadJob(owner, dayId, jobId);
+    const capture = job.captures.find((c) => c.captureId === captureId);
+    if (!capture) throw new Fault(404, "NOT_FOUND");
+    const deleted = await new Tx(this.store).getMany([
+      tomb(owner, ACCOUNT),
+      tomb(owner, { kind: "day", id: dayId }),
+      tomb(owner, { kind: "capture", id: captureId }),
+    ]);
+    if (deleted.some(Boolean))
+      return { captureId, status: "skipped", reason: "deleted" };
+    const cacheItem = keys.observation(
+      owner,
+      dayId,
+      `${captureId}#${capture.sha256}#${this.pipeline}`,
+    );
+    if (await this.store.get(cacheItem))
+      return { captureId, status: "cached", reason: null };
+    const record = (await this.store.get(keys.capture(owner, captureId)))
+      ?.data as CaptureRecord | undefined;
+    const observation = await provider.observe(capture, {
+      contentType: capture.contentType,
+      byteLength: capture.byteLength,
+      read: async (maxBytes) =>
+        record ? this.objects.read(record.objectKey, maxBytes) : undefined,
+    });
+    try {
+      validate("Observation", observation);
+    } catch {
+      throw new InvalidProviderOutput("observation schema");
+    }
+    if (
+      observation.captureId !== captureId ||
+      observation.evidence.some(
+        (e) => e.type !== "capture" || e.id !== captureId,
+      )
+    )
+      throw new InvalidProviderOutput("observation evidence");
+    if (observation.status !== "ready")
+      return { captureId, status: "failed", reason: "unusable" };
+    await this.run(async (t) => {
+      await t.get(cacheItem);
+      t.put(cacheItem, observation);
+    });
+    return { captureId, status: "ready", reason: null };
+  }
+
+  /** Pipeline step 3 input: the frozen job and one observation (or a gap) per capture. */
+  async synthesisInput(
+    owner: string,
+    dayId: string,
+    jobId: string,
+  ): Promise<{ job: Job; observations: W.Observation[] }> {
+    const job = await this.loadJob(owner, dayId, jobId);
+    const t = new Tx(this.store);
+    const [cached, deleted] = await Promise.all([
+      t.getMany<W.Observation>(
+        job.captures.map((c) =>
+          keys.observation(
+            owner,
+            dayId,
+            `${c.captureId}#${c.sha256}#${this.pipeline}`,
+          ),
+        ),
+      ),
+      t.getMany(
+        job.captures.map((c) =>
+          tomb(owner, { kind: "capture", id: c.captureId }),
+        ),
+      ),
+    ]);
+    const observations = job.captures.map((c, i): W.Observation =>
+      cached[i] && !deleted[i]
+        ? cached[i]!
+        : {
+            schemaVersion: 1,
+            captureId: c.captureId,
+            providerVersion: "none",
+            promptVersion: "none",
+            preprocessingVersion: "none",
+            status: "failed",
+            visibleFacts: [],
+            inferredActivity: null,
+            uncertainty: "No observation is available for this capture.",
+            evidence: [{ type: "capture", id: c.captureId }],
+          },
+    );
+    return { job, observations };
+  }
+
+  /** Checks a candidate against the frozen job. Throws Fault 422 when it is not publishable. */
+  private async checkRecap(tx: Tx, job: Job, result: W.Recap): Promise<void> {
+    try {
+      validate("Recap", result);
+    } catch {
+      throw new Fault(422, "INVALID_REQUEST");
+    }
+    const sources = new Set(job.captures.map((c) => c.captureId));
+    const evidence = [
+      ...new Set(result.moments.flatMap((m) => m.evidence.map((e) => e.id))),
+    ];
+    const deleted = await tx.getMany(
+      evidence.map((id) => tomb(job.owner, { kind: "capture", id })),
+    );
+    const deletedEvidence = new Set(evidence.filter((_, i) => deleted[i]));
+    if (
+      result.dayId !== job.day.dayId ||
+      result.inputRevision !== job.day.inputRevision ||
+      result.deletionGeneration !== job.day.deletionGeneration ||
+      result.recapRevision !== job.nextRecapRevision ||
+      new Set(result.moments.map((m) => m.momentId)).size !==
+        result.moments.length ||
+      result.moments.some(
+        (m) =>
+          m.momentId !== momentID(m.evidence[0]!.id) ||
+          m.evidence.some(
+            (e) =>
+              e.type !== "capture" ||
+              !sources.has(e.id) ||
+              deletedEvidence.has(e.id),
+          ),
+      ) ||
+      result.coverage.captured !== job.captures.length ||
+      result.coverage.observed !== result.moments.length ||
+      result.coverage.missing !== job.captures.length - result.moments.length
+    )
+      throw new Fault(422, "INVALID_REQUEST");
+  }
+
+  /**
+   * Pipeline step 3 output: validate and store a candidate recap plus usage, not yet
+   * visible. A changed revision or deletion means the work is stale, not that the model
+   * output was invalid, so it reports superseded instead of inviting a paid retry.
+   */
+  async saveCandidate(
+    owner: string,
+    dayId: string,
+    jobId: string,
+    candidate: W.Recap,
+    usage: JobUsage,
+  ): Promise<"saved" | "superseded"> {
+    const outcome = await this.run(async (t) => {
+      const key = keys.job(owner, dayId, jobId);
+      const [job, meta, accountTomb, dayTomb] = await Promise.all([
+        t.get<Job>(key),
+        t.get<DayMeta>(keys.dayMeta(owner, dayId)),
+        t.get(tomb(owner, ACCOUNT)),
+        t.get(tomb(owner, { kind: "day", id: dayId })),
+      ]);
+      // Deletion removes a day's jobs; a vanished job is stale work, not an error.
+      if (!job) return "superseded" as const;
+      job.usage = usage;
+      if (
+        !meta ||
+        accountTomb ||
+        dayTomb ||
+        meta.day.inputRevision !== job.day.inputRevision ||
+        meta.day.deletionGeneration !== job.day.deletionGeneration ||
+        TERMINAL_JOB.includes(job.state)
+      ) {
+        if (!TERMINAL_JOB.includes(job.state))
+          this.jobTransition(job, "superseded");
+        t.put(key, job);
+        return "superseded" as const;
+      }
+      try {
+        await this.checkRecap(t, job, candidate);
+      } catch {
+        throw new InvalidProviderOutput("recap");
+      }
+      for (const stage of ["assembling", "synthesizing", "validating"])
+        if (
+          job.stages.at(-1) !== stage &&
+          ["observing", "assembling", "synthesizing"].includes(job.state)
+        )
+          this.jobTransition(job, stage);
+      t.put(key, job);
+      const candidateKey = keys.candidate(owner, dayId, jobId);
+      await t.get(candidateKey);
+      t.put(candidateKey, candidate);
+      await t.guard(keys.dayMeta(owner, dayId));
+      return "saved" as const;
+    });
+    return outcome;
+  }
+
+  /** Pipeline step 4: conditional publication of the stored candidate. */
+  async publishCandidate(
+    owner: string,
+    dayId: string,
+    jobId: string,
+  ): Promise<{ status: "published" | "superseded"; state: string | null }> {
+    const candidate = (
+      await this.store.get(keys.candidate(owner, dayId, jobId))
+    )?.data as W.Recap | undefined;
+    if (!candidate) return { status: "superseded", state: null };
+    try {
+      const day = await this.publish(
+        await this.loadJob(owner, dayId, jobId),
+        candidate,
+      );
+      return { status: "published", state: day.state };
+    } catch (error) {
+      if (error instanceof Fault && error.code === "SUPERSEDED")
+        return { status: "superseded", state: null };
+      throw error;
+    }
+  }
+
+  /** Records a safe failure code. Only the current revision's day shows the failure. */
+  async failJob(
+    owner: string,
+    dayId: string,
+    jobId: string,
+    code: string,
+  ): Promise<void> {
+    if (!/^[A-Z][A-Z0-9_]{2,63}$/.test(code)) code = "PROCESSING_FAILED";
+    await this.run(async (t) => {
+      const key = keys.job(owner, dayId, jobId);
+      const [meta, stored] = await Promise.all([
+        t.get<DayMeta>(keys.dayMeta(owner, dayId)),
+        t.get<Job>(key),
+      ]);
+      if (
+        !stored ||
+        !meta ||
+        meta.day.inputRevision !== stored.day.inputRevision ||
+        meta.day.deletionGeneration !== stored.day.deletionGeneration
+      )
+        return;
+      meta.day.state = "failure";
+      meta.day.failureCode = code;
+      this.saveMeta(t, owner, meta);
+      if (!TERMINAL_JOB.includes(stored.state)) {
+        if (stored.state !== "failed_retryable")
+          this.jobTransition(stored, "failed_retryable");
+        stored.failureCode = code;
+        t.put(key, stored);
+      }
+    });
+  }
+
   async publish(job: Job, result: W.Recap): Promise<W.Day> {
     const owner = job.owner,
       dayId = job.day.dayId;
@@ -1354,41 +1711,7 @@ export class Engine {
       }
       if (stored && ["ready", "partial"].includes(stored.state))
         return "published" as const;
-      try {
-        validate("Recap", result);
-      } catch {
-        throw new Fault(422, "INVALID_REQUEST");
-      }
-      const sources = new Set(job.captures.map((c) => c.captureId));
-      const evidence = [
-        ...new Set(result.moments.flatMap((m) => m.evidence.map((e) => e.id))),
-      ];
-      const deleted = await t.getMany(
-        evidence.map((id) => tomb(owner, { kind: "capture", id })),
-      );
-      const deletedEvidence = new Set(evidence.filter((_, i) => deleted[i]));
-      if (
-        result.dayId !== dayId ||
-        result.inputRevision !== meta.day.inputRevision ||
-        result.deletionGeneration !== meta.day.deletionGeneration ||
-        result.recapRevision !== job.nextRecapRevision ||
-        new Set(result.moments.map((m) => m.momentId)).size !==
-          result.moments.length ||
-        result.moments.some(
-          (m) =>
-            m.momentId !== momentID(m.evidence[0]!.id) ||
-            m.evidence.some(
-              (e) =>
-                e.type !== "capture" ||
-                !sources.has(e.id) ||
-                deletedEvidence.has(e.id),
-            ),
-        ) ||
-        result.coverage.captured !== job.captures.length ||
-        result.coverage.observed !== result.moments.length ||
-        result.coverage.missing !== job.captures.length - result.moments.length
-      )
-        throw new Fault(422, "INVALID_REQUEST");
+      await this.checkRecap(t, job, result);
       if (stored) {
         if (stored.state === "failed_retryable")
           this.jobTransition(stored, "queued");
@@ -1414,6 +1737,8 @@ export class Engine {
       meta.day.state = result.state;
       meta.day.failureCode = null;
       this.saveMeta(t, owner, meta);
+      // The notification exists only if this exact publication commits.
+      this.enqueue(t, "recap.published", owner, dayId, result.recapRevision);
       await t.guard(tomb(owner, ACCOUNT));
       await t.guard(tomb(owner, { kind: "day", id: dayId }));
       return "published" as const;
@@ -1421,6 +1746,8 @@ export class Engine {
     if (outcome === "superseded") throw new Fault(409, "SUPERSEDED");
     return this.getDay({ owner, deviceId: null }, dayId);
   }
+
+  /** Local, sequential driver over the same pipeline steps Step Functions runs. */
   async process(
     owner: string,
     dayId: string,
@@ -1431,67 +1758,36 @@ export class Engine {
     const job = await this.prepareJob(owner, dayId);
     if (["ready", "partial"].includes(job.state))
       return this.getDay({ owner, deviceId: null }, dayId);
-    const jobKey = keys.job(owner, dayId, job.id);
     try {
-      await this.run(async (t) => {
-        const stored = (await t.get<Job>(jobKey))!;
-        if (stored.state === "failed_retryable")
-          this.jobTransition(stored, "queued");
-        this.jobTransition(stored, "observing");
-        t.put(jobKey, stored);
+      const begun = await this.beginJob({
+        owner,
+        dayId,
+        jobId: job.id,
+        inputRevision: job.day.inputRevision,
       });
+      if (begun.status === "superseded") throw new Fault(409, "SUPERSEDED");
       if (fail) throw new Error("Synthetic provider failure");
-      const observations: W.Observation[] = [];
-      for (const c of job.captures) {
-        const cacheKey = `${c.captureId}#${c.sha256}#${this.pipeline}`;
-        const cacheItem = keys.observation(owner, dayId, cacheKey);
-        const cached = (await this.store.get(cacheItem))?.data as
-          W.Observation | undefined;
-        const observation = cached ?? (await observationProvider.observe(c));
-        validate("Observation", observation);
-        if (
-          observation.captureId !== c.captureId ||
-          observation.evidence.some(
-            (e) => e.type !== "capture" || e.id !== c.captureId,
-          )
-        )
-          throw new Error("Invented evidence");
-        if (observation.status === "ready" && !cached)
-          await this.run(async (t) => {
-            await t.get(cacheItem);
-            t.put(cacheItem, observation);
-          });
-        observations.push(observation);
-      }
+      for (const captureId of begun.captureIds)
+        await this.observeCapture(
+          owner,
+          dayId,
+          job.id,
+          captureId,
+          observationProvider,
+        );
+      const input = await this.synthesisInput(owner, dayId, job.id);
       const composed = await recapProvider.compose(
-        job.day,
-        observations,
-        job.captures,
+        input.job.day,
+        input.observations,
+        input.job.captures,
       );
-      return await this.publish(job, {
+      return await this.publish(input.job, {
         ...composed,
-        recapRevision: job.nextRecapRevision,
+        recapRevision: input.job.nextRecapRevision,
       });
     } catch (error) {
       if (error instanceof Fault && error.code === "SUPERSEDED") throw error;
-      await this.run(async (t) => {
-        const meta = await t.get<DayMeta>(keys.dayMeta(owner, dayId));
-        const stored = await t.get<Job>(jobKey);
-        if (
-          meta &&
-          meta.day.inputRevision === job.day.inputRevision &&
-          meta.day.deletionGeneration === job.day.deletionGeneration
-        ) {
-          meta.day.state = "failure";
-          meta.day.failureCode = "MOCK_PROCESSING_FAILED";
-          this.saveMeta(t, owner, meta);
-          if (stored && !TERMINAL_JOB.includes(stored.state)) {
-            if (stored.state !== "failed_retryable")
-              this.jobTransition(stored, "failed_retryable");
-            t.put(jobKey, stored);
-          }
-        }
-      });
+      await this.failJob(owner, dayId, job.id, "MOCK_PROCESSING_FAILED");
       throw new Fault(503, "INTERNAL_ERROR", true);
     }
   }
@@ -1503,7 +1799,9 @@ export class Engine {
         pk: keys.dayPartition(owner, dayId),
         prefix: "JOB#",
       })
-    ).map((row) => row.data as Job);
+    )
+      .filter((row) => !row.sk.endsWith("#CANDIDATE"))
+      .map((row) => row.data as Job);
   }
 
   // Deletion -----------------------------------------------------------------
@@ -1949,7 +2247,11 @@ export class Engine {
         osk: `${createdAt}#${id}`,
       },
     );
-    if (this.dispatchMode === "inline" && kind !== "day.process")
+    if (
+      this.dispatchMode === "inline" &&
+      kind !== "day.process" &&
+      kind !== "recap.published"
+    )
       tx.afterCommit(async () => {
         try {
           await this.dispatch(id);
@@ -1972,7 +2274,15 @@ export class Engine {
     if (record.kind === "snapshot.accepted") await this.materialize(record.ref);
     else if (record.kind === "deletion.requested")
       await this.runDeletion(record.ref);
-    else {
+    else if (record.kind === "recap.published") {
+      // P10 delivers the generic push; until a notifier exists the entry stays pending.
+      if (!this.notifier) return "pending";
+      await this.notifier.recapReady({
+        owner: record.owner,
+        dayId: record.ref,
+        recapRevision: record.inputRevision ?? 0,
+      });
+    } else {
       const meta = (
         await this.store.get(keys.dayMeta(record.owner, record.ref))
       )?.data as DayMeta | undefined;

@@ -15,6 +15,8 @@ export interface RuntimeConfig {
   };
   mediaBucket: string;
   recapStateMachineArn: string | null;
+  /** Job identity shared by the dispatcher and the workflow; see processing/src/config.ts. */
+  pipelineVersion: string;
 }
 
 function required(env: NodeJS.ProcessEnv, name: string): string {
@@ -34,6 +36,7 @@ export function readConfig(
     },
     mediaBucket: required(env, "CLIPPY_MEDIA_BUCKET"),
     recapStateMachineArn: env.CLIPPY_RECAP_STATE_MACHINE_ARN || null,
+    pipelineVersion: env.CLIPPY_PIPELINE_VERSION || "mock_1",
   };
 }
 
@@ -46,6 +49,7 @@ export function createAwsEngine(config: RuntimeConfig = readConfig()): Engine {
     signer: new S3Signer(s3, config.mediaBucket),
     now: () => new Date().toISOString().replace(/\.\d{3}Z$/, "Z"),
     dispatch: "deferred",
+    pipeline: config.pipelineVersion,
     jobs: config.recapStateMachineArn
       ? new StepFunctionsJobStarter(
           new SFNClient({}),

@@ -1,7 +1,13 @@
 import { App, Tags } from "aws-cdk-lib";
 import { DataStack } from "./data-stack";
 import { RuntimeStack } from "./runtime-stack";
+import fs from "node:fs";
 import { assertTemplates } from "./assertions";
+import {
+  DEFAULT_CONFIG,
+  assertCallable,
+  type PipelineConfig,
+} from "../../services/processing/src/config";
 
 /**
  * Environment-agnostic synthesis: no account, region, credentials or lookups. Deployment
@@ -10,7 +16,24 @@ import { assertTemplates } from "./assertions";
  *   clippy:env               environment name, default "dev"
  *   clippy:dispatcherEnabled enable the outbox stream trigger (separate approval)
  *   clippy:deviceRuleEnabled enable the IoT device request rule (separate approval)
+ *   clippy:pipelineConfig    path to a reviewed PipelineConfig JSON; default: free mock models
+ *   clippy:region            required with a Bedrock pipeline: models must be verified there
  */
+/** Bedrock configurations must name verified models for the target region (D06). */
+function pipelineConfig(app: App): PipelineConfig {
+  const file = app.node.tryGetContext("clippy:pipelineConfig");
+  if (!file) return DEFAULT_CONFIG;
+  const config = JSON.parse(
+    fs.readFileSync(String(file), "utf8"),
+  ) as PipelineConfig;
+  if (config.provider === "bedrock") {
+    const region = String(app.node.tryGetContext("clippy:region") ?? "");
+    assertCallable(config.observation, region);
+    assertCallable(config.synthesis, region);
+  }
+  return config;
+}
+
 export function buildApp(context: Record<string, unknown> = {}) {
   const app = new App({
     outdir: ".local/cdk.out",
@@ -34,11 +57,11 @@ export function buildApp(context: Record<string, unknown> = {}) {
     data,
     dispatcherEnabled: flag("clippy:dispatcherEnabled"),
     deviceRuleEnabled: flag("clippy:deviceRuleEnabled"),
-    recapStateMachineArn: null,
+    pipeline: pipelineConfig(app),
     apiRateLimit: 10,
     apiBurstLimit: 20,
   });
-  runtime.addDependency(data);
+  runtime.addStackDependency(data);
   for (const stack of [data, runtime]) {
     Tags.of(stack).add("Project", "Clippy");
     Tags.of(stack).add("Environment", envName);
