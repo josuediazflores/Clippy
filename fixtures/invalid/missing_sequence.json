@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "snapshotId": "snap_sample_001",
+  "syncRequestId": "sync_sample_001",
+  "deviceId": "dev_sample_001",
+  "ownershipEpoch": 1,
+  "trigger": "manual",
+  "startedAt": "2026-11-07T12:00:00Z",
+  "cutoffAt": "2026-11-07T12:00:00Z",
+  "sequenceStart": 1,
+  "sequenceEnd": 2,
+  "captureCount": 1,
+  "captures": [
+    {
+      "schemaVersion": 1,
+      "captureId": "cap_sample_001",
+      "deviceId": "dev_sample_001",
+      "ownershipEpoch": 1,
+      "sequence": 1,
+      "capturedAt": "2026-11-07T09:00:00Z",
+      "timeZone": "UTC",
+      "utcOffsetSeconds": 0,
+      "clockQuality": "synchronized",
+      "byteLength": 99,
+      "sha256": "65e25061970d4f3a0d0f16f2249dcd6a63ae57cbec3c6bc5a8c985c1ca45cb83",
+      "contentType": "image/png",
+      "location": null,
+      "uploadId": "upload_sample_001"
+    }
+  ],
+  "gaps": []
+}

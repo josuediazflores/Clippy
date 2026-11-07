@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "dayId": "day_20261107",
+  "inputRevision": 1,
+  "recapRevision": 1,
+  "deletionGeneration": 0,
+  "state": "ready",
+  "summary": "One synthetic moment is available.",
+  "moments": [
+    {
+      "schemaVersion": 1,
+      "momentId": "moment_cap_sample_001",
+      "capturedAt": "2026-11-07T09:00:00Z",
+      "title": "A captured moment",
+      "detail": "Synthetic green square.",
+      "evidence": [
+        {
+          "type": "capture",
+          "id": "cap_sample_001"
+        }
+      ]
+    }
+  ],
+  "reflectionPrompt": "What would you like to remember?",
+  "coverage": {
+    "captured": 1,
+    "observed": 1,
+    "missing": 0,
+    "throughAt": "2026-11-07T09:00:00Z"
+  },
+  "providerVersion": "mock-1",
+  "promptVersion": "mock-1"
+}

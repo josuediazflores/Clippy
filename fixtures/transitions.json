@@ -1,0 +1,3995 @@
+[
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "capturing",
+      "to": "capturing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "capturing",
+      "to": "paused",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "capturing",
+      "to": "storage_full",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "capturing",
+      "to": "camera_error",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "capturing",
+      "to": "disabled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "paused",
+      "to": "capturing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "paused",
+      "to": "paused",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "paused",
+      "to": "storage_full",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "paused",
+      "to": "camera_error",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "paused",
+      "to": "disabled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "storage_full",
+      "to": "capturing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "storage_full",
+      "to": "paused",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "storage_full",
+      "to": "storage_full",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "storage_full",
+      "to": "camera_error",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "storage_full",
+      "to": "disabled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "camera_error",
+      "to": "capturing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "camera_error",
+      "to": "paused",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "camera_error",
+      "to": "storage_full",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "camera_error",
+      "to": "camera_error",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "camera_error",
+      "to": "disabled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "disabled",
+      "to": "capturing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "disabled",
+      "to": "paused",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "disabled",
+      "to": "storage_full",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "disabled",
+      "to": "camera_error",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "capture",
+      "from": "disabled",
+      "to": "disabled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "requested",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_device",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "preparing",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "verifying",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_network",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "waiting_for_power",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_retryable",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancel_requested",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploaded",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "cancelled",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "waiting_for_device",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "preparing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "uploading",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "verifying",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "waiting_for_network",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "waiting_for_power",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "cancel_requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "uploaded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "cancelled",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "failed_terminal",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "queued",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "observing",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "assembling",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "synthesizing",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "validating",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "publishing",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_retryable",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "ready",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "partial",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "superseded",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "cancelled_by_deletion",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "queued",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "observing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "assembling",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "synthesizing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "validating",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "publishing",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "ready",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "partial",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "superseded",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "cancelled_by_deletion",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "job",
+      "from": "failed_terminal",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "requested",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "requested",
+      "to": "tombstoned",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "requested",
+      "to": "deleting_cloud",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "requested",
+      "to": "waiting_for_clients",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "requested",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "requested",
+      "to": "complete",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "requested",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "tombstoned",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "tombstoned",
+      "to": "tombstoned",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "tombstoned",
+      "to": "deleting_cloud",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "tombstoned",
+      "to": "waiting_for_clients",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "tombstoned",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "tombstoned",
+      "to": "complete",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "tombstoned",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "deleting_cloud",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "deleting_cloud",
+      "to": "tombstoned",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "deleting_cloud",
+      "to": "deleting_cloud",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "deleting_cloud",
+      "to": "waiting_for_clients",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "deleting_cloud",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "deleting_cloud",
+      "to": "complete",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "deleting_cloud",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "waiting_for_clients",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "waiting_for_clients",
+      "to": "tombstoned",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "waiting_for_clients",
+      "to": "deleting_cloud",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "waiting_for_clients",
+      "to": "waiting_for_clients",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "waiting_for_clients",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "waiting_for_clients",
+      "to": "complete",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "waiting_for_clients",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_retryable",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_retryable",
+      "to": "tombstoned",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_retryable",
+      "to": "deleting_cloud",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_retryable",
+      "to": "waiting_for_clients",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_retryable",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_retryable",
+      "to": "complete",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_retryable",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": true
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "complete",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "complete",
+      "to": "tombstoned",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "complete",
+      "to": "deleting_cloud",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "complete",
+      "to": "waiting_for_clients",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "complete",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "complete",
+      "to": "complete",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "complete",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_terminal",
+      "to": "requested",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_terminal",
+      "to": "tombstoned",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_terminal",
+      "to": "deleting_cloud",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_terminal",
+      "to": "waiting_for_clients",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_terminal",
+      "to": "failed_retryable",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_terminal",
+      "to": "complete",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "deletion",
+      "from": "failed_terminal",
+      "to": "failed_terminal",
+      "revision": 1,
+      "expectedRevision": 1
+    },
+    "valid": false
+  },
+  {
+    "value": {
+      "schemaVersion": 1,
+      "machine": "sync",
+      "from": "uploading",
+      "to": "verifying",
+      "revision": 2,
+      "expectedRevision": 1
+    },
+    "valid": false
+  }
+]

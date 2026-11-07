@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "deviceId": "dev_sample_001",
+  "ownershipEpoch": 1,
+  "protocolVersion": 1,
+  "firmwareVersion": "simulator-1",
+  "claimState": "owned",
+  "configurationRevision": 1,
+  "appliedRevision": 1
+}

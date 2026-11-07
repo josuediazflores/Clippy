@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "syncRequestId": "sync_sample_001",
+  "deviceId": "dev_sample_001",
+  "ownershipEpoch": 1,
+  "trigger": "manual",
+  "state": "waiting_for_device",
+  "revision": 1,
+  "createdAt": "2026-11-07T12:00:00Z",
+  "expiresAt": "2026-11-07T12:05:00Z"
+}

@@ -5,16 +5,16 @@ Updated: 2026-11-07.
 ## Current position
 
 - **Completed work:** P00 architecture and implementation documentation.
-- **Next phase:** P01, contracts and interface decisions.
-- **Active implementation owner:** unassigned.
+- **Next phase:** P02, runnable local projects.
+- **Active implementation owner:** Codex coordinator, branch `foundation/p01-p03`, starting at `db4b6c1`. Scope: contracts/fixtures, then local projects and P03 integration. Checks: schema/state/time cases, three-language decoding, local builds/synth, failure tests, simulator UI.
 - **Repository baseline:** the repository was empty when inspected. It now contains planning documentation only.
 - **Live state:** no application, hardware installation, AWS deployment, account connection, or recurring job has been created by this planning work.
 
 ## Phase ledger
 
 - P00: `complete`. Architecture, draft contracts, staged plan, decisions, verification gates, and handoff guidance prepared. Evidence: [P00 handoff](handoffs/P00-plan.md).
-- P01: `ready`. Freeze executable schemas and resolve interface decisions.
-- P02: `not_started`. Depends on P01.
+- P01: `complete`. Executable v1 contracts and semantic rules validated. Evidence: [P01 handoff](handoffs/P01-contracts.md).
+- P02: `ready`. Depends on accepted P01 contracts.
 - P03: `not_started`. Depends on P02.
 - P04: `not_started`. Depends on P03.
 - P05: `not_started`. Depends on P03.
@@ -43,4 +43,4 @@ Hardware/transport details, iOS deployment target, location source, capture/paus
 
 ## Next safe action
 
-Assign P01 to one contract owner. Read [contracts](contracts.md), turn the proposed boundaries into executable schemas and state transition fixtures, and record the hardware/product decisions that need owner input. Do not deploy resources or activate nightly jobs as part of P01.
+Build P02 projects against the frozen schemas. No AWS deployment, account connection, hardware installation, or schedule activation is authorized.

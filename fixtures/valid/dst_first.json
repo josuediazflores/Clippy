@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "captureId": "cap_sample_001",
+  "deviceId": "dev_sample_001",
+  "ownershipEpoch": 1,
+  "sequence": 1,
+  "capturedAt": "2026-11-01T08:30:00Z",
+  "timeZone": "America/Los_Angeles",
+  "utcOffsetSeconds": -25200,
+  "clockQuality": "synchronized",
+  "byteLength": 99,
+  "sha256": "65e25061970d4f3a0d0f16f2249dcd6a63ae57cbec3c6bc5a8c985c1ca45cb83",
+  "contentType": "image/png",
+  "location": null
+}

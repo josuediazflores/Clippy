@@ -1,0 +1,194 @@
+[
+  {
+    "file": "fixtures/valid/capture.json",
+    "schema": "Capture",
+    "valid": true,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/valid/manifest_manual.json",
+    "schema": "Manifest",
+    "valid": true,
+    "rule": "manifest"
+  },
+  {
+    "file": "fixtures/valid/manifest_nightly.json",
+    "schema": "Manifest",
+    "valid": true,
+    "rule": "manifest"
+  },
+  {
+    "file": "fixtures/valid/paused_day.json",
+    "schema": "Manifest",
+    "valid": true,
+    "rule": "manifest"
+  },
+  {
+    "file": "fixtures/valid/device.json",
+    "schema": "DeviceIdentity",
+    "valid": true,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/valid/sync.json",
+    "schema": "SyncRequest",
+    "valid": true,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/valid/command.json",
+    "schema": "Command",
+    "valid": true,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/valid/observation.json",
+    "schema": "Observation",
+    "valid": true,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/valid/recap.json",
+    "schema": "Recap",
+    "valid": true,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/valid/reflection.json",
+    "schema": "Reflection",
+    "valid": true,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/valid/correction.json",
+    "schema": "Correction",
+    "valid": true,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/valid/day.json",
+    "schema": "Day",
+    "valid": true,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/valid/calendar_empty_complete.json",
+    "schema": "CalendarBundle",
+    "valid": true,
+    "rule": "calendar"
+  },
+  {
+    "file": "fixtures/invalid/unknown_version.json",
+    "schema": "Capture",
+    "valid": false,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/invalid/invalid_identity.json",
+    "schema": "Capture",
+    "valid": false,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/invalid/invalid_epoch.json",
+    "schema": "Capture",
+    "valid": false,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/invalid/forged_owner.json",
+    "schema": "Capture",
+    "valid": false,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/invalid/invalid_hash.json",
+    "schema": "Capture",
+    "valid": false,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/invalid/invalid_time.json",
+    "schema": "Capture",
+    "valid": false,
+    "rule": "schema"
+  },
+  {
+    "file": "fixtures/invalid/invalid_timezone.json",
+    "schema": "Capture",
+    "valid": false,
+    "rule": "time"
+  },
+  {
+    "file": "fixtures/invalid/invalid_offset.json",
+    "schema": "Capture",
+    "valid": false,
+    "rule": "time"
+  },
+  {
+    "file": "fixtures/invalid/duplicate_capture.json",
+    "schema": "Manifest",
+    "valid": false,
+    "rule": "manifest"
+  },
+  {
+    "file": "fixtures/invalid/missing_sequence.json",
+    "schema": "Manifest",
+    "valid": false,
+    "rule": "manifest"
+  },
+  {
+    "file": "fixtures/invalid/incomplete_calendar.json",
+    "schema": "CalendarBundle",
+    "valid": false,
+    "rule": "calendar"
+  },
+  {
+    "file": "fixtures/invalid/bad_calendar_digest.json",
+    "schema": "CalendarBundle",
+    "valid": false,
+    "rule": "calendar"
+  },
+  {
+    "file": "fixtures/valid/midnight_before.json",
+    "schema": "Capture",
+    "valid": true,
+    "rule": "time"
+  },
+  {
+    "file": "fixtures/valid/midnight_after.json",
+    "schema": "Capture",
+    "valid": true,
+    "rule": "time"
+  },
+  {
+    "file": "fixtures/valid/travel.json",
+    "schema": "Capture",
+    "valid": true,
+    "rule": "time"
+  },
+  {
+    "file": "fixtures/valid/dst_first.json",
+    "schema": "Capture",
+    "valid": true,
+    "rule": "time"
+  },
+  {
+    "file": "fixtures/valid/dst_second.json",
+    "schema": "Capture",
+    "valid": true,
+    "rule": "time"
+  },
+  {
+    "file": "fixtures/valid/dst_spring.json",
+    "schema": "Capture",
+    "valid": true,
+    "rule": "time"
+  },
+  {
+    "file": "fixtures/valid/incorrect_clock.json",
+    "schema": "Capture",
+    "valid": true,
+    "rule": "time"
+  }
+]

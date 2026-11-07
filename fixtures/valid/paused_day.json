@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "snapshotId": "snap_sample_001",
+  "syncRequestId": "sync_sample_001",
+  "deviceId": "dev_sample_001",
+  "ownershipEpoch": 1,
+  "trigger": "manual",
+  "startedAt": "2026-11-07T12:00:00Z",
+  "cutoffAt": "2026-11-07T12:00:00Z",
+  "sequenceStart": 1,
+  "sequenceEnd": 1,
+  "captureCount": 0,
+  "captures": [],
+  "gaps": [
+    {
+      "sequenceStart": 1,
+      "sequenceEnd": 1,
+      "reason": "paused"
+    }
+  ]
+}

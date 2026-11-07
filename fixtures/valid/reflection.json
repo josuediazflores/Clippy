@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "operationId": "op_sample_001",
+  "recordId": "reflection_sample_001",
+  "dayId": "day_20261107",
+  "revision": 1,
+  "text": "I enjoyed this synthetic day.",
+  "deleted": false,
+  "updatedAt": "2026-11-07T12:00:00Z"
+}

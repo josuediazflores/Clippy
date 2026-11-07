@@ -1,0 +1,2386 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://clippy.local/contracts/v1/schema.json",
+  "title": "Clippy v1 wire types",
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]{2,95}$",
+      "maxLength": 96
+    },
+    "Instant": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    },
+    "TimeZone": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "Hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "Location": {
+      "type": "object",
+      "properties": {
+        "latitude": {
+          "type": "number",
+          "minimum": -90,
+          "maximum": 90
+        },
+        "longitude": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "accuracyMeters": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100000
+        },
+        "sampledAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "simulated",
+            "gnss",
+            "phone"
+          ]
+        }
+      },
+      "required": [
+        "latitude",
+        "longitude",
+        "accuracyMeters",
+        "sampledAt",
+        "source"
+      ],
+      "additionalProperties": false
+    },
+    "DeviceIdentity": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "protocolVersion": {
+          "const": 1
+        },
+        "firmwareVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "claimState": {
+          "type": "string",
+          "enum": [
+            "unclaimed",
+            "owned",
+            "revoked"
+          ]
+        },
+        "configurationRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "appliedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deviceId",
+        "ownershipEpoch",
+        "protocolVersion",
+        "firmwareVersion",
+        "claimState",
+        "configurationRevision",
+        "appliedRevision"
+      ],
+      "additionalProperties": false
+    },
+    "DeviceState": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "captureState": {
+          "type": "string",
+          "enum": [
+            "capturing",
+            "paused",
+            "storage_full",
+            "camera_error",
+            "disabled"
+          ]
+        },
+        "batteryPercent": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "charging": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "queuedCaptures": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "queuedBytes": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "connectivity": {
+          "type": "string",
+          "enum": [
+            "online",
+            "offline",
+            "unknown"
+          ]
+        },
+        "clockQuality": {
+          "type": "string",
+          "enum": [
+            "synchronized",
+            "estimated",
+            "untrusted"
+          ]
+        },
+        "appliedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "observedAt": {
+          "$ref": "#/$defs/Instant"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deviceId",
+        "ownershipEpoch",
+        "captureState",
+        "batteryPercent",
+        "charging",
+        "queuedCaptures",
+        "queuedBytes",
+        "connectivity",
+        "clockQuality",
+        "appliedRevision",
+        "observedAt"
+      ],
+      "additionalProperties": false
+    },
+    "Capture": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "captureId": {
+          "$ref": "#/$defs/Id"
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "timeZone": {
+          "$ref": "#/$defs/TimeZone"
+        },
+        "utcOffsetSeconds": {
+          "type": "integer",
+          "minimum": -50400,
+          "maximum": 50400
+        },
+        "clockQuality": {
+          "type": "string",
+          "enum": [
+            "synchronized",
+            "estimated",
+            "untrusted"
+          ]
+        },
+        "byteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000000
+        },
+        "sha256": {
+          "$ref": "#/$defs/Hash"
+        },
+        "contentType": {
+          "type": "string",
+          "enum": [
+            "image/png",
+            "image/jpeg"
+          ]
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Location"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "captureId",
+        "deviceId",
+        "ownershipEpoch",
+        "sequence",
+        "capturedAt",
+        "timeZone",
+        "utcOffsetSeconds",
+        "clockQuality",
+        "byteLength",
+        "sha256",
+        "contentType",
+        "location"
+      ],
+      "additionalProperties": false
+    },
+    "ManifestEntry": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "captureId": {
+          "$ref": "#/$defs/Id"
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sequence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "timeZone": {
+          "$ref": "#/$defs/TimeZone"
+        },
+        "utcOffsetSeconds": {
+          "type": "integer",
+          "minimum": -50400,
+          "maximum": 50400
+        },
+        "clockQuality": {
+          "type": "string",
+          "enum": [
+            "synchronized",
+            "estimated",
+            "untrusted"
+          ]
+        },
+        "byteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000000
+        },
+        "sha256": {
+          "$ref": "#/$defs/Hash"
+        },
+        "contentType": {
+          "type": "string",
+          "enum": [
+            "image/png",
+            "image/jpeg"
+          ]
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Location"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "uploadId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "captureId",
+        "deviceId",
+        "ownershipEpoch",
+        "sequence",
+        "capturedAt",
+        "timeZone",
+        "utcOffsetSeconds",
+        "clockQuality",
+        "byteLength",
+        "sha256",
+        "contentType",
+        "location",
+        "uploadId"
+      ],
+      "additionalProperties": false
+    },
+    "Gap": {
+      "type": "object",
+      "properties": {
+        "sequenceStart": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sequenceEnd": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "reason": {
+          "type": "string",
+          "enum": [
+            "paused",
+            "corrupt",
+            "storage_full",
+            "camera_error"
+          ]
+        }
+      },
+      "required": [
+        "sequenceStart",
+        "sequenceEnd",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "BeginSync": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "syncRequestId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "trigger": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "nightly"
+          ]
+        },
+        "startedAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "cutoffAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "sequenceStart": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sequenceEnd": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "captureCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200
+        },
+        "configurationRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deviceId",
+        "ownershipEpoch",
+        "syncRequestId",
+        "trigger",
+        "startedAt",
+        "cutoffAt",
+        "sequenceStart",
+        "sequenceEnd",
+        "captureCount",
+        "configurationRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Snapshot": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/Id"
+        },
+        "syncRequestId": {
+          "$ref": "#/$defs/Id"
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "snapshotId",
+        "syncRequestId",
+        "deviceId",
+        "ownershipEpoch"
+      ],
+      "additionalProperties": false
+    },
+    "Manifest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/Id"
+        },
+        "syncRequestId": {
+          "$ref": "#/$defs/Id"
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "trigger": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "nightly"
+          ]
+        },
+        "startedAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "cutoffAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "sequenceStart": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "sequenceEnd": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "captureCount": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 200
+        },
+        "captures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ManifestEntry"
+          },
+          "maxItems": 200
+        },
+        "gaps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Gap"
+          },
+          "maxItems": 200
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "snapshotId",
+        "syncRequestId",
+        "deviceId",
+        "ownershipEpoch",
+        "trigger",
+        "startedAt",
+        "cutoffAt",
+        "sequenceStart",
+        "sequenceEnd",
+        "captureCount",
+        "captures",
+        "gaps"
+      ],
+      "additionalProperties": false
+    },
+    "GrantItem": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "capture",
+            "manifest"
+          ]
+        },
+        "captureId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "byteLength": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000000
+        },
+        "sha256": {
+          "$ref": "#/$defs/Hash"
+        },
+        "contentType": {
+          "type": "string",
+          "enum": [
+            "image/png",
+            "image/jpeg",
+            "application/json"
+          ]
+        }
+      },
+      "required": [
+        "kind",
+        "captureId",
+        "byteLength",
+        "sha256",
+        "contentType"
+      ],
+      "additionalProperties": false
+    },
+    "GrantRequest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GrantItem"
+          },
+          "maxItems": 20,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deviceId",
+        "ownershipEpoch",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "UploadGrant": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "uploadId": {
+          "$ref": "#/$defs/Id"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "capture",
+            "manifest"
+          ]
+        },
+        "captureId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "putURL": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 4096
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "requiredHeaders": {
+          "type": "object",
+          "properties": {
+            "If-None-Match": {
+              "const": "*"
+            },
+            "X-Clippy-SHA256": {
+              "$ref": "#/$defs/Hash"
+            },
+            "Content-Type": {
+              "type": "string",
+              "enum": [
+                "image/png",
+                "image/jpeg",
+                "application/json"
+              ]
+            }
+          },
+          "required": [
+            "If-None-Match",
+            "X-Clippy-SHA256",
+            "Content-Type"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "uploadId",
+        "kind",
+        "captureId",
+        "putURL",
+        "expiresAt",
+        "requiredHeaders"
+      ],
+      "additionalProperties": false
+    },
+    "UploadGrants": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/UploadGrant"
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "items"
+      ],
+      "additionalProperties": false
+    },
+    "CompleteSync": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "manifestUploadId": {
+          "$ref": "#/$defs/Id"
+        },
+        "manifestSHA256": {
+          "$ref": "#/$defs/Hash"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deviceId",
+        "ownershipEpoch",
+        "manifestUploadId",
+        "manifestSHA256"
+      ],
+      "additionalProperties": false
+    },
+    "Receipt": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/Id"
+        },
+        "syncRequestId": {
+          "$ref": "#/$defs/Id"
+        },
+        "acceptedCaptureIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 200
+        },
+        "suppressedCaptureIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 200
+        },
+        "effectiveDigest": {
+          "$ref": "#/$defs/Hash"
+        },
+        "verifiedAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "dayIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 200
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "snapshotId",
+        "syncRequestId",
+        "acceptedCaptureIds",
+        "suppressedCaptureIds",
+        "effectiveDigest",
+        "verifiedAt",
+        "dayIds"
+      ],
+      "additionalProperties": false
+    },
+    "SyncRequestInput": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "trigger": {
+          "const": "manual"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "trigger"
+      ],
+      "additionalProperties": false
+    },
+    "SyncRequest": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "syncRequestId": {
+          "$ref": "#/$defs/Id"
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "trigger": {
+          "type": "string",
+          "enum": [
+            "manual",
+            "nightly"
+          ]
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "requested",
+            "waiting_for_device",
+            "preparing",
+            "uploading",
+            "verifying",
+            "uploaded",
+            "waiting_for_network",
+            "waiting_for_power",
+            "cancel_requested",
+            "cancelled",
+            "failed_retryable",
+            "failed_terminal"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "createdAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/Instant"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "syncRequestId",
+        "deviceId",
+        "ownershipEpoch",
+        "trigger",
+        "state",
+        "revision",
+        "createdAt",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "Command": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "commandId": {
+              "$ref": "#/$defs/Id"
+            },
+            "type": {
+              "const": "sync.now"
+            },
+            "deviceId": {
+              "$ref": "#/$defs/Id"
+            },
+            "ownershipEpoch": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issuedAt": {
+              "$ref": "#/$defs/Instant"
+            },
+            "expiresAt": {
+              "$ref": "#/$defs/Instant"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "syncRequestId": {
+                  "$ref": "#/$defs/Id"
+                },
+                "trigger": {
+                  "type": "string",
+                  "enum": [
+                    "manual",
+                    "nightly"
+                  ]
+                }
+              },
+              "required": [
+                "syncRequestId",
+                "trigger"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "commandId",
+            "type",
+            "deviceId",
+            "ownershipEpoch",
+            "issuedAt",
+            "expiresAt",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "commandId": {
+              "$ref": "#/$defs/Id"
+            },
+            "type": {
+              "const": "configuration.apply"
+            },
+            "deviceId": {
+              "$ref": "#/$defs/Id"
+            },
+            "ownershipEpoch": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issuedAt": {
+              "$ref": "#/$defs/Instant"
+            },
+            "expiresAt": {
+              "$ref": "#/$defs/Instant"
+            },
+            "payload": {
+              "$ref": "#/$defs/Configuration"
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "commandId",
+            "type",
+            "deviceId",
+            "ownershipEpoch",
+            "issuedAt",
+            "expiresAt",
+            "payload"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "schemaVersion": {
+              "const": 1
+            },
+            "commandId": {
+              "$ref": "#/$defs/Id"
+            },
+            "type": {
+              "const": "cleanup"
+            },
+            "deviceId": {
+              "$ref": "#/$defs/Id"
+            },
+            "ownershipEpoch": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9007199254740991
+            },
+            "issuedAt": {
+              "$ref": "#/$defs/Instant"
+            },
+            "expiresAt": {
+              "$ref": "#/$defs/Instant"
+            },
+            "payload": {
+              "type": "object",
+              "properties": {
+                "deletionJobId": {
+                  "$ref": "#/$defs/Id"
+                },
+                "captureIds": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/$defs/Id"
+                  },
+                  "maxItems": 200
+                }
+              },
+              "required": [
+                "deletionJobId",
+                "captureIds"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "schemaVersion",
+            "commandId",
+            "type",
+            "deviceId",
+            "ownershipEpoch",
+            "issuedAt",
+            "expiresAt",
+            "payload"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Acknowledgement": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "commandId": {
+          "$ref": "#/$defs/Id"
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "ownershipEpoch": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "accepted",
+            "rejected"
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": [
+                "EXPIRED",
+                "STALE_EPOCH",
+                "UNSUPPORTED_VERSION",
+                "INVALID_STATE"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "observedAt": {
+          "$ref": "#/$defs/Instant"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "commandId",
+        "deviceId",
+        "ownershipEpoch",
+        "state",
+        "reason",
+        "observedAt"
+      ],
+      "additionalProperties": false
+    },
+    "Configuration": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "captureIntervalSeconds": {
+          "type": "integer",
+          "minimum": 60,
+          "maximum": 86400
+        },
+        "pauseResumePolicy": {
+          "const": "explicit"
+        },
+        "automaticSyncEnabled": {
+          "type": "boolean"
+        },
+        "nightlyLocalTime": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "timeZone": {
+          "$ref": "#/$defs/TimeZone"
+        },
+        "preferCharging": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "expectedRevision",
+        "captureIntervalSeconds",
+        "pauseResumePolicy",
+        "automaticSyncEnabled",
+        "nightlyLocalTime",
+        "timeZone",
+        "preferCharging"
+      ],
+      "additionalProperties": false
+    },
+    "Evidence": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "capture",
+            "calendar_occurrence",
+            "user_correction"
+          ]
+        },
+        "id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "type",
+        "id"
+      ],
+      "additionalProperties": false
+    },
+    "Observation": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "captureId": {
+          "$ref": "#/$defs/Id"
+        },
+        "providerVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "promptVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "preprocessingVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "failed"
+          ]
+        },
+        "visibleFacts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "maxItems": 10
+        },
+        "inferredActivity": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "uncertainty": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "maxItems": 20
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "captureId",
+        "providerVersion",
+        "promptVersion",
+        "preprocessingVersion",
+        "status",
+        "visibleFacts",
+        "inferredActivity",
+        "uncertainty",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "Moment": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "momentId": {
+          "$ref": "#/$defs/Id"
+        },
+        "capturedAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "maxItems": 20,
+          "minItems": 1
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "momentId",
+        "capturedAt",
+        "title",
+        "detail",
+        "evidence"
+      ],
+      "additionalProperties": false
+    },
+    "Coverage": {
+      "type": "object",
+      "properties": {
+        "captured": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "observed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "missing": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "throughAt": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Instant"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "captured",
+        "observed",
+        "missing",
+        "throughAt"
+      ],
+      "additionalProperties": false
+    },
+    "Recap": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "dayId": {
+          "$ref": "#/$defs/Id"
+        },
+        "inputRevision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "recapRevision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "deletionGeneration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "ready",
+            "partial"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4000
+        },
+        "moments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Moment"
+          },
+          "maxItems": 200
+        },
+        "reflectionPrompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "coverage": {
+          "$ref": "#/$defs/Coverage"
+        },
+        "providerVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "promptVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "dayId",
+        "inputRevision",
+        "recapRevision",
+        "deletionGeneration",
+        "state",
+        "summary",
+        "moments",
+        "reflectionPrompt",
+        "coverage",
+        "providerVersion",
+        "promptVersion"
+      ],
+      "additionalProperties": false
+    },
+    "EditInput": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "operationId": {
+          "$ref": "#/$defs/Id"
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "deleted": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "operationId",
+        "expectedRevision",
+        "text",
+        "deleted"
+      ],
+      "additionalProperties": false
+    },
+    "Reflection": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "operationId": {
+          "$ref": "#/$defs/Id"
+        },
+        "recordId": {
+          "$ref": "#/$defs/Id"
+        },
+        "dayId": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/Instant"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "operationId",
+        "recordId",
+        "dayId",
+        "revision",
+        "text",
+        "deleted",
+        "updatedAt"
+      ],
+      "additionalProperties": false
+    },
+    "Correction": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "operationId": {
+          "$ref": "#/$defs/Id"
+        },
+        "recordId": {
+          "$ref": "#/$defs/Id"
+        },
+        "dayId": {
+          "$ref": "#/$defs/Id"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "text": {
+          "type": "string",
+          "maxLength": 4000
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "momentId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "operationId",
+        "recordId",
+        "dayId",
+        "revision",
+        "text",
+        "deleted",
+        "updatedAt",
+        "momentId"
+      ],
+      "additionalProperties": false
+    },
+    "Day": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "dayId": {
+          "$ref": "#/$defs/Id"
+        },
+        "timeZone": {
+          "$ref": "#/$defs/TimeZone"
+        },
+        "startAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "endAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "inputRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "deletionGeneration": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "empty",
+            "pending",
+            "partial",
+            "ready",
+            "failure"
+          ]
+        },
+        "calendarFreshness": {
+          "type": "string",
+          "enum": [
+            "unavailable",
+            "fresh",
+            "stale"
+          ]
+        },
+        "recap": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Recap"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "corrections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Correction"
+          },
+          "maxItems": 200
+        },
+        "reflections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Reflection"
+          },
+          "maxItems": 200
+        },
+        "failureCode": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "dayId",
+        "timeZone",
+        "startAt",
+        "endAt",
+        "inputRevision",
+        "deletionGeneration",
+        "state",
+        "calendarFreshness",
+        "recap",
+        "corrections",
+        "reflections",
+        "failureCode"
+      ],
+      "additionalProperties": false
+    },
+    "CalendarOccurrence": {
+      "type": "object",
+      "properties": {
+        "occurrenceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "calendarId": {
+          "$ref": "#/$defs/Id"
+        },
+        "sourceEventId": {
+          "$ref": "#/$defs/Id"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "startAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "endAt": {
+          "$ref": "#/$defs/Instant"
+        },
+        "timeZone": {
+          "$ref": "#/$defs/TimeZone"
+        },
+        "allDay": {
+          "type": "boolean"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "occurrenceId",
+        "calendarId",
+        "sourceEventId",
+        "title",
+        "startAt",
+        "endAt",
+        "timeZone",
+        "allDay",
+        "location"
+      ],
+      "additionalProperties": false
+    },
+    "CalendarSnapshot": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/Id"
+        },
+        "sourceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "sourceGeneration": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "consentRevision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "selectedCalendarIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 20
+        },
+        "windowStart": {
+          "$ref": "#/$defs/Instant"
+        },
+        "windowEnd": {
+          "$ref": "#/$defs/Instant"
+        },
+        "pageCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100
+        },
+        "refreshedAt": {
+          "$ref": "#/$defs/Instant"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "snapshotId",
+        "sourceId",
+        "sourceGeneration",
+        "consentRevision",
+        "selectedCalendarIds",
+        "windowStart",
+        "windowEnd",
+        "pageCount",
+        "refreshedAt"
+      ],
+      "additionalProperties": false
+    },
+    "CalendarPage": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "snapshotId": {
+          "$ref": "#/$defs/Id"
+        },
+        "pageNumber": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99
+        },
+        "occurrences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CalendarOccurrence"
+          },
+          "maxItems": 100
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "snapshotId",
+        "pageNumber",
+        "occurrences"
+      ],
+      "additionalProperties": false
+    },
+    "CalendarComplete": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "pageHashes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Hash"
+          },
+          "maxItems": 100,
+          "minItems": 1
+        },
+        "completionDigest": {
+          "$ref": "#/$defs/Hash"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "pageHashes",
+        "completionDigest"
+      ],
+      "additionalProperties": false
+    },
+    "CalendarBundle": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "snapshot": {
+          "$ref": "#/$defs/CalendarSnapshot"
+        },
+        "pages": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CalendarPage"
+          },
+          "maxItems": 100
+        },
+        "completion": {
+          "$ref": "#/$defs/CalendarComplete"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "snapshot",
+        "pages",
+        "completion"
+      ],
+      "additionalProperties": false
+    },
+    "DeletionJob": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "jobId": {
+          "$ref": "#/$defs/Id"
+        },
+        "targetId": {
+          "$ref": "#/$defs/Id"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "requested",
+            "tombstoned",
+            "deleting_cloud",
+            "waiting_for_clients",
+            "complete",
+            "failed_retryable",
+            "failed_terminal"
+          ]
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "cloudComplete": {
+          "type": "boolean"
+        },
+        "pendingDeviceIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "maxItems": 1
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "jobId",
+        "targetId",
+        "state",
+        "revision",
+        "cloudComplete",
+        "pendingDeviceIds"
+      ],
+      "additionalProperties": false
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "enum": [
+                "INVALID_REQUEST",
+                "UNSUPPORTED_VERSION",
+                "UNAUTHENTICATED",
+                "FORBIDDEN",
+                "NOT_FOUND",
+                "STALE_EPOCH",
+                "CONFLICT",
+                "REVISION_CONFLICT",
+                "CHECKSUM_MISMATCH",
+                "SIZE_MISMATCH",
+                "MISSING_OBJECTS",
+                "INVALID_MANIFEST",
+                "INVALID_STATE",
+                "INCOMPLETE_CALENDAR",
+                "DELETED",
+                "SUPERSEDED",
+                "EXPIRED",
+                "PRECONDITION_FAILED",
+                "NOT_IMPLEMENTED",
+                "INTERNAL_ERROR"
+              ]
+            },
+            "message": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "requestId": {
+              "$ref": "#/$defs/Id"
+            },
+            "retryable": {
+              "type": "boolean"
+            },
+            "currentRevision": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            "itemIds": {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "maxItems": 200
+            }
+          },
+          "required": [
+            "code",
+            "message",
+            "requestId",
+            "retryable"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "error"
+      ],
+      "additionalProperties": false
+    },
+    "Profile": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "journalTimeZone": {
+          "$ref": "#/$defs/TimeZone"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "retentionDays": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "consentRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "journalTimeZone",
+        "revision",
+        "retentionDays",
+        "consentRevision"
+      ],
+      "additionalProperties": false
+    },
+    "Preferences": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "journalTimeZone": {
+          "$ref": "#/$defs/TimeZone"
+        },
+        "retentionDays": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "expectedRevision",
+        "journalTimeZone",
+        "retentionDays"
+      ],
+      "additionalProperties": false
+    },
+    "ClaimInput": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "challengeId": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "deviceId",
+        "challengeId"
+      ],
+      "additionalProperties": false
+    },
+    "ClaimProof": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "proofHandle": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "proofHandle"
+      ],
+      "additionalProperties": false
+    },
+    "Claim": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "claimId": {
+          "$ref": "#/$defs/Id"
+        },
+        "deviceId": {
+          "$ref": "#/$defs/Id"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "confirmed",
+            "expired"
+          ]
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/Instant"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "claimId",
+        "deviceId",
+        "state",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "PushInstallation": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "platform": {
+          "const": "apns"
+        },
+        "token": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64,200}$"
+        },
+        "environment": {
+          "type": "string",
+          "enum": [
+            "sandbox",
+            "production"
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "expectedRevision",
+        "platform",
+        "token",
+        "environment"
+      ],
+      "additionalProperties": false
+    },
+    "ReadGrant": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "readURL": {
+          "type": "string",
+          "format": "uri"
+        },
+        "expiresAt": {
+          "$ref": "#/$defs/Instant"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "readURL",
+        "expiresAt"
+      ],
+      "additionalProperties": false
+    },
+    "DeviceDetail": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "identity": {
+          "$ref": "#/$defs/DeviceIdentity"
+        },
+        "state": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/DeviceState"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "activeSync": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SyncRequest"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "identity",
+        "state",
+        "activeSync"
+      ],
+      "additionalProperties": false
+    },
+    "Days": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Day"
+          },
+          "maxItems": 100
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "items",
+        "nextCursor"
+      ],
+      "additionalProperties": false
+    },
+    "Devices": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DeviceIdentity"
+          },
+          "maxItems": 100
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "items",
+        "nextCursor"
+      ],
+      "additionalProperties": false
+    },
+    "Moments": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Moment"
+          },
+          "maxItems": 100
+        },
+        "nextCursor": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "items",
+        "nextCursor"
+      ],
+      "additionalProperties": false
+    },
+    "Transition": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "machine": {
+          "type": "string",
+          "enum": [
+            "capture",
+            "sync",
+            "job",
+            "deletion"
+          ]
+        },
+        "from": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "to": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "expectedRevision": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "machine",
+        "from",
+        "to",
+        "revision",
+        "expectedRevision"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

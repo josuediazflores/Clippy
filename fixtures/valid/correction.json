@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "operationId": "op_sample_001",
+  "recordId": "correction_sample_001",
+  "dayId": "day_20261107",
+  "revision": 1,
+  "text": "A quiet break.",
+  "deleted": false,
+  "updatedAt": "2026-11-07T12:00:00Z",
+  "momentId": "moment_cap_sample_001"
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "captureId": "cap_sample_001",
+  "providerVersion": "mock-1",
+  "promptVersion": "mock-1",
+  "preprocessingVersion": "png-1",
+  "status": "ready",
+  "visibleFacts": [
+    "Synthetic green square."
+  ],
+  "inferredActivity": null,
+  "uncertainty": "Synthetic fixture; no real activity inferred.",
+  "evidence": [
+    {
+      "type": "capture",
+      "id": "cap_sample_001"
+    }
+  ]
+}

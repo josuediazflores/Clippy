@@ -1,6 +1,6 @@
 # Interface contracts
 
-Status: proposed v1 contracts. P01 must turn these into executable OpenAPI/JSON Schema definitions, examples, and compatibility tests before parallel implementation. These examples describe wire semantics, not working endpoints.
+Status: v1.0.0 frozen in P01. [Executable contracts](../contracts/README.md), [OpenAPI](../contracts/openapi.json), and [JSON Schema](../contracts/schema.json) are authoritative. The original proposal below is retained as architecture context; use executable fixtures rather than its illustrative IDs/hashes. P03 implements only the local subset marked in OpenAPI.
 
 ## 1. Common conventions
 

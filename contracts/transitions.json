@@ -1,0 +1,157 @@
+{
+  "capture": {
+    "capturing": [
+      "paused",
+      "storage_full",
+      "camera_error",
+      "disabled"
+    ],
+    "paused": [
+      "capturing",
+      "disabled"
+    ],
+    "storage_full": [
+      "paused",
+      "disabled"
+    ],
+    "camera_error": [
+      "paused",
+      "disabled"
+    ],
+    "disabled": [
+      "paused"
+    ]
+  },
+  "sync": {
+    "requested": [
+      "waiting_for_device",
+      "cancel_requested",
+      "failed_terminal"
+    ],
+    "waiting_for_device": [
+      "preparing",
+      "failed_retryable",
+      "cancel_requested",
+      "failed_terminal"
+    ],
+    "preparing": [
+      "uploading",
+      "waiting_for_network",
+      "waiting_for_power",
+      "failed_retryable",
+      "cancel_requested",
+      "failed_terminal"
+    ],
+    "uploading": [
+      "verifying",
+      "waiting_for_network",
+      "waiting_for_power",
+      "failed_retryable",
+      "cancel_requested",
+      "failed_terminal"
+    ],
+    "verifying": [
+      "uploaded",
+      "failed_retryable",
+      "failed_terminal",
+      "cancel_requested"
+    ],
+    "waiting_for_network": [
+      "preparing",
+      "cancel_requested",
+      "failed_terminal"
+    ],
+    "waiting_for_power": [
+      "preparing",
+      "cancel_requested",
+      "failed_terminal"
+    ],
+    "failed_retryable": [
+      "preparing",
+      "cancel_requested",
+      "failed_terminal"
+    ],
+    "cancel_requested": [
+      "cancelled",
+      "uploaded"
+    ],
+    "uploaded": [],
+    "cancelled": [],
+    "failed_terminal": []
+  },
+  "job": {
+    "queued": [
+      "observing",
+      "superseded",
+      "cancelled_by_deletion"
+    ],
+    "observing": [
+      "assembling",
+      "failed_retryable",
+      "failed_terminal",
+      "superseded",
+      "cancelled_by_deletion"
+    ],
+    "assembling": [
+      "synthesizing",
+      "failed_retryable",
+      "failed_terminal",
+      "superseded",
+      "cancelled_by_deletion"
+    ],
+    "synthesizing": [
+      "validating",
+      "failed_retryable",
+      "failed_terminal",
+      "superseded",
+      "cancelled_by_deletion"
+    ],
+    "validating": [
+      "publishing",
+      "failed_terminal",
+      "superseded",
+      "cancelled_by_deletion"
+    ],
+    "publishing": [
+      "ready",
+      "partial",
+      "superseded",
+      "cancelled_by_deletion"
+    ],
+    "failed_retryable": [
+      "queued",
+      "failed_terminal",
+      "superseded",
+      "cancelled_by_deletion"
+    ],
+    "ready": [],
+    "partial": [],
+    "superseded": [],
+    "cancelled_by_deletion": [],
+    "failed_terminal": []
+  },
+  "deletion": {
+    "requested": [
+      "tombstoned"
+    ],
+    "tombstoned": [
+      "deleting_cloud"
+    ],
+    "deleting_cloud": [
+      "waiting_for_clients",
+      "failed_retryable",
+      "failed_terminal"
+    ],
+    "waiting_for_clients": [
+      "complete",
+      "failed_retryable",
+      "failed_terminal"
+    ],
+    "failed_retryable": [
+      "deleting_cloud",
+      "failed_terminal"
+    ],
+    "complete": [],
+    "failed_terminal": []
+  }
+}

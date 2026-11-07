@@ -68,3 +68,13 @@ Multi-device users, continuous video/audio, live location tracking, semantic mem
 - 2026-11-07: Inspected the supplied Clippy repository and found it empty. Prepared the documentation baseline and staged implementation approach. No application code or cloud resources existed to preserve at inspection time.
 
 Future entries should state the decision, reason, owner, affected contracts/phases, and what earlier decision it supersedes. Do not silently rewrite historical rationale.
+
+## P01 local implementation decisions (2026-11-07)
+
+- D08: Coordinator selects iOS 18 minimum, SwiftUI, TypeScript and Python for the local foundation requested by Josue. No signing membership or hardware capability is assumed. Exact installed/pinned tooling is recorded by P02.
+- D09: Freeze v1.0.0 with strict fields, 30-day idempotency receipts, 5 MB photo / 200 capture bounds, 15-minute upload grants, 60-second future read grants, and optimistic edit revisions. See `contracts/README.md`. These settle the P00 proposals for local implementation.
+- D10: Synthetic profile uses UTC midnight day boundaries. Original capture timezone/offset is preserved; untrusted clocks are quarantined from day assignment. Production preference changes must preserve existing boundaries.
+- D11: Explicit pause resume, ten-minute default capture interval, no active capture/nightly scheduler, seven-day retention metadata without an expiry job. Synthetic local bytes are unencrypted; real-data collection is blocked on key protection and retention decisions.
+- D12: All unresolved hardware/transport choices are named interfaces in `docs/hardware-adapters.md`. Real pairing and physical proof remain P07 blockers. Apple Calendar uses staged complete windows; EventKit access is P09. Mail remains deferred.
+
+These are documented defaults authorized for this local implementation task. They do not resolve Pi hardware, AWS account/region/budget, paid model selection, or real-data privacy decisions.

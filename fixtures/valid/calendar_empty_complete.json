@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "snapshot": {
+    "schemaVersion": 1,
+    "snapshotId": "calendar_snap_001",
+    "sourceId": "source_calendar_001",
+    "sourceGeneration": 1,
+    "consentRevision": 1,
+    "selectedCalendarIds": [
+      "calendar_sample_001"
+    ],
+    "windowStart": "2026-11-07T00:00:00Z",
+    "windowEnd": "2026-11-08T00:00:00Z",
+    "pageCount": 1,
+    "refreshedAt": "2026-11-07T12:00:00Z"
+  },
+  "pages": [
+    {
+      "schemaVersion": 1,
+      "snapshotId": "calendar_snap_001",
+      "pageNumber": 0,
+      "occurrences": []
+    }
+  ],
+  "completion": {
+    "schemaVersion": 1,
+    "pageHashes": [
+      "822c3bb05c1712374e7773f5c3a37840eea2b39aa23b1e3d4317d97a27fabad2"
+    ],
+    "completionDigest": "9b79c178ae90adf8d00f909009582834e2a5e135500c186fe4fef85d1be7cbed"
+  }
+}
