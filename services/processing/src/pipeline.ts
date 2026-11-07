@@ -5,6 +5,7 @@ import type { PipelineConfig } from "./config";
 import { composeRecap, localTime, synthesisInput } from "./compose";
 import { PROVIDER_FAILURE_REASONS } from "./errors";
 import { inspectImage } from "./images";
+import { NO_PLACES, resolvePlaces, type PlaceResolver } from "./places";
 import type {
   ModelUsage,
   ObservationDraft,
@@ -64,6 +65,15 @@ export function toObservation(
   };
 }
 
+const NO_PLACE_POLICY: PipelineConfig["places"] = {
+  provider: "none",
+  precisionDecimals: 3,
+  maxAccuracyMeters: 0,
+  maxSampleAgeSeconds: 0,
+  maxLookupsPerJob: 0,
+  language: "en",
+};
+
 /** Deletion removes a day's job records; later steps treat that as stale work. */
 const removed = (error: unknown): boolean =>
   error instanceof Fault && error.code === "NOT_FOUND";
@@ -96,6 +106,7 @@ export class Pipeline {
     },
     readonly config: PipelineConfig,
     private readonly metric: (name: string, value: number) => void = () => {},
+    readonly places: PlaceResolver = NO_PLACES,
   ) {}
 
   begin(ref: JobRef) {
@@ -216,7 +227,15 @@ export class Pipeline {
     const { job, observations } = loaded;
     if (["superseded", "cancelled_by_deletion"].includes(job.state))
       return { status: "superseded" };
-    const input = synthesisInput(job, observations);
+    const ready = new Set(
+      observations.filter((o) => o.status === "ready").map((o) => o.captureId),
+    );
+    const placed = await resolvePlaces(
+      job.captures.filter((c) => ready.has(c.captureId)),
+      this.places,
+      this.config.places ?? { ...NO_PLACE_POLICY },
+    );
+    const input = synthesisInput(job, observations, placed.labels);
     if (!input.coverage.observed) {
       await this.engine.failJob(
         ref.owner,
@@ -236,10 +255,16 @@ export class Pipeline {
       );
       return { status: "failed", code: "SYNTHESIS_DECLINED" };
     }
-    const recap = composeRecap(job, observations, written.draft, {
-      providerVersion: this.models.synthesis.providerVersion,
-      promptVersion: `${this.config.observation.promptVersion}+${this.config.synthesis.promptVersion}`,
-    });
+    const recap = composeRecap(
+      job,
+      observations,
+      written.draft,
+      {
+        providerVersion: this.models.synthesis.providerVersion,
+        promptVersion: `${this.config.observation.promptVersion}+${this.config.synthesis.promptVersion}`,
+      },
+      placed.labels,
+    );
     const usage: JobUsage = {
       observationCalls: ref.observations.reduce((n, o) => n + o.calls, 0),
       cachedObservations: ref.observations.filter((o) => o.status === "cached")
@@ -247,6 +272,7 @@ export class Pipeline {
       failedObservations: ref.observations.filter((o) => o.status === "failed")
         .length,
       synthesisCalls: 1,
+      placeLookups: placed.lookups,
       inputTokens:
         ref.observations.reduce((n, o) => n + o.usage.inputTokens, 0) +
         written.usage.inputTokens,
@@ -264,6 +290,8 @@ export class Pipeline {
     this.metric("ObservationCalls", usage.observationCalls);
     this.metric("InputTokens", usage.inputTokens);
     this.metric("OutputTokens", usage.outputTokens);
+    this.metric("PlaceLookups", placed.lookups);
+    if (placed.failures) this.metric("PlaceLookupFailures", placed.failures);
     if (saved === "superseded") return { status: "superseded" };
     return {
       status: "candidate",

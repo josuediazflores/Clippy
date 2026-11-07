@@ -29,6 +29,18 @@ export interface PipelineConfig {
   minImageDimension: number;
   /** Stop before synthesis when provider failures exceed this fraction of a job. */
   providerFailureThreshold: number;
+  /** Approximate place labels from device GPS fixes (architecture section 9). */
+  places: {
+    provider: "none" | "amazon-location";
+    /** Rounding before lookup; 3 decimals is about 110 m of latitude. */
+    precisionDecimals: number;
+    /** Fixes less accurate than this are not labelled. */
+    maxAccuracyMeters: number;
+    /** A fix sampled further than this from the capture time is stale. */
+    maxSampleAgeSeconds: number;
+    maxLookupsPerJob: number;
+    language: string;
+  };
   /** Optional list prices for usage estimates, USD per million tokens. Unset until verified. */
   prices: { observation: TokenPrice | null; synthesis: TokenPrice | null };
 }
@@ -63,12 +75,20 @@ export const DEFAULT_CONFIG: PipelineConfig = {
     maxOutputTokens: 4000,
     timeoutMs: 120_000,
     verified: null,
-    promptVersion: "recap_v1",
+    promptVersion: "recap_v2",
   },
   concurrency: 4,
   maxImageBytes: 3_750_000,
   minImageDimension: 32,
   providerFailureThreshold: 0.2,
+  places: {
+    provider: "none",
+    precisionDecimals: 3,
+    maxAccuracyMeters: 250,
+    maxSampleAgeSeconds: 900,
+    maxLookupsPerJob: 50,
+    language: "en",
+  },
   prices: { observation: null, synthesis: null },
 };
 
@@ -88,6 +108,9 @@ export function pipelineVersion(config: PipelineConfig): string {
         config.observation.preprocessingVersion,
       ],
       synthesis: [config.synthesis.id, config.synthesis.promptVersion],
+      places: config.places
+        ? [config.places.provider, config.places.precisionDecimals]
+        : ["none"],
     }).slice(0, 16)
   );
 }

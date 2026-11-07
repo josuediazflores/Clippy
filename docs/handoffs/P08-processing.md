@@ -31,11 +31,13 @@
   - Usage totals (calls, cached, failed, tokens) are stored on the job and emitted as EMF metrics.
 - **Configuration.** The pipeline config is versioned. The default deployment uses free mock models. The Haiku-class observation candidate and the Opus-class and Sonnet-class synthesis candidates are unverified and cannot be called, or even synthesized into a Bedrock deployment, until verified for the region (D06, D35).
 - **Workflow.** Standard state machine, history holds IDs and counts only, ERROR logs without execution data. Retry rules come from the same `POLICY` constants the local runner uses, and template assertions compare them state by state.
+- **GPS place labels (D39).** Off by default. With `places.provider: "amazon-location"`, fixes that are accurate and fresh are rounded to about 110 m and reverse geocoded (`IntendedUse: Storage`), one lookup per cell per job. The model sees only an area label, never coordinates, and moment details start with "Near <area>.". Failures leave labels empty. CDK grants `geo-places:ReverseGeocode` on the Places provider only when enabled.
+- **Hardware alignment.** The prototype was inspected read-only (D38). `docs/handoffs/device-integration.md` gives P05 and P07 the exact device-to-cloud protocol, a proposed capture profile (1280x960 JPEG) with token and cost math, and GPS, clock and IMU guidance.
 - **Evaluation harness.** An 8-image synthetic corpus (drawn scenes, including a prompt-injection sign and a covered lens); a runner with automated checks and a human-review rubric; a worst-case cost gate, a 20% stop rule and an approval requirement. The `--dry-run` mode runs free mock models.
 
 ## Decisions and compatibility
 
-- Decisions D30 to D37 added.
+- Decisions D30 to D40 added.
 - Contract changes: none. Engine API additions are internal. `ObservationProvider.observe` takes an optional `CaptureSource`, which the P03 mock ignores.
 - Behavior: publication also creates a `recap.published` outbox entry, pending until P10. Deletion-interrupted jobs end superseded.
 - Migration: none.
@@ -44,9 +46,10 @@
 
 Environment as in the P04 handoff (Node 25.6.0 against a 22.23.4 pin, DynamoDB Local 3.3.2). Anthropic SDK 1.3.0, Bedrock SDK 1.1.0.
 
-- `npm test`: 72 tests, 71 pass, 1 skipped (the DynamoDB placeholder). New:
+- `npm test`: 77 tests, 76 pass, 1 skipped (the DynamoDB placeholder). New:
   - 15 pipeline tests: mock publish and replay; screening of an unsupported (GIF declared as PNG) and a degenerate 8 px image with no model call and an honest partial; throttle and timeout retry counts; the 20% stop before synthesis plus a cache-reusing retry; the real Claude adapter rejecting malformed tool output; SDK error mapping with no sampling parameters; invented source rejected; photographed injection delimited and unable to add sources; a correction mid-run superseding (no overwrite, no notification, late duplicate makes no calls); deletion mid-synthesis superseding without a paid retry; refusal; correction precedence; unverified-model refusal and version separation; image header parsing; retry semantics.
   - 4 task-handler tests: all actions, with outputs free of photo text; input validation; conflict mapping; the Bedrock guard.
+  - 5 place tests: accuracy and staleness filters with one rounded lookup per cell, failures without job failure, no coordinates in model input with the label in moment details, the Amazon Location request shape (`[lon, lat]`, Storage, area names only), and version separation.
 - `npm run test:dynamodb`: 9 adapter tests, then 62 shared tests on DynamoDB Local including the processing suites (60 pass, 2 memory-only skips), and the bundled API smoke test.
 - `npm run check`: all pass. Synth: 12 Data + 73 Runtime resources, 30 template assertions, triggers disabled. A verified Bedrock config synthesizes with exactly `bedrock-mantle:CreateInference`; an unverified one is refused at synthesis.
 - `npm run scenario`: passes, UI fixtures unchanged.
@@ -70,7 +73,8 @@ Environment as in the P04 handoff (Node 25.6.0 against a 22.23.4 pin, DynamoDB L
   - Over 200 observed moments fails `MOMENT_LIMIT`.
   - The system prompts are below the cache minimum, so prompt caching is not used.
   - Calendar context (P09) is not part of synthesis input yet.
-  - Location labels (Amazon Location) are not implemented.
+  - Place labels are implemented but unverified against the live Amazon Location service (pricing tier, label quality).
+  - The real camera output size has not been measured; see the capture profile in `device-integration.md`.
 - **Notifications.** The `recap.published` entries accumulate as pending until P10 adds a notifier; the recovery command reports them as pending.
 - **Consumers.**
   - P09 adds calendar context to `synthesisInput` and the prompt (a new prompt version).

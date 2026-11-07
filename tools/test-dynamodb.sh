@@ -19,7 +19,8 @@ export CLIPPY_DYNAMODB_ENDPOINT="http://127.0.0.1:${port}"
 npx tsx --test --test-timeout=60000 services/backend/test/dynamodb.test.ts
 CLIPPY_TEST_STORE=dynamodb npx tsx --test --test-timeout=60000 \
   services/backend/test/flow.test.ts services/backend/test/http.test.ts services/backend/test/p04.test.ts \
-  services/processing/test/pipeline.test.ts services/processing/test/tasks.test.ts
+  services/processing/test/pipeline.test.ts services/processing/test/tasks.test.ts \
+  services/processing/test/places.test.ts
 # The synthesized Lambda bundle, not the source, against the same emulator.
 npm run synth --silent
 npx tsx infra/test/bundle-smoke.ts

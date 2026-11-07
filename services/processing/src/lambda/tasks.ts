@@ -3,7 +3,7 @@ import { createAwsEngine } from "../../../backend/src/aws/runtime";
 import { metric, safeLog } from "../../../backend/src/aws/log";
 import { safeErrorFields } from "../../../backend/src/router";
 import { pipelineVersion } from "../config";
-import { createModels, readPipelineConfig } from "../models";
+import { createModels, createPlaces, readPipelineConfig } from "../models";
 import {
   Pipeline,
   workflowError,
@@ -103,6 +103,7 @@ export const handler = (event: TaskEvent) => {
         createModels(config, process.env.AWS_REGION),
         config,
         (name, value) => metric(name, value),
+        createPlaces(config),
       ),
     );
   }

@@ -70,6 +70,7 @@ export class RuntimeStack extends Stack {
   readonly workflow: RecapWorkflow;
   readonly workflowConcurrency: number;
   readonly workflowProvider: PipelineConfig["provider"];
+  readonly workflowPlaces: PipelineConfig["places"]["provider"];
 
   constructor(scope: Construct, id: string, props: RuntimeStackProps) {
     super(scope, id, props);
@@ -218,6 +219,7 @@ export class RuntimeStack extends Stack {
     this.workflow = workflow;
     this.workflowConcurrency = props.pipeline.concurrency;
     this.workflowProvider = props.pipeline.provider;
+    this.workflowPlaces = props.pipeline.places?.provider ?? "none";
     dispatcherFn.addEnvironment(
       "CLIPPY_RECAP_STATE_MACHINE_ARN",
       workflow.stateMachine.stateMachineArn,

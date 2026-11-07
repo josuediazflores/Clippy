@@ -14,6 +14,10 @@ Status: **ready to ship, not approved.** This extends [the P04 packet](P04-dev-p
 - Default: `provider: "mock"`, free deterministic models, pipeline version `mock_1`. Deploying this needs no model access and incurs no model spend.
 - Bedrock: requires a reviewed config file passed with `-c clippy:pipelineConfig=PATH -c clippy:region=REGION`. Synthesis refuses unless both models are verified for that region. Only then is the single grant added: `bedrock-mantle:CreateInference` on `arn:aws:bedrock-mantle:REGION:ACCOUNT:project/*`. This is a separate approval that follows the approved evaluation in `services/processing/eval/PLAN.md`.
 
+## Place labels (optional)
+
+Off by default. With `places.provider: "amazon-location"` in the reviewed pipeline config, the task function gets `geo-places:ReverseGeocode` on `arn:aws:geo-places:REGION::provider/default`. At most 50 lookups per job, one per rounded ~110 m cell, so a day typically needs 5 to 30. Requests use the Storage tier, which costs more than single-use lookups; check the Places price before enabling. Only area names are stored.
+
 ## When work runs
 
 Executions start only from the outbox dispatcher (disabled unless approved, see packet section 7) or a manual `StartExecution`. There is no schedule. One execution per (owner, day, revision, pipeline version); duplicates are rejected by name. **Stop:** disable the dispatcher mapping. In-flight executions can be stopped with `aws stepfunctions stop-execution`. A stopped job leaves the day pending and the recovery command can restart it.

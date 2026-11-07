@@ -71,6 +71,15 @@ export class RecapWorkflow extends Construct {
       },
     });
     props.grant(this.fn);
+    if (config.places?.provider === "amazon-location")
+      this.fn.addToRolePolicy(
+        new iam.PolicyStatement({
+          actions: ["geo-places:ReverseGeocode"],
+          resources: [
+            `arn:${Aws.PARTITION}:geo-places:${Aws.REGION}::provider/default`,
+          ],
+        }),
+      );
     if (config.provider === "bedrock")
       this.fn.addToRolePolicy(
         new iam.PolicyStatement({

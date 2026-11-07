@@ -30,6 +30,7 @@ const latestCorrections = (day: W.Day): Map<string, string> => {
 export function synthesisInput(
   job: Job,
   observations: W.Observation[],
+  places: ReadonlyMap<string, string | null> = new Map(),
 ): SynthesisInput {
   const byId = new Map(job.captures.map((c) => [c.captureId, c]));
   const ready = observations
@@ -49,6 +50,7 @@ export function synthesisInput(
       visibleFacts: o.visibleFacts,
       inferredActivity: o.inferredActivity,
       uncertainty: o.uncertainty,
+      place: places.get(o.captureId) ?? null,
     })),
     corrections: ready.flatMap((o) => {
       const text = corrections.get(momentID(o.captureId));
@@ -71,8 +73,9 @@ export function composeRecap(
   observations: W.Observation[],
   draft: RecapDraft,
   versions: { providerVersion: string; promptVersion: string },
+  places: ReadonlyMap<string, string | null> = new Map(),
 ): W.Recap {
-  const input = synthesisInput(job, observations);
+  const input = synthesisInput(job, observations, places);
   if (input.timeline.length > 200)
     throw new PipelineLimitExceeded("more than 200 observed moments");
   const allowed = new Set(input.timeline.map((t) => t.captureId));
@@ -94,6 +97,7 @@ export function composeRecap(
   const moments: W.Moment[] = input.timeline.map((entry) => {
     const capture = byId.get(entry.captureId)!;
     const facts = obs.get(entry.captureId)!.visibleFacts.join(" ");
+    const near = entry.place ? `Near ${entry.place}. ` : "";
     return {
       schemaVersion: 1,
       momentId: momentID(entry.captureId),
@@ -104,7 +108,7 @@ export function composeRecap(
           `Moment ${capture.sequence}`,
         200,
       ),
-      detail: clip(facts || "No visible details were recorded.", 1000),
+      detail: clip(near + (facts || "No visible details were recorded."), 1000),
       evidence: [{ type: "capture", id: entry.captureId }],
     };
   });

@@ -181,6 +181,7 @@ test("mock pipeline publishes a valid recap once; a replayed execution makes no 
     cachedObservations: 0,
     failedObservations: 0,
     synthesisCalls: 1,
+    placeLookups: 0,
     inputTokens: 4000,
     outputTokens: 220,
   });

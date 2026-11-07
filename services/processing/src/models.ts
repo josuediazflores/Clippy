@@ -1,4 +1,6 @@
 import { AnthropicBedrockMantle } from "@anthropic-ai/bedrock-sdk";
+import { GeoPlacesClient } from "@aws-sdk/client-geo-places";
+import { AmazonLocationPlaces, NO_PLACES, type PlaceResolver } from "./places";
 import { assertCallable, DEFAULT_CONFIG, type PipelineConfig } from "./config";
 import {
   ClaudeObservationModel,
@@ -52,4 +54,11 @@ export function createModels(
     observation: new ClaudeObservationModel(messages, config.observation),
     synthesis: new ClaudeSynthesisModel(messages, config.synthesis),
   };
+}
+
+/** Place labels are opt-in per deployment; the default makes no Amazon Location calls. */
+export function createPlaces(config: PipelineConfig): PlaceResolver {
+  return config.places?.provider === "amazon-location"
+    ? new AmazonLocationPlaces(new GeoPlacesClient({}), config.places.language)
+    : NO_PLACES;
 }

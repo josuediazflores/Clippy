@@ -425,6 +425,12 @@ export function assertTemplates(data: DataStack, runtime: RuntimeStack) {
       "model permission only for a Bedrock pipeline",
     );
     assert.ok(!/"bedrock:\*"|"bedrock-mantle:\*"/.test(text));
+    assert.equal(
+      text.includes("geo-places:ReverseGeocode"),
+      runtime.workflowPlaces === "amazon-location",
+      "place lookups only when configured",
+    );
+    assert.ok(!text.includes("geo-places:*") && !text.includes('"geo:'));
   });
   return {
     checks,

@@ -25,6 +25,8 @@ export interface TimelineEntry {
   visibleFacts: string[];
   inferredActivity: string | null;
   uncertainty: string;
+  /** Approximate area label, never coordinates. */
+  place: string | null;
 }
 export interface SynthesisInput {
   date: string;

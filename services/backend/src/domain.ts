@@ -134,6 +134,7 @@ export interface JobUsage {
   cachedObservations: number;
   failedObservations: number;
   synthesisCalls: number;
+  placeLookups?: number;
   inputTokens: number;
   outputTokens: number;
 }
