@@ -30,6 +30,25 @@ export interface RouteResponse {
 export interface RouterOptions {
   /** Enables loopback-only device, upload and processing routes. Never enabled in AWS. */
   local: boolean;
+  /** Receives unexpected (non-Fault) errors so adapters can record safe metadata. */
+  onUnexpected?: (error: unknown) => void;
+}
+
+/** Error class and HTTP status only: provider messages can echo keys or values. */
+export function safeErrorFields(
+  error: unknown,
+): Record<string, string | number> {
+  const e = error as {
+    name?: unknown;
+    $metadata?: { httpStatusCode?: unknown };
+  };
+  return {
+    errorName: typeof e?.name === "string" ? e.name.slice(0, 80) : "unknown",
+    httpStatus:
+      typeof e?.$metadata?.httpStatusCode === "number"
+        ? e.$metadata.httpStatusCode
+        : 0,
+  };
 }
 
 const LITERALS = new Set([
@@ -94,6 +113,7 @@ export function createRouter(engine: Engine, options: RouterOptions) {
     try {
       return await dispatch(request);
     } catch (error) {
+      if (!(error instanceof Fault)) options.onUnexpected?.(error);
       return errorEnvelope(error, request.requestId);
     }
   };

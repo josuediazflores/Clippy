@@ -3,7 +3,12 @@ import type {
   APIGatewayProxyStructuredResultV2,
 } from "aws-lambda";
 import { Fault, type Actor, type Engine } from "../domain";
-import { createRouter, errorEnvelope, type RouteResponse } from "../router";
+import {
+  createRouter,
+  errorEnvelope,
+  safeErrorFields,
+  type RouteResponse,
+} from "../router";
 import { createAwsEngine } from "../aws/runtime";
 import { metric, safeLog } from "../aws/log";
 
@@ -35,7 +40,11 @@ export function actorFromClaims(
 }
 
 export function createApiHandler(engine: Engine, auth: ApiAuthConfig) {
-  const route = createRouter(engine, { local: false });
+  const route = createRouter(engine, {
+    local: false,
+    onUnexpected: (error) =>
+      safeLog("api.unexpected_error", safeErrorFields(error)),
+  });
   return async (
     event: APIGatewayProxyEventV2WithJWTAuthorizer,
   ): Promise<APIGatewayProxyStructuredResultV2> => {

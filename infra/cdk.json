@@ -1,0 +1,9 @@
+{
+  "app": "npx tsx src/app.ts",
+  "output": "../.local/cdk.out",
+  "context": {
+    "clippy:env": "dev",
+    "clippy:dispatcherEnabled": "false",
+    "clippy:deviceRuleEnabled": "false"
+  }
+}

@@ -2,6 +2,9 @@
 # Finite DynamoDB Local test run: starts a loopback-only container, runs the suite, always removes it.
 set -euo pipefail
 cd "$(dirname "$0")/.."
+# Isolation: a developer profile or SSO session must never be used by local tests.
+for name in $(env | sed -n 's/^\(AWS_[A-Z_]*\)=.*/\1/p'); do unset "$name"; done
+export AWS_CONFIG_FILE=/dev/null AWS_SHARED_CREDENTIALS_FILE=/dev/null AWS_EC2_METADATA_DISABLED=true
 image="amazon/dynamodb-local:3.3.2"
 name="clippy-dynamodb-local-$$"
 port="${CLIPPY_DYNAMODB_PORT:-8000}"
@@ -16,3 +19,6 @@ export CLIPPY_DYNAMODB_ENDPOINT="http://127.0.0.1:${port}"
 npx tsx --test --test-timeout=60000 services/backend/test/dynamodb.test.ts
 CLIPPY_TEST_STORE=dynamodb npx tsx --test --test-timeout=60000 \
   services/backend/test/flow.test.ts services/backend/test/http.test.ts services/backend/test/p04.test.ts
+# The synthesized Lambda bundle, not the source, against the same emulator.
+npm run synth --silent
+npx tsx infra/test/bundle-smoke.ts

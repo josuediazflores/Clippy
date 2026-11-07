@@ -4,7 +4,7 @@ import {
   PublishCommand,
 } from "@aws-sdk/client-iot-data-plane";
 import { Fault, type DeviceRecord, type Engine } from "../domain";
-import { checked, errorEnvelope } from "../router";
+import { checked, errorEnvelope, safeErrorFields } from "../router";
 import { validate } from "../contracts";
 import { keys } from "../store/keys";
 import { createAwsEngine } from "../aws/runtime";
@@ -143,7 +143,10 @@ export function createDeviceHandler(
         requestId ? "req_" + requestId.slice(0, 90) : undefined,
       );
       // Infrastructure faults rethrow so Lambda's async retry and failure destination apply.
-      if (!(error instanceof Fault)) throw error;
+      if (!(error instanceof Fault)) {
+        safeLog("device.unexpected_error", safeErrorFields(error));
+        throw error;
+      }
       return respond(envelope.status, envelope.body);
     }
   }

@@ -2,6 +2,7 @@ import type { DynamoDBBatchResponse, DynamoDBStreamEvent } from "aws-lambda";
 import type { Engine } from "../domain";
 import { createAwsEngine } from "../aws/runtime";
 import { metric, safeLog } from "../aws/log";
+import { safeErrorFields } from "../router";
 
 /**
  * Operations-table stream consumer. The event source mapping filters to INSERT events of
@@ -25,7 +26,7 @@ export function createDispatcher(engine: Engine) {
       } catch (error) {
         safeLog("outbox.dispatch_failed", {
           id: id ?? null,
-          error: error instanceof Error ? error.name : "unknown",
+          ...safeErrorFields(error),
         });
         metric("OutboxDispatchFailed", 1);
         batchItemFailures.push({ itemIdentifier: sequence });
