@@ -36,9 +36,14 @@ function pipelineConfig(app: App): PipelineConfig {
 
 export function buildApp(context: Record<string, unknown> = {}) {
   const app = new App({
-    outdir: ".local/cdk.out",
+    // The CDK CLI passes its output directory; standalone synth uses the repo default.
+    outdir: process.env.CDK_OUTDIR ?? ".local/cdk.out",
     analyticsReporting: false,
-    context,
+    // Strong (export/import) references protect the retained Data stack's outputs.
+    context: {
+      "@aws-cdk/core:defaultCrossStackReferences": "strong",
+      ...context,
+    },
   });
   const flag = (name: string) =>
     String(app.node.tryGetContext(name)) === "true";
