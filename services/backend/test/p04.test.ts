@@ -2,7 +2,16 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { storeConformance } from "./store-conformance";
 import { MemoryStore } from "../src/store/memory";
-import { setup, upload, capture, app, device, count, keyFor } from "./helpers";
+import {
+  setup,
+  upload,
+  capture,
+  app,
+  device,
+  count,
+  keyFor,
+  type Harness,
+} from "./helpers";
 import { Fault, jobIdFor, type OutboxRecord } from "../src/domain";
 import { createRouter } from "../src/router";
 import { validate } from "../src/contracts";
@@ -37,31 +46,31 @@ class RecordingStarter implements JobStarter {
     this.started.push({ ...input });
   }
 }
-const pending = (store: { all: MemoryStore["all"] }) =>
-  store
-    .all("operations")
+const pending = async (h: Harness) =>
+  (await h.all("operations"))
     .filter((i) => i.sk === "OUTBOX" && i.opk)
-    .map((i) => i.data as OutboxRecord);
+    .map((i) => i.data as OutboxRecord)
+    .sort((a, b) => (a.inputRevision ?? 0) - (b.inputRevision ?? 0));
 
 test("crash after snapshot acceptance leaves a durable receipt and recovery completes the projection", async (t) => {
-  const { engine, store, restart } = await setup(t, { dispatch: "deferred" });
+  const h = await setup(t, { dispatch: "deferred" });
+  const { engine, restart } = h;
   const flow = await upload(engine, [capture(1), capture(2)]);
   const receipt = await flow.finish();
   // Deferred dispatch models a Lambda that stopped after the database commit.
   assert.equal(receipt.acceptedCaptureIds.length, 2);
   assert.equal((await engine.getDay(app, dayId)).state, "empty");
   assert.deepEqual(
-    pending(store).map((o) => o.kind),
+    (await pending(h)).map((o) => o.kind),
     ["snapshot.accepted"],
   );
   const recovered = await restart();
-  const restored = recovered.store as typeof store;
   const first = await recovered.recover();
   assert.equal(first.dispatched, 1);
   assert.equal((await recovered.getDay(app, dayId)).state, "pending");
-  assert.equal(count(restored, "CAP#"), 2);
+  assert.equal(await count(h, "CAP#"), 2);
   assert.deepEqual(
-    pending(restored).map((o) => o.kind),
+    (await pending(h)).map((o) => o.kind),
     ["day.process"],
   );
   // Replaying the same snapshot work is a no-op.
@@ -70,10 +79,13 @@ test("crash after snapshot acceptance leaves a durable receipt and recovery comp
 });
 
 test("a crash between capture projection and the day revision bump is repaired exactly once", async (t) => {
-  const { engine, store } = await setup(t, { dispatch: "deferred" });
+  const h = await setup(t, { dispatch: "deferred" });
+  const { engine } = h;
   const flow = await upload(engine, [capture(1), capture(2)]);
   await flow.finish();
   let crash = true;
+  if (!h.memory) return t.skip("fault injection needs the memory store");
+  const store = h.memory;
   store.hooks.afterTransact = (writes) => {
     if (
       crash &&
@@ -94,9 +106,9 @@ test("a crash between capture projection and the day revision bump is repaired e
   assert.deepEqual(again.failed, []);
   assert.equal((await engine.getDay(app, dayId)).inputRevision, 1);
   assert.equal(
-    store.all("operations").find((i) => i.sk === "SNAP")?.data &&
+    (await h.all("operations")).find((i) => i.sk === "SNAP")?.data &&
       (
-        store.all("operations").find((i) => i.sk === "SNAP")!.data as {
+        (await h.all("operations")).find((i) => i.sk === "SNAP")!.data as {
           materialized: boolean;
         }
       ).materialized,
@@ -106,15 +118,18 @@ test("a crash between capture projection and the day revision bump is repaired e
 });
 
 test("a failed commit before the outbox write admits nothing", async (t) => {
-  const { engine, store } = await setup(t);
+  const h = await setup(t);
+  const { engine } = h;
   const flow = await upload(engine, [capture(1)]);
+  if (!h.memory) return t.skip("fault injection needs the memory store");
+  const store = h.memory;
   store.hooks.beforeTransact = (writes) => {
     if (writes.some((w) => w.op === "put" && w.item.sk === "OUTBOX"))
       throw new Error("Simulated database outage");
   };
   await assert.rejects(flow.finish(), /Simulated database outage/);
   store.hooks = {};
-  assert.equal(pending(store).length, 0);
+  assert.equal((await pending(h)).length, 0);
   assert.equal((await engine.getDay(app, dayId)).state, "empty");
   const receipt = await flow.finish();
   assert.equal(receipt.acceptedCaptureIds.length, 1);
@@ -122,11 +137,12 @@ test("a failed commit before the outbox write admits nothing", async (t) => {
 
 test("recovery starts each current day revision once and skips superseded revisions", async (t) => {
   const starter = new RecordingStarter();
-  const { engine, store } = await setup(t, { jobs: starter });
+  const h = await setup(t, { jobs: starter });
+  const { engine } = h;
   await (await upload(engine, [capture(1)])).finish();
   await (await upload(engine, [capture(2)], { key: "second" })).finish();
   assert.deepEqual(
-    pending(store).map((o) => [o.kind, o.inputRevision]),
+    (await pending(h)).map((o) => [o.kind, o.inputRevision]),
     [
       ["day.process", 1],
       ["day.process", 2],
@@ -147,7 +163,8 @@ test("recovery starts each current day revision once and skips superseded revisi
 });
 
 test("corrections and capture deletion enqueue reprocessing; reflections do not", async (t) => {
-  const { engine, store } = await setup(t);
+  const h = await setup(t);
+  const { engine } = h;
   await (await upload(engine, [capture(1), capture(2)])).finish();
   await engine.process(
     app.owner,
@@ -155,7 +172,7 @@ test("corrections and capture deletion enqueue reprocessing; reflections do not"
     new MockObservationProvider(),
     new MockRecapProvider(),
   );
-  const before = pending(store).length;
+  const before = (await pending(h)).length;
   await engine.saveEdit(
     app,
     "reflection",
@@ -163,7 +180,7 @@ test("corrections and capture deletion enqueue reprocessing; reflections do not"
     "reflection_main",
     edit("r1", "Text"),
   );
-  assert.equal(pending(store).length, before);
+  assert.equal((await pending(h)).length, before);
   await engine.saveEdit(
     app,
     "correction",
@@ -171,16 +188,17 @@ test("corrections and capture deletion enqueue reprocessing; reflections do not"
     "c1",
     edit("c1", "Fix"),
   );
-  assert.equal(pending(store).length, before + 1);
+  assert.equal((await pending(h)).length, before + 1);
   await engine.delete(app, { kind: "capture", id: "cap_sample_002" });
   assert.equal(
-    pending(store).filter((o) => o.kind === "day.process").length,
+    (await pending(h)).filter((o) => o.kind === "day.process").length,
     before + 2,
   );
 });
 
 test("deferred deletion tombstones immediately and removes content when dispatched", async (t) => {
-  const { engine, store, directory } = await setup(t, { dispatch: "deferred" });
+  const h = await setup(t, { dispatch: "deferred" });
+  const { engine } = h;
   await (await upload(engine, [capture(1)])).finish();
   await engine.recover();
   await engine.process(
@@ -200,23 +218,13 @@ test("deferred deletion tombstones immediately and removes content when dispatch
   assert.equal(job.state, "deleting_cloud");
   await assert.rejects(engine.getDay(app, dayId), hasCode("DELETED"));
   assert.equal((await engine.days(app, new URLSearchParams())).items.length, 0);
-  const fs = await import("node:fs");
-  assert.ok(
-    fs
-      .readFileSync(directory + "/state.json", "utf8")
-      .includes("Synthetic deferred marker"),
-  );
+  assert.ok((await h.dump()).includes("Synthetic deferred marker"));
   await engine.recover();
-  assert.ok(
-    !fs
-      .readFileSync(directory + "/state.json", "utf8")
-      .includes("Synthetic deferred marker"),
-  );
+  assert.ok(!(await h.dump()).includes("Synthetic deferred marker"));
   assert.equal(
     (await engine.deletion(app, job.jobId)).state,
     "waiting_for_clients",
   );
-  void store;
 });
 
 test("concurrent edits with the same expected revision: one wins, one sees REVISION_CONFLICT", async (t) => {
@@ -326,7 +334,8 @@ test("profile defaults, revision-checked preferences and UTC-only journal bounda
 });
 
 test("read grants check ownership and tombstones; receipts never store the signed URL", async (t) => {
-  const { engine, store } = await setup(t);
+  const h = await setup(t);
+  const { engine } = h;
   await (await upload(engine, [capture(1)])).finish();
   const route = createRouter(engine, { local: true });
   const call = (owner: string, key: string) =>
@@ -344,8 +353,7 @@ test("read grants check ownership and tombstones; receipts never store the signe
   validate("ReadGrant", granted.body);
   const body = granted.body as { readURL: string; expiresAt: string };
   assert.equal(body.expiresAt, "2026-11-07T20:01:00Z");
-  const stored = store
-    .all("operations")
+  const stored = (await h.all("operations"))
     .filter((i) => i.pk.endsWith("#RECEIPTS"))
     .map((i) => JSON.stringify(i.data));
   assert.ok(stored.every((text) => !text.includes(body.readURL)));

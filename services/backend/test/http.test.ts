@@ -183,7 +183,8 @@ test("Python processes restart at four upload checkpoints and receive exactly on
     "receipt-before-checkpoint",
   ];
   for (const [index, stop] of stops.entries()) {
-    const { engine, directory, restart } = await setup(t);
+    const h = await setup(t);
+    const { engine, directory, restart } = h;
     let hosted = await serve(engine);
     t.after(() => {
       hosted.server.closeAllConnections();
@@ -215,14 +216,11 @@ test("Python processes restart at four upload checkpoints and receive exactly on
         fs.readFileSync(path.join(directory, "queue/checkpoint.json"), "utf8"),
       ) as { acknowledged: boolean };
       assert.equal(checkpoint.acknowledged, true);
-      const store = resumed.store as Parameters<typeof count>[0];
-      assert.equal(count(store, "CAP#"), 2);
+      assert.equal(await count(h, "CAP#"), 2);
       assert.equal(
-        store
-          .all("operations")
-          .filter(
-            (i) => i.sk === "SNAP" && (i.data as { receipt: unknown }).receipt,
-          ).length,
+        (await h.all("operations")).filter(
+          (i) => i.sk === "SNAP" && (i.data as { receipt: unknown }).receipt,
+        ).length,
         1,
       );
       assert.equal(

@@ -1,6 +1,5 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import fs from "node:fs";
 import {
   setup,
   upload,
@@ -55,7 +54,8 @@ const compose = async (engine: Harness["engine"]) => {
 };
 
 test("two snapshots preserve edits, deduplicate captures/moments, and reuse observations", async (t) => {
-  const { engine, store } = await setup(t);
+  const h = await setup(t);
+  const { engine } = h;
   const first = await upload(engine, [capture(1), capture(2)]);
   const receipt = await first.finish();
   assert.deepEqual(await first.finish(), receipt);
@@ -91,7 +91,7 @@ test("two snapshots preserve edits, deduplicate captures/moments, and reuse obse
   assert.equal(updated.reflections[0]?.revision, 1);
   assert.equal(updated.corrections[0]?.text, c.text);
   assert.equal(updated.recap?.moments[0]?.title, c.text);
-  assert.equal(count(store, "OBS#"), 3);
+  assert.equal(await count(h, "OBS#"), 3);
   const prior = JSON.stringify(updated);
   await process(engine);
   assert.equal(JSON.stringify(await engine.getDay(app, dayId)), prior);
@@ -201,14 +201,15 @@ test("conditional PUT, wrong size/hash and corrupted stored object are rejected"
 });
 
 test("malformed manifest never partially admits an otherwise valid capture", async (t) => {
-  const { engine, store } = await setup(t);
+  const h = await setup(t);
+  const { engine } = h;
   const flow = await upload(engine, [capture(1), capture(2)], {
     manifestChange: (m) => {
       m.captures[1]!.captureId = m.captures[0]!.captureId;
     },
   });
   await assert.rejects(flow.finish(), hasCode("INVALID_MANIFEST"));
-  assert.equal(count(store, "CAP#"), 0);
+  assert.equal(await count(h, "CAP#"), 0);
 });
 
 test("changed immutable metadata on a later snapshot is a conflict", async (t) => {
@@ -293,7 +294,8 @@ test("partial and failure states remain meaningful and failure permits finite re
 });
 
 test("capture deletion removes derived data, preserves unrelated bytes/edits and blocks in-flight publication", async (t) => {
-  const { engine, restart, objects, directory } = await setup(t);
+  const h = await setup(t);
+  const { engine, restart, objects } = h;
   const flow = await upload(engine, [capture(1), capture(2)]);
   await flow.finish();
   await process(engine);
@@ -359,13 +361,14 @@ test("capture deletion removes derived data, preserves unrelated bytes/edits and
     updated.corrections.map((c) => c.text),
     ["Still here"],
   );
-  const stateText = fs.readFileSync(directory + "/state.json", "utf8");
+  const stateText = await h.dump();
   assert.ok(!stateText.includes("Synthetic correction marker to remove"));
   assert.ok(!stateText.includes(`"cap_sample_001","deviceId"`));
 });
 
 test("deleted capture is suppressed in a later manifest and cannot resurrect", async (t) => {
-  const { engine, store } = await setup(t);
+  const h = await setup(t);
+  const { engine } = h;
   await (await upload(engine, [capture(1)])).finish();
   await engine.mutate(
     app,
@@ -384,11 +387,12 @@ test("deleted capture is suppressed in a later manifest and cannot resurrect", a
   assert.deepEqual(receipt.acceptedCaptureIds, []);
   assert.deepEqual(receipt.suppressedCaptureIds, ["cap_sample_001"]);
   assert.equal(receipt.effectiveDigest, sha256(""));
-  assert.equal(count(store, "CAP#"), 0);
+  assert.equal(await count(h, "CAP#"), 0);
 });
 
 test("day and account deletion remove text, media, jobs and receipts across restart", async (t) => {
-  const { engine, restart, directory, store } = await setup(t);
+  const h = await setup(t);
+  const { engine, restart } = h;
   const flow = await upload(engine, [capture(1)]);
   await flow.finish();
   await process(engine);
@@ -403,11 +407,9 @@ test("day and account deletion remove text, media, jobs and receipts across rest
     (await restart()).getDay(app, dayId),
     hasCode("DELETED"),
   );
-  assert.ok(
-    !fs.readFileSync(directory + "/state.json", "utf8").includes(r.text),
-  );
-  assert.equal(count(store, "JOB#"), 0);
-  assert.equal(count(store, "OBS#"), 0);
+  assert.ok(!(await h.dump()).includes(r.text));
+  assert.equal(await count(h, "JOB#"), 0);
+  assert.equal(await count(h, "OBS#"), 0);
   const receipt = (
     await engine.mutate(
       app,
@@ -425,7 +427,7 @@ test("day and account deletion remove text, media, jobs and receipts across rest
   );
   assert.equal((await engine.deletion(app, receipt.jobId)).targetId, "account");
   assert.equal(
-    store.all().filter((i) => i.pk.startsWith("USER#user_a#")).length,
+    (await h.all()).filter((i) => i.pk.startsWith("USER#user_a#")).length,
     // Only the account deletion's own receipt remains; it holds no content.
     1,
   );

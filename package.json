@@ -19,6 +19,7 @@
     "format": "prettier --write 'services/**/*.ts' 'infra/**/*.ts' 'tools/*.ts'",
     "check:contracts": "tsx tools/check-contracts.ts",
     "test": "tsx --test --test-timeout=30000 services/backend/test/*.test.ts",
+    "test:dynamodb": "bash tools/test-dynamodb.sh",
     "synth": "tsx infra/src/app.ts",
     "check": "bash tools/check.sh",
     "scenario": "tsx tools/scenario.ts",

@@ -6,7 +6,16 @@ import { Engine, type Actor, type EngineOptions } from "../src/domain";
 import { createLocalEngine } from "../src/local-engine";
 import type { LocalObjectStore } from "../src/adapters/local-store";
 import type { FileStore } from "../src/store/memory";
-import type { Item, Key, Store } from "../src/store/store";
+import {
+  TABLES,
+  type Item,
+  type Key,
+  type Store,
+  type Table,
+} from "../src/store/store";
+import { decodeRow } from "../src/store/dynamo";
+import { ScanCommand, type AttributeValue } from "@aws-sdk/client-dynamodb";
+import { createLocalTables, dynamoLocalClient } from "./dynamo-local";
 import { objectKey } from "../src/store/keys";
 import { sha256 } from "../src/contracts";
 import type * as W from "../src/Wire";
@@ -15,30 +24,82 @@ export const app: Actor = { owner: "user_a", deviceId: null };
 export const device: Actor = { owner: "user_a", deviceId: "dev_sample_001" };
 export interface Harness {
   engine: Engine;
-  store: FileStore;
+  store: Store;
   objects: LocalObjectStore;
   directory: string;
   restart: () => Promise<Engine>;
+  /** Current persisted items, read fresh from the backing store. */
+  all: (table?: Table) => Promise<Item[]>;
+  /** Serialized persisted state, for privacy assertions. */
+  dump: () => Promise<string>;
+  /** Present only for the file-backed memory store (fault-injection hooks). */
+  memory: FileStore | null;
 }
+/** CLIPPY_TEST_STORE=dynamodb runs the same suites against DynamoDB Local. */
+export const usingDynamo = (): boolean =>
+  process.env.CLIPPY_TEST_STORE === "dynamodb";
 export async function setup(
   t: TestContext,
   options: Partial<EngineOptions> = {},
 ): Promise<Harness> {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "clippy-test-"));
   t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  if (usingDynamo()) {
+    const client = dynamoLocalClient()!;
+    const tables = await createLocalTables(client);
+    t.after(tables.drop);
+    const created = await createLocalEngine(directory, options, tables.store);
+    const all = async (table?: Table): Promise<Item[]> => {
+      const items: Item[] = [];
+      for (const name of TABLES.filter((n) => !table || n === table)) {
+        let start: Record<string, AttributeValue> | undefined;
+        do {
+          const page = await client.send(
+            new ScanCommand({
+              TableName: tables.names[name],
+              ConsistentRead: true,
+              ExclusiveStartKey: start,
+            }),
+          );
+          items.push(...(page.Items ?? []).map((row) => decodeRow(name, row)));
+          start = page.LastEvaluatedKey;
+        } while (start);
+      }
+      return items;
+    };
+    return {
+      ...created,
+      directory,
+      restart: async () =>
+        (await createLocalEngine(directory, options, tables.store)).engine,
+      all,
+      dump: async () => JSON.stringify(await all()),
+      memory: null,
+    };
+  }
   const created = await createLocalEngine(directory, options);
+  const file = path.join(directory, "state.json");
+  const read = (): Item[] =>
+    fs.existsSync(file)
+      ? (JSON.parse(fs.readFileSync(file, "utf8")) as Item[])
+      : [];
   return {
     ...created,
     directory,
     restart: async () => (await createLocalEngine(directory, options)).engine,
+    all: async (table) => read().filter((i) => !table || i.table === table),
+    dump: async () =>
+      fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "",
+    memory: created.store,
   };
 }
-/** Count stored items whose sort key starts with a prefix. */
-export const count = (
-  store: FileStore,
+/** Count persisted items whose sort key starts with a prefix. */
+export const count = async (
+  h: Harness,
   prefix: string,
-  table?: Item["table"],
-) => store.all(table).filter((i) => i.sk.startsWith(prefix)).length;
+  table?: Table,
+): Promise<number> =>
+  (await h.all(table)).filter((i) => i.sk.startsWith(prefix)).length;
 /** Rewrite a stored record in place to simulate an external change. */
 export async function patch<T>(
   store: Store,
