@@ -28,10 +28,18 @@ Security note for the device owner: SSH accepts password login for user `clippy`
 
 ## Capture profile (proposal, to be measured)
 
-- Capture the full-field binned mode scaled to **1280x960 JPEG, quality about 85**: `rpicam-still --width 1280 --height 960 --quality 85 --nopreview --immediate`. Expected a few hundred KB per photo (unmeasured), well under the 5 MB contract and 3.75 MB model bounds, and quick to encode on one ARMv6 core.
-- Why not full resolution: 3280x2464 JPEGs are several MB, slow to encode and upload over 2.4 GHz, and cost more model input for little journal value.
-- Model cost scales with pixels (about width × height / 750 input tokens per image for Claude vision): roughly 1,600 tokens at 1280x960, 2,700 at 1640x1232, 1,050 at 1024x768. At 96 photos a day that is about 160k, 260k or 100k observation input tokens per user-day. The P08 evaluation should compare at least two of these sizes before the profile is frozen (`preprocessingVersion` records the choice).
-- Measuring real sizes needs one test capture on the device. Pipe it to a byte counter and discard it (`rpicam-still ... -o - | wc -c`), with the device owner's agreement, because it photographs whatever is in front of the camera.
+- Capture the full-field binned mode scaled to **1280x960 JPEG, quality about 85**: `rpicam-still --width 1280 --height 960 --quality 85 --nopreview --immediate`.
+- Measured on the prototype (2026-11-07). Each image went straight to a byte counter and was discarded; the scene was whatever the camera faced, so busier scenes will be larger:
+
+  | Size | JPEG q85 |
+  | --- | --- |
+  | 1024x768 | 90 KB |
+  | 1280x960 | 126 KB |
+  | 1640x1232 | 181 KB |
+  | 3280x2464 | 776 KB |
+
+  Even full resolution is far under the 5 MB contract and 3.75 MB model bounds. The reason to stay small is upload time over 2.4 GHz Wi-Fi, encode time on one core, and model input cost.
+- Model cost scales with pixels (about width × height / 750 input tokens per image for Claude vision): roughly 1,050 tokens at 1024x768, 1,600 at 1280x960, 2,700 at 1640x1232. At us-east-1 Haiku 5.5 prices ($0.11 input, $0.55 output per million tokens), 96 photos at 1280x960 cost about $0.03 per user-day to observe. The P08 evaluation should still compare two sizes before the profile is frozen (`preprocessingVersion` records the choice).
 
 ## GPS to `Capture.location`
 
