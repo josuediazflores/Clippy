@@ -47,9 +47,8 @@ struct SignInView: View {
     var body: some View {
         VStack(spacing: 0) {
             Spacer()
-            Mark(size: 88)
-            Text("Clippy").font(.system(size: 44, weight: .bold, design: .default)).padding(.top, 24)
-            Text("Your day, remembered.").font(.title3).foregroundStyle(.secondary).padding(.top, 6)
+            Wordmark(height: 110)
+            Text("Your day, remembered.").font(.title3).foregroundStyle(.secondary).padding(.top, 20)
             Spacer()
             VStack(spacing: 12) {
                 if app.config.cloudAvailable {

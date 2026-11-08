@@ -1,0 +1,23 @@
+# Clippy wearable agent. Install: see docs/handoffs/device-agent.md.
+# Stop:    sudo systemctl stop clippy-agent
+# Disable: sudo systemctl disable --now clippy-agent
+[Unit]
+Description=Clippy wearable agent (capture queue and cloud sync)
+Wants=network-online.target
+After=network-online.target time-sync.target
+# Inert until the device has been provisioned (config + certificate copied in).
+ConditionPathExists=/home/clippy/.clippy/config.json
+
+[Service]
+Type=simple
+User=clippy
+Group=clippy
+WorkingDirectory=/home/clippy/clippy-agent
+Environment=PYTHONPATH=/home/clippy/clippy-agent
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 -m clippy_device.agent --config /home/clippy/.clippy/config.json
+Restart=always
+RestartSec=15
+
+[Install]
+WantedBy=multi-user.target

@@ -37,6 +37,11 @@ export interface DeviceRecord {
   identity: W.DeviceIdentity;
   /** IoT certificate bound at provisioning (P07). When set, device requests must match it. */
   certificateId: string | null;
+  /**
+   * SHA-256 (hex) of the one-time claim secret printed in the device's QR (D50). Present only
+   * while the device is unclaimed; cleared when an owner claims it.
+   */
+  claimSecretHash?: string | null;
 }
 interface SyncRecord {
   owner: string;
@@ -2199,6 +2204,70 @@ export class Engine {
       identity: d.identity,
       state: (await t.get<W.DeviceState>(keys.deviceState(id))) ?? null,
       activeSync: (await this.activeSync(id, t)) ?? null,
+    };
+  }
+
+  /**
+   * Printed-QR claim (D50). The sticker's one-time secret proves possession of an unclaimed device.
+   * Wrong secrets and unknown devices look identical (404). A device owned by someone else is 409.
+   * Re-scanning your own device is idempotent.
+   */
+  async claimDevice(
+    actor: Actor,
+    input: W.ClaimInput,
+    tx?: Tx,
+  ): Promise<W.Claim> {
+    return this.unit(tx, async (t) => {
+      await this.appActor(t, actor);
+      const device = await t.get<DeviceRecord>(keys.identity(input.deviceId));
+      const confirmed: W.Claim = {
+        schemaVersion: 1,
+        claimId: "claim_" + input.deviceId.slice(0, 89),
+        deviceId: input.deviceId,
+        state: "confirmed",
+        expiresAt: this.now(),
+      };
+      if (device?.identity.claimState === "owned") {
+        if (device.owner === actor.owner) return confirmed;
+        throw new Fault(409, "CONFLICT");
+      }
+      const expected = device?.claimSecretHash;
+      const presented = crypto
+        .createHash("sha256")
+        .update(input.challengeId)
+        .digest();
+      if (
+        !device ||
+        device.identity.claimState !== "unclaimed" ||
+        typeof expected !== "string" ||
+        expected.length !== 64 ||
+        !crypto.timingSafeEqual(Buffer.from(expected, "hex"), presented)
+      )
+        throw new Fault(404, "NOT_FOUND");
+      t.put<DeviceRecord>(keys.identity(input.deviceId), {
+        owner: actor.owner,
+        identity: { ...device.identity, claimState: "owned" },
+        certificateId: device.certificateId,
+        claimSecretHash: null,
+      });
+      t.put(keys.deviceRef(actor.owner, input.deviceId), {
+        deviceId: input.deviceId,
+      });
+      return confirmed;
+    });
+  }
+
+  /** Device-side status poll: its own identity (epoch, revisions) and any sync waiting for it. */
+  async deviceStatus(actor: Actor): Promise<W.DeviceDetail> {
+    const t = new Tx(this.store);
+    if (!actor.deviceId) throw new Fault(403, "FORBIDDEN");
+    const d = await this.authorizeDevice(actor, actor.deviceId, undefined, t);
+    return {
+      schemaVersion: 1,
+      identity: d.identity,
+      state:
+        (await t.get<W.DeviceState>(keys.deviceState(actor.deviceId))) ?? null,
+      activeSync: (await this.activeSync(actor.deviceId, t)) ?? null,
     };
   }
 

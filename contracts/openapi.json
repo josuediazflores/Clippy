@@ -154,7 +154,7 @@
         "tags": [
           "app"
         ],
-        "x-implementation-phase": "P07",
+        "x-implementation-phase": "P06",
         "security": [
           {
             "userBearer": []

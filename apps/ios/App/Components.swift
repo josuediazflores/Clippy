@@ -54,16 +54,25 @@ struct Hairline: View {
     var body: some View { Rectangle().fill(Color.hairline).frame(height: 1) }
 }
 
-/// The Clippy mark: a ring with a lens.
+/// The sparkle from the Clippy logo. Template-tinted: ink in light mode, white in dark mode.
 struct Mark: View {
     var size: CGFloat = 64
     var body: some View {
-        ZStack {
-            Circle().strokeBorder(Color.ink, lineWidth: size * 0.08)
-            Circle().fill(Color.ink).frame(width: size * 0.32)
-        }
-        .frame(width: size, height: size)
-        .accessibilityHidden(true)
+        Image("Sparkle").resizable().renderingMode(.template).scaledToFit()
+            .frame(width: size, height: size)
+            .foregroundStyle(Color.ink)
+            .accessibilityHidden(true)
+    }
+}
+
+/// The full "clippy" wordmark.
+struct Wordmark: View {
+    var height: CGFloat = 44
+    var body: some View {
+        Image("Logo").resizable().renderingMode(.template).scaledToFit()
+            .frame(height: height)
+            .foregroundStyle(Color.ink)
+            .accessibilityLabel("Clippy")
     }
 }
 

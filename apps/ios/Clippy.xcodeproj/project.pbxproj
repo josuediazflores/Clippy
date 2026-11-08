@@ -19,6 +19,7 @@
 		6A3EDB75D4C99C0A904F39F8 /* empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 61C45A4D479D4D0703A4E4B0 /* empty.json */; };
 		7E9044092738A9EEA9D66D0A /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AD6C816755DB6E1861C7A /* AppModel.swift */; };
 		9147DDD700DBDB0DE956B0DB /* ready.json in Resources */ = {isa = PBXBuildFile; fileRef = 85C4A7477E74A3B6FB7B0FA9 /* ready.json */; };
+		9D43AFAD196504346951AEB3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DFDEC4E255249630C58844D2 /* Assets.xcassets */; };
 		A30A186A35838E7AF193D75D /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B34C7E04450AAFB255F9A4 /* AccountView.swift */; };
 		B41D3ACB6A36AA4536703EE2 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958A64D50092B7D96B1D4557 /* Components.swift */; };
 		BDD09D91EE84015B73E030CF /* ClippyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318187FBABEDF9D9A5C5C869 /* ClippyUITests.swift */; };
@@ -55,6 +56,7 @@
 		AFCB27F50A03544A16AFF5E4 /* ClippyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ClippyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C359E78122CB770340050668 /* failure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = failure.json; sourceTree = "<group>"; };
 		D989419BB807280925D0E1D0 /* partial.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = partial.json; sourceTree = "<group>"; };
+		DFDEC4E255249630C58844D2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F1EFA282DFD19FC5B37F7576 /* schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
 		FFB52B1A08F3B881E1099C00 /* ClippyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClippyApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -77,6 +79,7 @@
 				22B34C7E04450AAFB255F9A4 /* AccountView.swift */,
 				78DB6BC1CC08529D7A3A570F /* AppEnvironment.swift */,
 				8E9AD6C816755DB6E1861C7A /* AppModel.swift */,
+				DFDEC4E255249630C58844D2 /* Assets.xcassets */,
 				FFB52B1A08F3B881E1099C00 /* ClippyApp.swift */,
 				958A64D50092B7D96B1D4557 /* Components.swift */,
 				849CEF078277D932EBDC4A25 /* DeviceModels.swift */,
@@ -236,6 +239,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D43AFAD196504346951AEB3 /* Assets.xcassets in Resources */,
 				6A3EDB75D4C99C0A904F39F8 /* empty.json in Resources */,
 				D38F10F1FFDF2E4157AD0CB3 /* failure.json in Resources */,
 				033EF137939A2A6B17E097AB /* partial.json in Resources */,

@@ -107,7 +107,12 @@ final class PairingModel {
         guard case .scan = step else { return }
         guard let pairing = PairingCode(text) else { step = .failed("Not a Clippy code"); return }
         step = .claiming
-        do { step = .code(claimID: try await services.claim(pairing.claimInput, key: OperationID.make()).claimId) }
+        do {
+            // A printed QR carries a one-time secret, so the server can confirm immediately (D50).
+            // A pending claim still asks for the device's code (screen-based hardware, D42).
+            let claim = try await services.claim(pairing.claimInput, key: OperationID.make())
+            step = claim.state == "confirmed" ? .done(claim.deviceId) : .code(claimID: claim.claimId)
+        }
         catch { step = .failed(Self.text(error)) }
     }
 

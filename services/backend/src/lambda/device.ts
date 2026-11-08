@@ -16,6 +16,7 @@ export const DEVICE_REQUEST_TYPES = [
   "upload.grants",
   "sync.complete",
   "state.report",
+  "device.status",
 ] as const;
 export type DeviceRequestType = (typeof DEVICE_REQUEST_TYPES)[number];
 
@@ -117,6 +118,8 @@ export function createDeviceHandler(
         );
         return respond(result.status, result.body);
       }
+      if (type === "device.status")
+        return respond(200, await engine.deviceStatus(actor));
       if (type === "state.report") {
         const input = checked<W.DeviceState>("DeviceState", event.body);
         return respond(200, await engine.reportState(actor, input));

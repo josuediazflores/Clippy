@@ -58,7 +58,7 @@ export function implementedAppRoutes(): Array<{
     for (const [method, op] of Object.entries(operations))
       if (
         op.tags?.includes("app") &&
-        ["P03", "P04"].includes(op["x-implementation-phase"] ?? "")
+        ["P03", "P04", "P06"].includes(op["x-implementation-phase"] ?? "")
       )
         routes.push({ method: method.toUpperCase(), path: route });
   return routes;

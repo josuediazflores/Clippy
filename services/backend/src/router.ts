@@ -254,6 +254,10 @@ export function createRouter(engine: Engine, options: RouterOptions) {
       const input = checked<W.Preferences>("Preferences", payload);
       return mutation(200, (tx) => engine.preferences(actor, input, tx));
     }
+    if (route === "/v1/device-claims" && method === "POST") {
+      const input = checked<W.ClaimInput>("ClaimInput", payload);
+      return mutation(202, (tx) => engine.claimDevice(actor, input, tx));
+    }
     if (route === "/v1/devices" && method === "GET")
       return { status: 200, body: await engine.devices(actor, query) };
     if (segments[1] === "devices" && segments.length === 3 && method === "GET")

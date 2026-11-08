@@ -44,7 +44,7 @@ struct DeviceView: View {
         let status = DeviceStatus(model.detail?.state)
         VStack(alignment: .leading, spacing: 10) {
             Eyebrow(deviceID ?? "")
-            Text("Clippy").font(.system(.largeTitle, weight: .bold))
+            Wordmark(height: 46).padding(.vertical, 4)
             HStack(spacing: 8) {
                 Pill(symbol: status.state?.connectivity == "online" ? "wifi" : "wifi.slash", text: status.connectivity)
                 Pill(symbol: "clock", text: status.seen).accessibilityIdentifier(status.isStale ? "seen-stale" : "seen-fresh")
