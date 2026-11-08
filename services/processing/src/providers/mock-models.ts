@@ -26,6 +26,21 @@ export class MockSynthesisModel implements SynthesisModel {
         summary: `${n} captured moment${n === 1 ? "" : "s"} from this synthetic day.${input.coverage.missing ? " This recap covers part of the day." : ""}`,
         reflectionPrompt: "What would you like to remember about this day?",
         titles: [],
+        // One deterministic question for the first entry not yet asked or corrected.
+        questions: input.questionSlots
+          ? input.timeline
+              .filter(
+                (t) =>
+                  !input.alreadyAsked.includes(t.captureId) &&
+                  !input.corrections.some((c) => c.captureId === t.captureId),
+              )
+              .slice(0, 1)
+              .map((t) => ({
+                captureId: t.captureId,
+                prompt: "What were you doing here?",
+                options: ["Working at a desk", "Taking a break", "Reading"],
+              }))
+          : [],
       },
       usage: { inputTokens: 0, outputTokens: 0 },
       refused: false,

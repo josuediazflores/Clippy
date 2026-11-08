@@ -29,6 +29,8 @@ export interface PipelineConfig {
   minImageDimension: number;
   /** Stop before synthesis when provider failures exceed this fraction of a job. */
   providerFailureThreshold: number;
+  /** Clarifying questions (D50): sticky daily queue, 3 options each. */
+  questions: { maxPerDay: number };
   /** Approximate place labels from device GPS fixes (architecture section 9). */
   places: {
     provider: "none" | "amazon-location";
@@ -67,7 +69,7 @@ export const DEFAULT_CONFIG: PipelineConfig = {
     maxOutputTokens: 600,
     timeoutMs: 60_000,
     verified: null,
-    promptVersion: "obs_v1",
+    promptVersion: "obs_v2",
     preprocessingVersion: "raw_v1",
   },
   synthesis: {
@@ -75,12 +77,13 @@ export const DEFAULT_CONFIG: PipelineConfig = {
     maxOutputTokens: 4000,
     timeoutMs: 120_000,
     verified: null,
-    promptVersion: "recap_v2",
+    promptVersion: "recap_v3",
   },
   concurrency: 4,
   maxImageBytes: 3_750_000,
   minImageDimension: 32,
   providerFailureThreshold: 0.2,
+  questions: { maxPerDay: 5 },
   places: {
     provider: "none",
     precisionDecimals: 3,

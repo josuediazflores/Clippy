@@ -175,12 +175,15 @@ export class Pipeline {
         return observation;
       },
     };
+    // Cache the model's own "unusable" verdict so answer-triggered refreshes do not resend
+    // the photo; never cache screening rejections, refusals or provider errors.
     const outcome = await this.engine.observeCapture(
       ref.owner,
       ref.dayId,
       ref.jobId,
       ref.captureId,
       provider,
+      (o) => o.status === "ready" || reason === "unusable",
     );
     return {
       captureId: ref.captureId,
@@ -235,7 +238,8 @@ export class Pipeline {
       this.places,
       this.config.places ?? { ...NO_PLACE_POLICY },
     );
-    const input = synthesisInput(job, observations, placed.labels);
+    const policy = this.config.questions ?? { maxPerDay: 5 };
+    const input = synthesisInput(job, observations, placed.labels, policy);
     if (!input.coverage.observed) {
       await this.engine.failJob(
         ref.owner,
@@ -255,6 +259,7 @@ export class Pipeline {
       );
       return { status: "failed", code: "SYNTHESIS_DECLINED" };
     }
+    const questionStats = { questionsAsked: 0, questionsDropped: 0 };
     const recap = composeRecap(
       job,
       observations,
@@ -264,6 +269,8 @@ export class Pipeline {
         promptVersion: `${this.config.observation.promptVersion}+${this.config.synthesis.promptVersion}`,
       },
       placed.labels,
+      policy,
+      questionStats,
     );
     const usage: JobUsage = {
       observationCalls: ref.observations.reduce((n, o) => n + o.calls, 0),
@@ -291,6 +298,9 @@ export class Pipeline {
     this.metric("InputTokens", usage.inputTokens);
     this.metric("OutputTokens", usage.outputTokens);
     this.metric("PlaceLookups", placed.lookups);
+    this.metric("QuestionsAsked", questionStats.questionsAsked);
+    if (questionStats.questionsDropped)
+      this.metric("QuestionsDropped", questionStats.questionsDropped);
     if (placed.failures) this.metric("PlaceLookupFailures", placed.failures);
     if (saved === "superseded") return { status: "superseded" };
     return {

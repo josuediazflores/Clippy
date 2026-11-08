@@ -32,8 +32,16 @@ export interface SynthesisInput {
   date: string;
   timeZone: string;
   timeline: TimelineEntry[];
-  /** Owner-written corrections; authoritative over the timeline for that capture. */
-  corrections: Array<{ captureId: string; text: string }>;
+  /** Owner-written corrections; authoritative. `question` is what was asked, if this answers one. */
+  corrections: Array<{
+    captureId: string;
+    text: string;
+    question: string | null;
+  }>;
+  /** How many new clarifying questions the model may ask in this revision. */
+  questionSlots: number;
+  /** Captures already asked about today; never ask again. */
+  alreadyAsked: string[];
   coverage: { captured: number; observed: number; missing: number };
 }
 /** What a writing model may produce. Moments, evidence and coverage stay server-side. */
@@ -41,6 +49,8 @@ export interface RecapDraft {
   summary: string;
   reflectionPrompt: string;
   titles: Array<{ captureId: string; title: string }>;
+  /** Candidate clarifying questions; the server sanitizes, caps or drops them. */
+  questions: Array<{ captureId: string; prompt: string; options: string[] }>;
 }
 export interface SynthesisModel {
   readonly providerVersion: string;

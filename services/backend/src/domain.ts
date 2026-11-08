@@ -182,6 +182,35 @@ const tomb = (owner: string, target: DeletionTarget): Key =>
       ? "ACCOUNT"
       : `${target.kind.toUpperCase()}#${target.id}`,
   );
+/** Moments the owner has corrected or answered: any non-deleted correction with text. */
+export function correctedMoments(day: W.Day): Set<string> {
+  return new Set(
+    day.corrections.filter((c) => !c.deleted && c.text).map((c) => c.momentId),
+  );
+}
+
+/**
+ * Contract v1.1.0 publication rules for clarifying questions: each targets a moment in
+ * this recap, at most once, with distinct option labels; and a question that was not
+ * already asked in the previous revision never targets a moment the owner corrected.
+ */
+export function questionsValid(day: W.Day, result: W.Recap): boolean {
+  const questions = result.questions ?? [];
+  const moments = new Set(result.moments.map((m) => m.momentId));
+  const asked = new Set((day.recap?.questions ?? []).map((q) => q.momentId));
+  const corrected = correctedMoments(day);
+  const targets = new Set<string>();
+  for (const q of questions) {
+    if (!moments.has(q.momentId) || targets.has(q.momentId)) return false;
+    targets.add(q.momentId);
+    const labels = q.options.map((o) => o.label.trim().toLowerCase());
+    if (new Set(labels).size !== labels.length || labels.some((l) => !l))
+      return false;
+    if (!asked.has(q.momentId) && corrected.has(q.momentId)) return false;
+  }
+  return true;
+}
+
 export const jobIdFor = (
   owner: string,
   dayId: string,
@@ -1440,6 +1469,9 @@ export class Engine {
     jobId: string,
     captureId: string,
     provider: ObservationProvider,
+    /** Which results to cache. Default: ready only. A model's "unusable" verdict may opt in. */
+    cacheWhen: (observation: W.Observation) => boolean = (o) =>
+      o.status === "ready",
   ): Promise<{
     captureId: string;
     status: "ready" | "cached" | "failed" | "skipped";
@@ -1482,12 +1514,13 @@ export class Engine {
       )
     )
       throw new InvalidProviderOutput("observation evidence");
+    if (cacheWhen(observation))
+      await this.run(async (t) => {
+        await t.get(cacheItem);
+        t.put(cacheItem, observation);
+      });
     if (observation.status !== "ready")
       return { captureId, status: "failed", reason: "unusable" };
-    await this.run(async (t) => {
-      await t.get(cacheItem);
-      t.put(cacheItem, observation);
-    });
     return { captureId, status: "ready", reason: null };
   }
 
@@ -1568,7 +1601,8 @@ export class Engine {
       ) ||
       result.coverage.captured !== job.captures.length ||
       result.coverage.observed !== result.moments.length ||
-      result.coverage.missing !== job.captures.length - result.moments.length
+      result.coverage.missing !== job.captures.length - result.moments.length ||
+      !questionsValid(job.day, result)
     )
       throw new Fault(422, "INVALID_REQUEST");
   }

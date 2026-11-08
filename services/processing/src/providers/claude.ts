@@ -164,7 +164,7 @@ export class ClaudeSynthesisModel implements SynthesisModel {
     );
     if (response.stop_reason === "refusal")
       return {
-        draft: { summary: "", reflectionPrompt: "", titles: [] },
+        draft: { summary: "", reflectionPrompt: "", titles: [], questions: [] },
         usage: usage(response),
         refused: true,
       };
@@ -179,6 +179,14 @@ export class ClaudeSynthesisModel implements SynthesisModel {
       !value.titles.every(
         (t) =>
           t && typeof t.captureId === "string" && typeof t.title === "string",
+      ) ||
+      !Array.isArray(value.questions) ||
+      !value.questions.every(
+        (q) =>
+          q &&
+          typeof q.captureId === "string" &&
+          typeof q.prompt === "string" &&
+          isStringArray(q.options),
       )
     )
       throw new InvalidProviderOutput("recap shape");

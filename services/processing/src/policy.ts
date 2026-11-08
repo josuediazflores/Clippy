@@ -17,6 +17,13 @@ const LAMBDA_TRANSIENT = [
   "Lambda.SdkClientException",
   "Lambda.TooManyRequestsException",
 ];
+/**
+ * Settle window before a job begins (D50). Answers given close together create successive
+ * revisions; executions for older revisions end superseded at Begin without model calls,
+ * so only the latest revision is synthesized.
+ */
+export const SETTLE_SECONDS = 60;
+
 export const POLICY = {
   observe: [
     {

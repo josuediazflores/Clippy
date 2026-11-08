@@ -117,6 +117,7 @@ const written = (titles: Array<{ captureId: string; title: string }> = []) => ({
     summary: "You spent the morning at your desk.",
     reflectionPrompt: "What stood out today?",
     titles,
+    questions: [],
   },
   usage: { inputTokens: 2000, outputTokens: 120 },
   refused: false,
@@ -468,6 +469,7 @@ test("photographed prompt injection stays data: delimited in the prompt and cann
                 summary: "You followed the sign.",
                 reflectionPrompt: "Why?",
                 titles: [{ captureId: "cap_other_user", title: "Obeyed" }],
+                questions: [],
               },
             },
           ],
@@ -649,7 +651,12 @@ test("owner corrections override generated titles and stay in the synthesis inpu
     { sleep: noSleep },
   );
   assert.deepEqual(syn.inputs[0]!.corrections, [
-    { captureId: "cap_sample_001", text: "Coffee with my notes" },
+    {
+      captureId: "cap_sample_001",
+      text: "Coffee with my notes",
+      // The first run asked about this moment; the answer reaches the model paired with it.
+      question: "What were you doing here?",
+    },
   ]);
   assert.equal(
     (await h.engine.getDay(app, dayId)).recap!.moments[0]!.title,

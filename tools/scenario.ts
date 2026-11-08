@@ -195,6 +195,41 @@ async function main(): Promise<void> {
   assert.equal(ready.reflections[0]?.revision, 1);
   assert.equal(ready.corrections[0]?.text, "A quiet break");
   assert.equal(ready.corrections[0]?.revision, 1);
+  // Contract v1.1.0: one open clarifying question with 3 options, kept across revisions.
+  assert.deepEqual(
+    ready.recap?.questions?.map((q) => [q.momentId, q.options.length]),
+    [["moment_cap_sample_002", 3]],
+  );
+  if (!ui) {
+    // Without the simulator, answer over HTTP; with it, the app answers (verified below).
+    await api(
+      "PUT",
+      "/v1/moments/moment_cap_sample_002/corrections/correction_moment_cap_sample_002",
+      {
+        schemaVersion: 1,
+        operationId: "scenario_answer",
+        expectedRevision: 0,
+        text: "Taking a break",
+        deleted: false,
+      },
+      "scenario_answer",
+    );
+    await api("POST", "/local/process", {
+      dayId: "day_20261107",
+      mode: "ready",
+    });
+    const answered = await api<Day>("GET", "/v1/days/day_20261107");
+    assert.equal(
+      answered.recap?.moments.find(
+        (m) => m.momentId === "moment_cap_sample_002",
+      )?.title,
+      "Taking a break",
+    );
+    assert.deepEqual(
+      answered.recap?.questions?.map((q) => q.momentId),
+      ["moment_cap_sample_002"],
+    );
+  }
   const report: Record<string, unknown> = {
     evidence: "local synthetic adapters only",
     firstSnapshotMoments: 2,
@@ -205,6 +240,7 @@ async function main(): Promise<void> {
     reflectionPreserved: true,
     correctionPreserved: true,
     duplicateReplayPassed: true,
+    questionAnswered: !ui,
     interruptedUploadResumed: true,
     states: ["empty", "pending", "partial", "ready", "failure"],
     ui: "not_run",
@@ -276,8 +312,19 @@ async function main(): Promise<void> {
         ?.text,
       "UI correction saved",
     );
+    assert.equal(
+      edited.corrections.find((r) => r.momentId === "moment_cap_sample_002")
+        ?.text,
+      "Taking a break",
+      "the app answered the clarifying question",
+    );
+    report.questionAnswered = true;
     assert.equal(edited.reflections[0]?.revision, 2);
-    assert.equal(edited.corrections[0]?.revision, 2);
+    assert.equal(
+      edited.corrections.find((r) => r.momentId === "moment_cap_sample_001")
+        ?.revision,
+      2,
+    );
     report.ui = "passed";
     report.uiWritesVerified = true;
     report.simulator = simulator;

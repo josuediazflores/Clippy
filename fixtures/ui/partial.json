@@ -31,6 +31,23 @@
         ]
       }
     ],
+    "questions": [
+      {
+        "momentId": "moment_cap_sample_001",
+        "prompt": "What were you doing here?",
+        "options": [
+          {
+            "label": "Working at a desk"
+          },
+          {
+            "label": "Taking a break"
+          },
+          {
+            "label": "Reading"
+          }
+        ]
+      }
+    ],
     "reflectionPrompt": "What would you like to remember about this day?",
     "coverage": {
       "captured": 2,

@@ -44,7 +44,7 @@ interface Plan {
   prices: Record<string, TokenPrice>;
 }
 const STOP_FRACTION = 0.2;
-const promptVersions = { observation: "obs_v1", synthesis: "recap_v1" };
+const promptVersions = { observation: "obs_v2", synthesis: "recap_v3" };
 
 function worstCaseUsd(plan: Plan, imageTokens: number[]): number {
   const price = (id: string) => {

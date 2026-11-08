@@ -11,7 +11,11 @@ import {
   aws_stepfunctions_tasks as tasks,
 } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { POLICY, type RetryRule } from "../../services/processing/src/policy";
+import {
+  POLICY,
+  SETTLE_SECONDS,
+  type RetryRule,
+} from "../../services/processing/src/policy";
 import {
   pipelineVersion,
   type PipelineConfig,
@@ -205,7 +209,10 @@ export class RecapWorkflow extends Construct {
     });
     publish.next(new sfn.Succeed(this, "Done"));
 
-    const definition = begin.next(
+    const settle = new sfn.Wait(this, "Settle", {
+      time: sfn.WaitTime.duration(Duration.seconds(SETTLE_SECONDS)),
+    });
+    const definition = settle.next(begin).next(
       new sfn.Choice(this, "NeedsWork")
         .when(
           sfn.Condition.stringEquals("$.begin.status", "observing"),

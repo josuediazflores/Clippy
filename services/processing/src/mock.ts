@@ -50,6 +50,38 @@ export class MockRecapProvider implements RecapProvider {
           a.momentId.localeCompare(b.momentId),
       );
     const missing = captures.length - available.length;
+    // Contract v1.1.0: one sticky clarifying question. Keep any already-asked question
+    // whose moment still exists; otherwise ask once about an uncorrected moment.
+    const momentIds = new Set(moments.map((m) => m.momentId));
+    const corrected = new Set(
+      day.corrections
+        .filter((c) => !c.deleted && c.text)
+        .map((c) => c.momentId),
+    );
+    const asked = (day.recap?.questions ?? []).filter((q) =>
+      momentIds.has(q.momentId),
+    );
+    // The latest uncorrected moment, so a demo day keeps an open question after the
+    // owner corrects an earlier moment.
+    const fresh = [...moments]
+      .reverse()
+      .find((m) => !corrected.has(m.momentId));
+    const questions =
+      asked.length || day.recap?.questions?.length
+        ? asked
+        : fresh
+          ? [
+              {
+                momentId: fresh.momentId,
+                prompt: "What were you doing here?",
+                options: [
+                  { label: "Working at a desk" },
+                  { label: "Taking a break" },
+                  { label: "Reading" },
+                ],
+              },
+            ]
+          : [];
     return {
       schemaVersion: 1,
       dayId: day.dayId,
@@ -59,6 +91,7 @@ export class MockRecapProvider implements RecapProvider {
       state: missing ? "partial" : "ready",
       summary: `${available.length} captured moment${available.length === 1 ? "" : "s"} from this synthetic day. ${missing ? "Some observations are unavailable." : "Your recap is up to date with this snapshot."}`,
       moments,
+      ...(questions.length ? { questions } : {}),
       reflectionPrompt: "What would you like to remember about this day?",
       coverage: {
         captured: captures.length,

@@ -112,6 +112,7 @@ test("the model sees an area label, never coordinates; the moment detail carries
           summary: "You were near the harbor.",
           reflectionPrompt: "What stood out?",
           titles: [],
+          questions: [],
         },
         usage: { inputTokens: 1, outputTokens: 1 },
         refused: false,

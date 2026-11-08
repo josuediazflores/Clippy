@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { Match, Template } from "aws-cdk-lib/assertions";
 import type { DataStack } from "./data-stack";
 import { implementedAppRoutes, type RuntimeStack } from "./runtime-stack";
-import { POLICY } from "../../services/processing/src/policy";
+import { POLICY, SETTLE_SECONDS } from "../../services/processing/src/policy";
 
 type Resource = {
   Type: string;
@@ -352,6 +352,19 @@ export function assertTemplates(data: DataStack, runtime: RuntimeStack) {
     };
     assert.equal(logging.IncludeExecutionData, false);
     assert.equal(logging.Level, "ERROR");
+  });
+  check(() => {
+    // Settle window first (D50): rapid answers batch into one synthesis.
+    assert.equal(definition.StartAt, "Settle");
+    const settle = states.Settle as {
+      Type: string;
+      Seconds: number;
+      Next: string;
+    };
+    assert.deepEqual(
+      [settle.Type, settle.Seconds, settle.Next],
+      ["Wait", SETTLE_SECONDS, "Begin"],
+    );
   });
   check(() => {
     const map = states.ObserveCaptures as { MaxConcurrency: number };
