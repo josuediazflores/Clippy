@@ -42,8 +42,7 @@ final class AppModel {
         case .fixture:
             services = try FixtureServices(data: config.resource(config.fixtureName))
         case .demo:
-            let seed = try JSONDecoder().decode(Day.self, from: config.resource("ready"))
-            services = DemoServices(seed: [seed])
+            services = DemoServices(seed: DemoJournal.days())
         case .local:
             services = config.simulateOffline ? OfflineServices() : try HTTPClippyClient(baseURL: config.localBaseURL, auth: StaticBearer(token: config.localUser), schema: schema, transitions: transitions)
         case .cloud:

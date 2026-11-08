@@ -243,6 +243,32 @@ final class AuthTests: XCTestCase {
     }
 }
 
+final class DemoJournalTests: XCTestCase {
+    private var root: URL { URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent() }
+
+    func testDemoDaysAreValidAndTodayRunsFromAfternoonToNight() throws {
+        let validator = try ContractValidator(schema: Data(contentsOf: root.appendingPathComponent("contracts/schema.json")),
+                                              transitions: Data(contentsOf: root.appendingPathComponent("contracts/transitions.json")))
+        let zone = TimeZone(identifier: "America/Los_Angeles")!
+        let now = try XCTUnwrap(Instants.date("2026-11-08T02:30:00Z")) // 6:30 PM Pacific, Nov 7
+        let days = DemoJournal.days(now: now, zone: zone)
+        XCTAssertEqual(days.map(\.dayId), ["day_20261107", "day_20261106", "day_20261105"])
+        for day in days {
+            // Swift's synthesized Codable omits nil optionals; the schema wants failureCode present as null.
+            var json = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(day)) as? [String: Any])
+            json["failureCode"] = json["failureCode"] ?? NSNull()
+            XCTAssertNoThrow(try validator.validate("Day", data: JSONSerialization.data(withJSONObject: json)), day.dayId)
+        }
+        let today = days[0]
+        XCTAssertEqual(today.timeZone, "America/Los_Angeles")
+        XCTAssertEqual(today.startAt, "2026-11-07T08:00:00Z")
+        let times = today.recap!.moments.map { Instants.clock($0.capturedAt, zone: today.timeZone) }
+        XCTAssertEqual(times.first?.replacingOccurrences(of: "\u{202F}", with: " "), "3:04 PM")
+        XCTAssertEqual(today.recap?.moments.last?.title, "Lights out")
+        XCTAssertEqual(today.recap?.coverage.captured, 9)
+    }
+}
+
 final class DemoServicesTests: XCTestCase {
     final class Clock: @unchecked Sendable { var now = Date(timeIntervalSince1970: 1_800_000_000) }
 

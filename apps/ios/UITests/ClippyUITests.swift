@@ -119,6 +119,13 @@ final class ClippyUITests: XCTestCase {
     func testDemoPairingSyncAndSettings() {
         let app = launch(["CLIPPY_MODE": "demo", "CLIPPY_RESET": "1"])
         XCTAssertTrue(app.staticTexts["state-ready"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Lights out"].exists, "demo day runs into the night")
+        screenshot("demo-today", app)
+        app.swipeUp()
+        screenshot("demo-today-evening", app)
+        app.buttons["History"].tap()
+        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'day-'")).count >= 3)
+        screenshot("demo-history", app)
         app.buttons["Device"].tap()
         XCTAssertTrue(app.buttons["sync-now"].waitForExistence(timeout: 5))
         screenshot("demo-device", app)
