@@ -1434,6 +1434,13 @@
           },
           "maxItems": 200
         },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ClarifyingQuestion"
+          },
+          "maxItems": 10
+        },
         "reflectionPrompt": {
           "type": "string",
           "minLength": 1,
@@ -1466,6 +1473,47 @@
         "coverage",
         "providerVersion",
         "promptVersion"
+      ],
+      "additionalProperties": false
+    },
+    "ClarifyingQuestion": {
+      "type": "object",
+      "properties": {
+        "momentId": {
+          "$ref": "#/$defs/Id"
+        },
+        "prompt": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/QuestionOption"
+          },
+          "minItems": 2,
+          "maxItems": 3
+        }
+      },
+      "required": [
+        "momentId",
+        "prompt",
+        "options"
+      ],
+      "additionalProperties": false
+    },
+    "QuestionOption": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 60
+        }
+      },
+      "required": [
+        "label"
       ],
       "additionalProperties": false
     },

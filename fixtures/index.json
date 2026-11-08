@@ -190,5 +190,47 @@
     "schema": "Capture",
     "valid": true,
     "rule": "time"
+  },
+  {
+    "file": "fixtures/valid/recap_questions.json",
+    "schema": "Recap",
+    "valid": true,
+    "rule": "questions"
+  },
+  {
+    "file": "fixtures/invalid/questions_too_many.json",
+    "schema": "Recap",
+    "valid": false,
+    "rule": "questions"
+  },
+  {
+    "file": "fixtures/invalid/question_one_option.json",
+    "schema": "Recap",
+    "valid": false,
+    "rule": "questions"
+  },
+  {
+    "file": "fixtures/invalid/question_four_options.json",
+    "schema": "Recap",
+    "valid": false,
+    "rule": "questions"
+  },
+  {
+    "file": "fixtures/invalid/question_empty_label.json",
+    "schema": "Recap",
+    "valid": false,
+    "rule": "questions"
+  },
+  {
+    "file": "fixtures/invalid/question_long_label.json",
+    "schema": "Recap",
+    "valid": false,
+    "rule": "questions"
+  },
+  {
+    "file": "fixtures/invalid/question_extra_field.json",
+    "schema": "Recap",
+    "valid": false,
+    "rule": "questions"
   }
 ]

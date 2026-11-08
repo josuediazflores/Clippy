@@ -1,4 +1,4 @@
-# Contract v1.0.0
+# Contract v1.1.0
 
 `openapi.json` (OpenAPI 3.1) and `schema.json` (JSON Schema 2020-12) are authoritative wire definitions. `transitions.json` defines legal state changes. `fixtures/index.json` declares accepted/rejected examples; `fixtures/transitions.json` tests every state pair plus a stale revision. JSON Schema covers structure; the semantic constraints below are also mandatory. `tools/validate_contracts.py` is the initial executable semantic reference. P02 added TypeScript/Swift agreement checks; P03 exercises ownership, bytes, receipts, deletion and publication against local adapters.
 
@@ -63,3 +63,16 @@ Run `uv run --python 3.12.13 --with jsonschema==4.25.1 --with openapi-spec-valid
 The wire version is unchanged. Generated Swift names `ZoneName` and `CaptureObservation` avoid collisions with Foundation and the Observation framework; JSON names remain unchanged. Stable local moment IDs use `moment_` plus a capture ID when it fits, otherwise a deterministic hash. Consumers treat the result as opaque. Recap revision counters remain monotonic even when deletion clears the current generated body. Operation receipts hold immutable copies rather than references to evolving sync records.
 
 Routes marked P04/P05/P07/P09/P10 in OpenAPI remain contract definitions and return `NOT_IMPLEMENTED` locally. Local HTTP transport, synchronous explicit mock processing, fixed synthetic time, JSON file persistence, and synthetic actor tokens are P03 adapters only. The app's offline state is presentation state over a saved `Day`, not an additional server enum.
+
+## v1.1.0: clarifying questions (additive, 2026-11-07)
+
+`Recap` gains an optional `questions` array (at most 10) of `ClarifyingQuestion` values: `{momentId, prompt (1 to 200 characters), options (2 or 3 `QuestionOption` values)}`. Each `QuestionOption` is `{label (1 to 60 characters)}`. Options are objects so a later version can add an optional calendar `evidence` reference without breaking consumers. `schemaVersion` stays `1`.
+
+Semantics:
+- **Answers are corrections.** The client saves the chosen label, or text the owner typed, through the existing `PUT /v1/moments/{momentId}/corrections/{correctionId}` route. No new write route exists. A question whose moment has a live (non-deleted) correction is answered.
+- **Questions are a sticky, ordered queue for the day.** Once a question appears in a recap revision, later revisions keep it, in the same order, while its moment exists. New questions are appended. Clients show the first unanswered question they have not skipped locally.
+- **Publication rules** (enforced by the backend): every `momentId` exists in the same recap's `moments`, with no duplicates. A question that was not in the previous recap revision never targets a moment that already has a live correction.
+- **Duplicates and server-side length limits:** option labels are checked for duplicates by the producer, not the schema (`uniqueItems` is not used because the Swift validator ignores it).
+
+Migration: the field is optional. Absent means no questions, and v1.0 recap fixtures remain valid. Consumers must accept it before any producer emits it: the iPhone app validates live responses against its bundled `schema.json`, which rejects unknown fields. Rebuild the app with this schema before deploying a backend that emits questions. Clients ignore questions they cannot match to a moment.
+

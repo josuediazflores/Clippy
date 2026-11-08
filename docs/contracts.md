@@ -1,6 +1,6 @@
 # Interface contracts
 
-Status: v1.0.0 frozen in P01. [Executable contracts](../contracts/README.md), [OpenAPI](../contracts/openapi.json), and [JSON Schema](../contracts/schema.json) are authoritative. The original proposal below is retained as architecture context; use executable fixtures rather than its illustrative IDs/hashes. P03 implements only the local subset marked in OpenAPI.
+Status: v1.0.0 frozen in P01; v1.1.0 (2026-11-07) adds optional clarifying questions to `Recap` (see the executable README). [Executable contracts](../contracts/README.md), [OpenAPI](../contracts/openapi.json), and [JSON Schema](../contracts/schema.json) are authoritative. The original proposal below is retained as architecture context; use executable fixtures rather than its illustrative IDs/hashes. P03 implements only the local subset marked in OpenAPI.
 
 ## 1. Common conventions
 
