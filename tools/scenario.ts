@@ -2,15 +2,13 @@ import fs from "node:fs";
 import path from "node:path";
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
+import { Engine } from "../services/backend/src/domain";
 import {
-  Engine,
-  initialState,
-  type LocalState,
-} from "../services/backend/src/domain";
-import {
-  LocalJournalStore,
+  LocalGrantSigner,
   LocalObjectStore,
 } from "../services/backend/src/adapters/local-store";
+import { FileStore } from "../services/backend/src/store/memory";
+import { seedSynthetic } from "../services/backend/src/seed";
 import { createLocalServer } from "../services/backend/src/http";
 import { validate } from "../services/backend/src/contracts";
 import type { Day } from "../services/backend/src/Wire";
@@ -22,13 +20,13 @@ fs.rmSync(directory, { recursive: true, force: true });
 fs.mkdirSync(directory, { recursive: true });
 fs.mkdirSync(evidence, { recursive: true });
 fs.mkdirSync("fixtures/ui", { recursive: true });
-const engine = new Engine(
-  new LocalJournalStore<LocalState>(
-    path.join(directory, "state.json"),
-    initialState,
-  ),
-  new LocalObjectStore(path.join(directory, "objects")),
-);
+const store = new FileStore(path.join(directory, "state.json"));
+const engine = new Engine({
+  store,
+  objects: new LocalObjectStore(path.join(directory, "objects")),
+  signer: new LocalGrantSigner(),
+  dispatch: "inline",
+});
 const server = createLocalServer(engine);
 const run = async (
   command: string,
@@ -67,6 +65,7 @@ const deadline = setTimeout(() => {
   server.close();
 }, 900000);
 async function main(): Promise<void> {
+  await seedSynthetic(store);
   await new Promise<void>((resolve, reject) => {
     server.once("error", reject);
     server.listen(ui ? 8787 : 0, "127.0.0.1", resolve);
@@ -115,21 +114,21 @@ async function main(): Promise<void> {
   ];
   await run("uv", [...python, "--stop-after", "first-upload"]);
   assert.equal(
-    engine.getDay({ owner: "user_a", deviceId: null }, "day_20261107").state,
+    (await engine.getDay({ owner: "user_a", deviceId: null }, "day_20261107"))
+      .state,
     "empty",
   );
   await run("uv", python);
   const pending = await api<Day>("GET", "/v1/days/day_20261107");
   save("pending", pending);
   // Branch only the local adapter state for deterministic UI fault fixtures.
-  const baseline = structuredClone(engine.state);
+  const baseline = store.snapshot();
   await api("POST", "/local/process", {
     dayId: "day_20261107",
     mode: "partial",
   });
   save("partial", await api<Day>("GET", "/v1/days/day_20261107"));
-  engine.state = structuredClone(baseline);
-  engine.flush();
+  store.restore(baseline);
   const failure = await fetch(base + "/local/process", {
     method: "POST",
     headers: {
@@ -141,8 +140,7 @@ async function main(): Promise<void> {
   assert.equal(failure.status, 503);
   await failure.arrayBuffer();
   save("failure", await api<Day>("GET", "/v1/days/day_20261107"));
-  engine.state = structuredClone(baseline);
-  engine.flush();
+  store.restore(baseline);
   await api("POST", "/local/process", { dayId: "day_20261107", mode: "ready" });
   const first = await api<Day>("GET", "/v1/days/day_20261107");
   assert.equal(first.recap?.moments.length, 2);

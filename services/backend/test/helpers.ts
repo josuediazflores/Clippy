@@ -2,38 +2,127 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import type { TestContext } from "node:test";
+import { Engine, type Actor, type EngineOptions } from "../src/domain";
+import { createLocalEngine } from "../src/local-engine";
+import type { LocalObjectStore } from "../src/adapters/local-store";
+import type { FileStore } from "../src/store/memory";
 import {
-  Engine,
-  initialState,
-  type LocalState,
-  type Actor,
-} from "../src/domain";
-import {
-  LocalJournalStore,
-  LocalObjectStore,
-} from "../src/adapters/local-store";
+  TABLES,
+  type Item,
+  type Key,
+  type Store,
+  type Table,
+} from "../src/store/store";
+import { decodeRow } from "../src/store/dynamo";
+import { ScanCommand, type AttributeValue } from "@aws-sdk/client-dynamodb";
+import { createLocalTables, dynamoLocalClient } from "./dynamo-local";
+import { objectKey } from "../src/store/keys";
 import { sha256 } from "../src/contracts";
 import type * as W from "../src/Wire";
 
 export const app: Actor = { owner: "user_a", deviceId: null };
 export const device: Actor = { owner: "user_a", deviceId: "dev_sample_001" };
-export function setup(t: TestContext): {
+export interface Harness {
   engine: Engine;
+  store: Store;
+  objects: LocalObjectStore;
   directory: string;
-  restart: () => Engine;
-} {
+  restart: () => Promise<Engine>;
+  /** Current persisted items, read fresh from the backing store. */
+  all: (table?: Table) => Promise<Item[]>;
+  /** Serialized persisted state, for privacy assertions. */
+  dump: () => Promise<string>;
+  /** Present only for the file-backed memory store (fault-injection hooks). */
+  memory: FileStore | null;
+}
+/** CLIPPY_TEST_STORE=dynamodb runs the same suites against DynamoDB Local. */
+export const usingDynamo = (): boolean =>
+  process.env.CLIPPY_TEST_STORE === "dynamodb";
+export async function setup(
+  t: TestContext,
+  options: Partial<EngineOptions> = {},
+): Promise<Harness> {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "clippy-test-"));
   t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
-  const restart = (): Engine =>
-    new Engine(
-      new LocalJournalStore<LocalState>(
-        path.join(directory, "state.json"),
-        initialState,
-      ),
-      new LocalObjectStore(path.join(directory, "objects")),
-    );
-  return { engine: restart(), directory, restart };
+  if (usingDynamo()) {
+    const client = dynamoLocalClient()!;
+    const tables = await createLocalTables(client);
+    t.after(tables.drop);
+    const created = await createLocalEngine(directory, options, tables.store);
+    const all = async (table?: Table): Promise<Item[]> => {
+      const items: Item[] = [];
+      for (const name of TABLES.filter((n) => !table || n === table)) {
+        let start: Record<string, AttributeValue> | undefined;
+        do {
+          const page = await client.send(
+            new ScanCommand({
+              TableName: tables.names[name],
+              ConsistentRead: true,
+              ExclusiveStartKey: start,
+            }),
+          );
+          items.push(...(page.Items ?? []).map((row) => decodeRow(name, row)));
+          start = page.LastEvaluatedKey;
+        } while (start);
+      }
+      return items;
+    };
+    return {
+      ...created,
+      directory,
+      restart: async () =>
+        (await createLocalEngine(directory, options, tables.store)).engine,
+      all,
+      dump: async () => JSON.stringify(await all()),
+      memory: null,
+    };
+  }
+  const created = await createLocalEngine(directory, options);
+  const file = path.join(directory, "state.json");
+  const read = (): Item[] =>
+    fs.existsSync(file)
+      ? (JSON.parse(fs.readFileSync(file, "utf8")) as Item[])
+      : [];
+  return {
+    ...created,
+    directory,
+    restart: async () => (await createLocalEngine(directory, options)).engine,
+    all: async (table) => read().filter((i) => !table || i.table === table),
+    dump: async () =>
+      fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "",
+    memory: created.store,
+  };
 }
+/** Count persisted items whose sort key starts with a prefix. */
+export const count = async (
+  h: Harness,
+  prefix: string,
+  table?: Table,
+): Promise<number> =>
+  (await h.all(table)).filter((i) => i.sk.startsWith(prefix)).length;
+/** Rewrite a stored record in place to simulate an external change. */
+export async function patch<T>(
+  store: Store,
+  key: Key,
+  change: (data: T) => void,
+): Promise<void> {
+  const item = (await store.get(key))!;
+  const data = structuredClone(item.data) as T;
+  change(data);
+  await store.transact([
+    {
+      op: "put",
+      item: { ...item, v: item.v + 1, data },
+      condition: { version: item.v },
+    },
+  ]);
+}
+export const keyFor = (
+  snapshotId: string,
+  uploadId: string,
+  owner = "user_a",
+) => objectKey(owner, snapshotId, uploadId);
+
 export function capture(
   sequence: number,
   at?: string,
@@ -62,7 +151,12 @@ export function capture(
     },
   };
 }
-export function upload(
+export const putHeaders = (c: { value: W.Capture }) => ({
+  "if-none-match": "*",
+  "x-clippy-sha256": c.value.sha256,
+  "content-type": c.value.contentType,
+});
+export async function upload(
   engine: Engine,
   captures: ReturnType<typeof capture>[],
   options: {
@@ -87,14 +181,10 @@ export function upload(
     captureCount: entries.length,
     configurationRevision: 1,
   };
-  const snapshot = engine.mutate(
-    device,
-    "POST",
-    "/begin",
-    key,
-    begin,
-    201,
-    () => engine.begin(device, begin),
+  const snapshot = (
+    await engine.mutate(device, "POST", "/begin", key, begin, 201, (tx) =>
+      engine.begin(device, begin, tx),
+    )
   ).body;
   const input: W.GrantRequest = {
     schemaVersion: 1,
@@ -108,18 +198,21 @@ export function upload(
       contentType: c.contentType,
     })),
   };
-  const grants = engine.mutate(device, "POST", "/grants", key, input, 200, () =>
-    engine.grants(device, snapshot.snapshotId, input, "http://127.0.0.1:8787"),
+  const grants = (
+    await engine.mutate(
+      device,
+      "POST",
+      "/grants",
+      key,
+      input,
+      200,
+      (tx) => engine.grants(device, snapshot.snapshotId, input, undefined, tx),
+      engine.grantCodec(device),
+    )
   ).body.items;
   for (const [index, c] of captures.entries())
-    if (options.omit !== c.value.captureId) {
-      const g = grants[index]!;
-      engine.put(device, g.uploadId, c.bytes, {
-        "if-none-match": "*",
-        "x-clippy-sha256": c.value.sha256,
-        "content-type": c.value.contentType,
-      });
-    }
+    if (options.omit !== c.value.captureId)
+      await engine.put(device, grants[index]!.uploadId, c.bytes, putHeaders(c));
   const manifest: W.Manifest = {
     ...snapshot,
     trigger: begin.trigger,
@@ -147,22 +240,26 @@ export function upload(
       },
     ],
   };
-  const manifestGrant = engine.mutate(
-    device,
-    "POST",
-    "/manifest",
-    key,
-    manifestInput,
-    200,
-    () =>
-      engine.grants(
-        device,
-        snapshot.snapshotId,
-        manifestInput,
-        "http://127.0.0.1:8787",
-      ),
+  const manifestGrant = (
+    await engine.mutate(
+      device,
+      "POST",
+      "/manifest",
+      key,
+      manifestInput,
+      200,
+      (tx) =>
+        engine.grants(
+          device,
+          snapshot.snapshotId,
+          manifestInput,
+          undefined,
+          tx,
+        ),
+      engine.grantCodec(device),
+    )
   ).body.items[0]!;
-  engine.put(device, manifestGrant.uploadId, bytes, {
+  await engine.put(device, manifestGrant.uploadId, bytes, {
     "if-none-match": "*",
     "x-clippy-sha256": sha256(bytes),
     "content-type": "application/json",
@@ -174,9 +271,17 @@ export function upload(
     manifestUploadId: manifestGrant.uploadId,
     manifestSHA256: sha256(bytes),
   };
-  const finish = (): W.Receipt =>
-    engine.mutate(device, "POST", "/complete", key, complete, 200, () =>
-      engine.complete(device, snapshot.snapshotId, complete),
+  const finish = async (): Promise<W.Receipt> =>
+    (
+      await engine.mutate(
+        device,
+        "POST",
+        "/complete",
+        key,
+        complete,
+        200,
+        (tx) => engine.complete(device, snapshot.snapshotId, complete, tx),
+      )
     ).body;
   return { snapshot, grants, manifest, complete, finish, manifestGrant };
 }

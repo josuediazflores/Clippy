@@ -1,0 +1,44 @@
+{
+  "approvedBy": "",
+  "approvedAt": "",
+  "region": "us-east-1",
+  "samples": 8,
+  "repetitions": 3,
+  "maxUsd": 2,
+  "observationModels": [
+    {
+      "id": "anthropic.claude-haiku-5-5",
+      "maxOutputTokens": 600,
+      "timeoutMs": 60000,
+      "verified": null
+    }
+  ],
+  "synthesisModels": [
+    {
+      "id": "anthropic.claude-opus-5-5",
+      "maxOutputTokens": 4000,
+      "timeoutMs": 120000,
+      "verified": null
+    },
+    {
+      "id": "anthropic.claude-sonnet-5-5",
+      "maxOutputTokens": 4000,
+      "timeoutMs": 120000,
+      "verified": null
+    }
+  ],
+  "prices": {
+    "anthropic.claude-haiku-5-5": {
+      "input": 0.11,
+      "output": 0.55
+    },
+    "anthropic.claude-opus-5-5": {
+      "input": 4.4,
+      "output": 22.0
+    },
+    "anthropic.claude-sonnet-5-5": {
+      "input": 2.2,
+      "output": 11.0
+    }
+  }
+}
