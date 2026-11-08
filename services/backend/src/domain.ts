@@ -187,6 +187,55 @@ const tomb = (owner: string, target: DeletionTarget): Key =>
       ? "ACCOUNT"
       : `${target.kind.toUpperCase()}#${target.id}`,
   );
+/**
+ * Journal day of a capture: its local calendar date from the device-reported offset (D52).
+ * UTC captures map to their UTC date exactly as before.
+ */
+export const localDayId = (capture: W.Capture): string =>
+  "day_" +
+  new Date(Date.parse(capture.capturedAt) + capture.utcOffsetSeconds * 1000)
+    .toISOString()
+    .slice(0, 10)
+    .replaceAll("-", "");
+const isZone = (zone: string): boolean => {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: zone });
+    return true;
+  } catch {
+    return false;
+  }
+};
+/** UTC offset (ms) of an IANA zone at an instant. */
+const zoneOffset = (zone: string, at: number): number => {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: zone,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(new Date(at));
+  const v = (type: string) => Number(parts.find((p) => p.type === type)!.value);
+  return (
+    Date.UTC(
+      v("year"),
+      v("month") - 1,
+      v("day"),
+      v("hour"),
+      v("minute"),
+      v("second"),
+    ) -
+    Math.floor(at / 1000) * 1000
+  );
+};
+/** The instant of local midnight in `zone` for the calendar date at UTC midnight `utcDate`. */
+const zonedMidnight = (utcDate: number, zone: string): string => {
+  let at = utcDate - zoneOffset(zone, utcDate);
+  at = utcDate - zoneOffset(zone, at); // second pass settles DST transitions
+  return new Date(at).toISOString().replace(".000Z", "Z");
+};
 export const jobIdFor = (
   owner: string,
   dayId: string,
@@ -813,9 +862,7 @@ export class Engine {
       const entries = manifest.captures.map((entry) => {
         const { uploadId, ...capture } = entry;
         const dayId =
-          capture.clockQuality === "untrusted"
-            ? null
-            : "day_" + capture.capturedAt.slice(0, 10).replaceAll("-", "");
+          capture.clockQuality === "untrusted" ? null : localDayId(capture);
         return { uploadId, capture: capture as W.Capture, dayId };
       });
       const grants = await t.getMany<GrantRecord>(
@@ -1001,6 +1048,10 @@ export class Engine {
     const days = [
       ...new Set(snapshot.accepted.flatMap((e) => (e.dayId ? [e.dayId] : []))),
     ];
+    // A new day takes the zone of its first capture (D52); existing days keep their boundaries.
+    const zoneOf = (dayId: string): string =>
+      snapshot.accepted.find((e) => e.dayId === dayId)?.capture.timeZone ??
+      "UTC";
     for (const dayId of days)
       await this.run(async (t) => {
         const applied = keys.applied(owner, dayId, snapshotId);
@@ -1012,7 +1063,7 @@ export class Engine {
         if (deleted.some(Boolean)) return;
         const meta =
           (await t.get<DayMeta>(keys.dayMeta(owner, dayId))) ??
-          this.newMeta(dayId);
+          this.newMeta(dayId, zoneOf(dayId));
         meta.day.inputRevision++;
         meta.day.state = "pending";
         meta.day.failureCode = null;
@@ -1038,7 +1089,7 @@ export class Engine {
 
   // Days, edits, profile -----------------------------------------------------
 
-  private emptyDay(id: string): W.Day {
+  private emptyDay(id: string, zone = "UTC"): W.Day {
     if (!/^day_\d{8}$/.test(id)) throw new Fault(404, "NOT_FOUND");
     const date = `${id.slice(4, 8)}-${id.slice(8, 10)}-${id.slice(10, 12)}T00:00:00Z`;
     if (
@@ -1046,14 +1097,13 @@ export class Engine {
       new Date(date).toISOString().slice(0, 10) !== date.slice(0, 10)
     )
       throw new Fault(404, "NOT_FOUND");
+    const timeZone = isZone(zone) ? zone : "UTC";
     return {
       schemaVersion: 1,
       dayId: id,
-      timeZone: "UTC",
-      startAt: date,
-      endAt: new Date(Date.parse(date) + 86400000)
-        .toISOString()
-        .replace(".000Z", "Z"),
+      timeZone,
+      startAt: zonedMidnight(Date.parse(date), timeZone),
+      endAt: zonedMidnight(Date.parse(date) + 86400000, timeZone),
       inputRevision: 0,
       deletionGeneration: 0,
       state: "empty",
@@ -1064,8 +1114,11 @@ export class Engine {
       failureCode: null,
     };
   }
-  private newMeta(dayId: string): DayMeta {
-    const { recap, corrections, reflections, ...day } = this.emptyDay(dayId);
+  private newMeta(dayId: string, zone = "UTC"): DayMeta {
+    const { recap, corrections, reflections, ...day } = this.emptyDay(
+      dayId,
+      zone,
+    );
     void recap;
     void corrections;
     void reflections;

@@ -27,6 +27,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 log = logging.getLogger("clippy")
 SNAPSHOT_LIMIT = 200
@@ -37,6 +38,33 @@ FIX_MAX_AGE = 120
 def instant(moment: float | None = None) -> str:
     when = datetime.fromtimestamp(moment if moment is not None else time.time(), timezone.utc)
     return when.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def local_zone(configured: str | None = None) -> str:
+    """The IANA zone captures are stamped with: config override, then the system zone, else UTC."""
+    candidates = [configured]
+    try:
+        candidates.append(subprocess.run(["timedatectl", "show", "-p", "Timezone", "--value"],
+                                         capture_output=True, text=True, timeout=5).stdout.strip())
+    except (OSError, subprocess.SubprocessError):
+        pass
+    try:
+        candidates.append(Path("/etc/timezone").read_text().strip())
+    except OSError:
+        pass
+    for zone in candidates:
+        if zone:
+            try:
+                ZoneInfo(zone)
+                return zone
+            except (ZoneInfoNotFoundError, ValueError):
+                continue
+    return "UTC"
+
+
+def zone_offset(zone: str, moment: float) -> int:
+    """UTC offset in seconds for `zone` at `moment`, daylight saving included."""
+    return int(datetime.fromtimestamp(moment, ZoneInfo(zone)).utcoffset().total_seconds())
 
 
 def atomic_write(path: Path, data: bytes) -> None:
@@ -70,6 +98,7 @@ class Config:
     height: int = 960
     quality: int = 85
     gps_port: str | None = "/dev/serial0"
+    time_zone: str | None = None
 
     @staticmethod
     def load(path: Path) -> Config:
@@ -84,6 +113,7 @@ class Config:
             capture_interval=int(raw.get("captureIntervalSeconds", 600)),
             nightly_utc=raw.get("nightlyUtc", "02:00"),
             gps_port=raw.get("gpsPort", "/dev/serial0"),
+            time_zone=raw.get("timeZone"),
         )
 
 
@@ -196,7 +226,9 @@ class Queue:
             if path.name not in known:
                 path.unlink(missing_ok=True)
 
-    def add(self, data: bytes, device_id: str, epoch: int, location: dict | None, clock: str) -> dict:
+    def add(self, data: bytes, device_id: str, epoch: int, location: dict | None, clock: str,
+            zone: str = "UTC") -> dict:
+        moment = time.time()
         with self.db:
             sequence = int(self.meta("last_sequence", "0")) + 1
             capture = {
@@ -205,9 +237,10 @@ class Queue:
                 "deviceId": device_id,
                 "ownershipEpoch": epoch,
                 "sequence": sequence,
-                "capturedAt": instant(),
-                "timeZone": "UTC",
-                "utcOffsetSeconds": 0,
+                "capturedAt": instant(moment),
+                # The backend files each capture under its local date in this zone (D52).
+                "timeZone": zone,
+                "utcOffsetSeconds": zone_offset(zone, moment),
                 "clockQuality": clock,
                 "byteLength": len(data),
                 "sha256": hashlib.sha256(data).hexdigest(),
@@ -452,6 +485,7 @@ class Agent:
         self.gps = Gps(config.gps_port)
         self.transport = transport or Mqtt(config)
         self.capture_frame = capture or (lambda: camera(config))
+        self.zone = local_zone(config.time_zone)
         self.paired = None
         self.identity: dict | None = None
         self.active: dict | None = None
@@ -475,7 +509,7 @@ class Agent:
     def take(self) -> None:
         data = self.capture_frame()
         capture = self.queue.add(data, self.config.device_id, self.identity["ownershipEpoch"],
-                                 self.gps.location(), clock_quality())
+                                 self.gps.location(), clock_quality(), self.zone)
         log.info("captured %s (%d bytes, location %s)", capture["captureId"], len(data),
                  "yes" if capture["location"] else "none")
 
@@ -524,7 +558,7 @@ class Agent:
             self.next["report"] = 0.0
 
     def run(self) -> None:
-        log.info("Clippy agent %s starting", self.config.device_id)
+        log.info("Clippy agent %s starting (time zone %s)", self.config.device_id, self.zone)
         while True:
             try:
                 self.step()

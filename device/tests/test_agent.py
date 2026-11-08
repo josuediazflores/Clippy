@@ -2,9 +2,20 @@ import hashlib
 import json
 import tempfile
 import unittest
+from datetime import datetime
 from pathlib import Path
 
-from clippy_device.agent import Agent, Config, Queue, Rejected, nmea_checksum_ok, parse_gga, sync
+from clippy_device.agent import (
+    Agent,
+    Config,
+    Queue,
+    Rejected,
+    local_zone,
+    nmea_checksum_ok,
+    parse_gga,
+    sync,
+    zone_offset,
+)
 
 GGA_FIX = "$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47"
 GGA_NOFIX = "$GPGGA,,,,,,0,00,99.99,,,,,,*48"
@@ -84,6 +95,16 @@ class AgentTests(unittest.TestCase):
         reopened.acknowledge({a["captureId"]})
         c = reopened.add(b"\xff\xd8three", "dev_clippy_001", 1, None, "synchronized")
         self.assertEqual(c["sequence"], 3, "sequence never reuses acknowledged numbers")
+
+    def test_captures_carry_local_zone_and_dst_offset(self):
+        at = lambda text: datetime.fromisoformat(text).timestamp()  # noqa: E731
+        # US daylight saving time ends 2026-11-01 at 09:00 UTC.
+        self.assertEqual(zone_offset("America/Los_Angeles", at("2026-11-01T07:00:00+00:00")), -7 * 3600)
+        self.assertEqual(zone_offset("America/Los_Angeles", at("2026-11-01T12:00:00+00:00")), -8 * 3600)
+        self.assertEqual(local_zone("Not/AZone") in ("UTC", local_zone()), True)
+        self.assertEqual(local_zone("Asia/Tokyo"), "Asia/Tokyo")
+        capture = Queue(self.dir).add(b"\xff\xd8x", "dev_clippy_001", 1, None, "synchronized", "Asia/Tokyo")
+        self.assertEqual((capture["timeZone"], capture["utcOffsetSeconds"]), ("Asia/Tokyo", 9 * 3600))
 
     def test_manual_sync_uploads_resumes_with_same_ids_and_deletes_only_after_receipt(self):
         queue = Queue(self.dir)
