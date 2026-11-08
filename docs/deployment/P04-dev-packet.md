@@ -1,6 +1,8 @@
 # P04 development deployment packet
 
-Status: **ready to ship, not approved.** Nothing in this packet has been deployed. No AWS account, region, bootstrap, user, certificate or model has been created or selected by this work. Approval must name the account, region, and each numbered step below.
+Status: **steps 1 to 3 deployed 2026-11-07 (development, us-east-1) with Josue's approval; steps 4 to 6 not approved.** See the deployment record at the end.
+
+Original status: ready to ship, not approved. No AWS account, region, bootstrap, user, certificate or model has been created or selected by this work. Approval must name the account, region, and each numbered step below.
 
 ## 1. Candidate
 
@@ -86,3 +88,21 @@ Only synthetic users, fixture images from `fixtures/media/`, and synthetic text.
 - Runtime: `npx cdk destroy ClippyRuntime-dev` removes the API, functions, rule, policy, queue and alarms. It does not touch data.
 - Data stack resources are retained by design. Full teardown of the development environment is manual and destructive: delete the synthetic users and pool (disable deletion protection first), empty and delete the bucket, disable deletion protection and delete the four tables, and schedule the KMS key for deletion (7 to 30 day waiting period). Each step needs its own confirmation.
 - Bootstrap: delete the `CDKToolkit` stack only if no other CDK app uses the account and region.
+
+## 11. Deployment record (2026-11-07)
+
+- Approved by Josue for steps 1 to 3 only (bootstrap, Data, Runtime), with mock models and both event triggers disabled. Steps 4 to 6 (dispatcher activation, device rule activation, synthetic identities and certificates) and the paid model evaluation remain unapproved.
+- Environment: the team SSO account (`ClippyHackers` permission set), us-east-1. Account ID, endpoint and pool identifiers are not recorded in Git.
+- Source: `p08-processing` at `83f8dcf`. This includes P04 and P08 plus two pre-deployment fixes found by a CDK CLI synth: the app now honors `CDK_OUTDIR`, and strong cross-stack references are set explicitly.
+- Results:
+  1. `cdk bootstrap` created the `CDKToolkit` stack. Note: CDK's default bootstrap gives the CloudFormation execution role `AdministratorAccess`; narrow it with `--cloudformation-execution-policies` if the team account requires.
+  2. `ClippyData-dev`: `CREATE_COMPLETE`, 12 resources.
+  3. `ClippyRuntime-dev`: `CREATE_COMPLETE`, 73 resources. Josue ran it, because Claude Code's permission policy blocks IAM-creating deploys from the agent. The team permission set allowed IAM, KMS, Cognito, IoT, Step Functions and Lambda creation.
+- Live checks (read-only, no credentials used against the API):
+  - Outbox event source mapping state is `Disabled`, with its outbox filter attached.
+  - The IoT device request rule is disabled.
+  - The recap state machine exists and is idle.
+  - App routes (`/v1/me`, `/v1/days`, `/v1/devices`) return 401 without a token and with a malformed token, consistently after the stage finished propagating. For about a minute after creation some requests returned 404.
+  - Device, local and later-phase routes (`/v1/device/snapshots`, `/local/*`, `/v1/calendar/snapshots`) return 404 because they are not exposed.
+- Not yet verified live: a real Cognito access token (needs a synthetic user), S3 presigned PUT and the bucket-policy denial, the IoT policy and rule SQL (needs a test certificate), real transactions and stream filtering (needs the dispatcher), and Bedrock through the Mantle endpoint.
+- Running cost: about USD 2 per month idle (KMS key plus alarms). Rollback is as in section 10.

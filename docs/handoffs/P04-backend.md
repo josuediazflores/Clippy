@@ -9,7 +9,7 @@
 - Files owned/changed: `services/backend/**`, `infra/**`, `docs/deployment/P04-dev-packet.md`, this handoff, a P04 section appended to `docs/decisions.md`.
 - Coordinator-owned files touched (please review): `package-lock.json`, `infra/package.json` and `services/backend/package.json` (commit `5c7ba45` only); root `package.json` (one script, `test:dynamodb`); `tools/scenario.ts` (engine construction and state branching only); new `tools/test-dynamodb.sh`. No contract, schema, fixture, generated model, Xcode or STATUS change.
 - Dependencies checked: P03 `local_complete` at `5907ba9`; baseline `npm run check` and `npm run scenario` passed before any change.
-- Status: **local_complete**, ready to ship pending deployment approval. No service evidence exists.
+- Status: **local_complete; deployed to development (us-east-1) on 2026-11-07** with event triggers off. Service evidence is limited to the checks in the [deployment record](../deployment/P04-dev-packet.md#11-deployment-record-2026-11-07); live authorization, upload and IoT tests remain.
 
 ## Result
 
