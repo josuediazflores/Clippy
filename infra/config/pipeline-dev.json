@@ -1,0 +1,42 @@
+{
+  "provider": "bedrock",
+  "observation": {
+    "id": "anthropic.claude-opus-5-5",
+    "maxOutputTokens": 600,
+    "timeoutMs": 60000,
+    "verified": {
+      "region": "us-east-1",
+      "verifiedAt": "2026-11-08T01:42:06Z",
+      "method": "messages.create via AnthropicBedrockMantle, 18 in / 4 out tokens"
+    },
+    "promptVersion": "obs_v1",
+    "preprocessingVersion": "raw_v1"
+  },
+  "synthesis": {
+    "id": "anthropic.claude-opus-5-5",
+    "maxOutputTokens": 4000,
+    "timeoutMs": 120000,
+    "verified": {
+      "region": "us-east-1",
+      "verifiedAt": "2026-11-08T01:42:06Z",
+      "method": "messages.create via AnthropicBedrockMantle, 18 in / 4 out tokens"
+    },
+    "promptVersion": "recap_v2"
+  },
+  "concurrency": 4,
+  "maxImageBytes": 3750000,
+  "minImageDimension": 32,
+  "providerFailureThreshold": 0.2,
+  "places": {
+    "provider": "amazon-location",
+    "precisionDecimals": 3,
+    "maxAccuracyMeters": 250,
+    "maxSampleAgeSeconds": 900,
+    "maxLookupsPerJob": 50,
+    "language": "en"
+  },
+  "prices": {
+    "observation": { "input": 4.4, "output": 22.0 },
+    "synthesis": { "input": 4.4, "output": 22.0 }
+  }
+}
