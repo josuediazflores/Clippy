@@ -8,16 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		033EF137939A2A6B17E097AB /* partial.json in Resources */ = {isa = PBXBuildFile; fileRef = D989419BB807280925D0E1D0 /* partial.json */; };
+		106F352620EC6B39B75EADA4 /* DeviceViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58414A6525679FDAC4C71A2D /* DeviceViews.swift */; };
+		178E5AE14A4FC8CF763CB063 /* JournalViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF06A06F42742EF952440918 /* JournalViews.swift */; };
 		25678389F22BCA0201EC7902 /* ClippyCore in Frameworks */ = {isa = PBXBuildFile; productRef = 425B26839F5D6873FDCED889 /* ClippyCore */; };
 		32361099116C00AA54BEBBD9 /* transitions.json in Resources */ = {isa = PBXBuildFile; fileRef = 19EE9970C469772966D1A612 /* transitions.json */; };
 		344CED1B98249F1C5BDEE2AB /* pending.json in Resources */ = {isa = PBXBuildFile; fileRef = 8C5AE324E5C28624F21BA29D /* pending.json */; };
 		3C0DCDAEBA49C3E8455E1168 /* schema.json in Resources */ = {isa = PBXBuildFile; fileRef = F1EFA282DFD19FC5B37F7576 /* schema.json */; };
 		5052271673178DAAB06AFC13 /* ClippyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFB52B1A08F3B881E1099C00 /* ClippyApp.swift */; };
+		52CCD543D25D9B3FF8892447 /* DeviceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 849CEF078277D932EBDC4A25 /* DeviceModels.swift */; };
 		6A3EDB75D4C99C0A904F39F8 /* empty.json in Resources */ = {isa = PBXBuildFile; fileRef = 61C45A4D479D4D0703A4E4B0 /* empty.json */; };
+		7E9044092738A9EEA9D66D0A /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9AD6C816755DB6E1861C7A /* AppModel.swift */; };
 		9147DDD700DBDB0DE956B0DB /* ready.json in Resources */ = {isa = PBXBuildFile; fileRef = 85C4A7477E74A3B6FB7B0FA9 /* ready.json */; };
+		A30A186A35838E7AF193D75D /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B34C7E04450AAFB255F9A4 /* AccountView.swift */; };
+		B41D3ACB6A36AA4536703EE2 /* Components.swift in Sources */ = {isa = PBXBuildFile; fileRef = 958A64D50092B7D96B1D4557 /* Components.swift */; };
 		BDD09D91EE84015B73E030CF /* ClippyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318187FBABEDF9D9A5C5C869 /* ClippyUITests.swift */; };
-		C768BBCBE6EA84F59EDB8AED /* JournalModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A294DFED4B22374B4F57A67 /* JournalModel.swift */; };
 		D38F10F1FFDF2E4157AD0CB3 /* failure.json in Resources */ = {isa = PBXBuildFile; fileRef = C359E78122CB770340050668 /* failure.json */; };
+		E267A204D3F78B46AAC6F553 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78DB6BC1CC08529D7A3A570F /* AppEnvironment.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,13 +39,19 @@
 /* Begin PBXFileReference section */
 		0A4FAB89D11D0341733799F8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		19EE9970C469772966D1A612 /* transitions.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = transitions.json; sourceTree = "<group>"; };
+		22B34C7E04450AAFB255F9A4 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		318187FBABEDF9D9A5C5C869 /* ClippyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClippyUITests.swift; sourceTree = "<group>"; };
+		58414A6525679FDAC4C71A2D /* DeviceViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceViews.swift; sourceTree = "<group>"; };
 		61C45A4D479D4D0703A4E4B0 /* empty.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = empty.json; sourceTree = "<group>"; };
+		78DB6BC1CC08529D7A3A570F /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		849CEF078277D932EBDC4A25 /* DeviceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModels.swift; sourceTree = "<group>"; };
 		85C4A7477E74A3B6FB7B0FA9 /* ready.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ready.json; sourceTree = "<group>"; };
-		8A294DFED4B22374B4F57A67 /* JournalModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalModel.swift; sourceTree = "<group>"; };
 		8C5AE324E5C28624F21BA29D /* pending.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = pending.json; sourceTree = "<group>"; };
+		8E9AD6C816755DB6E1861C7A /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		958A64D50092B7D96B1D4557 /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
 		9B700C71C9677080442E92A6 /* Core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Core; path = Core; sourceTree = SOURCE_ROOT; };
 		A746DD5E203584E78CD5A64B /* Clippy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Clippy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AF06A06F42742EF952440918 /* JournalViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JournalViews.swift; sourceTree = "<group>"; };
 		AFCB27F50A03544A16AFF5E4 /* ClippyUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = ClippyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C359E78122CB770340050668 /* failure.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = failure.json; sourceTree = "<group>"; };
 		D989419BB807280925D0E1D0 /* partial.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = partial.json; sourceTree = "<group>"; };
@@ -62,9 +74,15 @@
 		09B3944DD428D7D5C6EB0D46 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				22B34C7E04450AAFB255F9A4 /* AccountView.swift */,
+				78DB6BC1CC08529D7A3A570F /* AppEnvironment.swift */,
+				8E9AD6C816755DB6E1861C7A /* AppModel.swift */,
 				FFB52B1A08F3B881E1099C00 /* ClippyApp.swift */,
+				958A64D50092B7D96B1D4557 /* Components.swift */,
+				849CEF078277D932EBDC4A25 /* DeviceModels.swift */,
+				58414A6525679FDAC4C71A2D /* DeviceViews.swift */,
 				0A4FAB89D11D0341733799F8 /* Info.plist */,
-				8A294DFED4B22374B4F57A67 /* JournalModel.swift */,
+				AF06A06F42742EF952440918 /* JournalViews.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -180,12 +198,17 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					0D14AA39B13BF1024408B308 = {
+						DevelopmentTeam = 9UMCCFSYB9;
+						ProvisioningStyle = Automatic;
 						TestTargetID = E2E9F14D4A9A610EC8F289F1;
+					};
+					E2E9F14D4A9A610EC8F289F1 = {
+						DevelopmentTeam = 9UMCCFSYB9;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
 			buildConfigurationList = DF7D4A098ACCD444E5FA63BB /* Build configuration list for PBXProject "Clippy" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -198,6 +221,7 @@
 				CD40480A8A2394D0A92A7C8B /* XCLocalSwiftPackageReference "Core" */,
 			);
 			preferredProjectObjectVersion = 77;
+			productRefGroup = 6F5C17B0E3A1CC256231CFCE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -237,8 +261,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A30A186A35838E7AF193D75D /* AccountView.swift in Sources */,
+				E267A204D3F78B46AAC6F553 /* AppEnvironment.swift in Sources */,
+				7E9044092738A9EEA9D66D0A /* AppModel.swift in Sources */,
 				5052271673178DAAB06AFC13 /* ClippyApp.swift in Sources */,
-				C768BBCBE6EA84F59EDB8AED /* JournalModel.swift in Sources */,
+				B41D3ACB6A36AA4536703EE2 /* Components.swift in Sources */,
+				52CCD543D25D9B3FF8892447 /* DeviceModels.swift in Sources */,
+				106F352620EC6B39B75EADA4 /* DeviceViews.swift in Sources */,
+				178E5AE14A4FC8CF763CB063 /* JournalViews.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,9 +367,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9UMCCFSYB9;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -420,9 +451,10 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9UMCCFSYB9;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;

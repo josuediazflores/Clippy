@@ -136,7 +136,8 @@ export function assertTemplates(data: DataStack, runtime: RuntimeStack) {
     );
   check(() =>
     d.hasResourceProperties("AWS::Cognito::UserPool", {
-      AdminCreateUserConfig: { AllowAdminCreateUserOnly: true },
+      AdminCreateUserConfig: { AllowAdminCreateUserOnly: false },
+      AutoVerifiedAttributes: ["email"],
       DeletionProtection: "ACTIVE",
     }),
   );

@@ -109,7 +109,9 @@ export class DataStack extends Stack {
 
     // Identity is persistent: replacing the pool would change every owner subject.
     this.userPool = new cognito.UserPool(this, "Users", {
-      selfSignUpEnabled: false,
+      // D49: hackathon users create their own accounts; email must be verified before sign-in.
+      selfSignUpEnabled: true,
+      autoVerify: { email: true },
       signInAliases: { email: true },
       signInCaseSensitive: false,
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
