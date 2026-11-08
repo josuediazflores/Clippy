@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Clippy API",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Frozen v1. Local P03 implements the documented subset. Phase annotations do not claim live implementations."
   },
   "servers": [
@@ -3174,6 +3174,13 @@
             },
             "maxItems": 200
           },
+          "questions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClarifyingQuestion"
+            },
+            "maxItems": 10
+          },
           "reflectionPrompt": {
             "type": "string",
             "minLength": 1,
@@ -3206,6 +3213,47 @@
           "coverage",
           "providerVersion",
           "promptVersion"
+        ],
+        "additionalProperties": false
+      },
+      "ClarifyingQuestion": {
+        "type": "object",
+        "properties": {
+          "momentId": {
+            "$ref": "#/components/schemas/Id"
+          },
+          "prompt": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QuestionOption"
+            },
+            "minItems": 2,
+            "maxItems": 3
+          }
+        },
+        "required": [
+          "momentId",
+          "prompt",
+          "options"
+        ],
+        "additionalProperties": false
+      },
+      "QuestionOption": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 60
+          }
+        },
+        "required": [
+          "label"
         ],
         "additionalProperties": false
       },

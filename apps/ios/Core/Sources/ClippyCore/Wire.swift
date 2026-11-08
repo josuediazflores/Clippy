@@ -462,11 +462,12 @@ public struct Recap: Codable, Sendable {
     public var `state`: String
     public var `summary`: String
     public var `moments`: [Moment]
+    public var `questions`: [ClarifyingQuestion]?
     public var `reflectionPrompt`: String
     public var `coverage`: Coverage
     public var `providerVersion`: String
     public var `promptVersion`: String
-    public init(`schemaVersion`: Int, `dayId`: Id, `inputRevision`: Int, `recapRevision`: Int, `deletionGeneration`: Int, `state`: String, `summary`: String, `moments`: [Moment], `reflectionPrompt`: String, `coverage`: Coverage, `providerVersion`: String, `promptVersion`: String) {
+    public init(`schemaVersion`: Int, `dayId`: Id, `inputRevision`: Int, `recapRevision`: Int, `deletionGeneration`: Int, `state`: String, `summary`: String, `moments`: [Moment], `questions`: [ClarifyingQuestion]?, `reflectionPrompt`: String, `coverage`: Coverage, `providerVersion`: String, `promptVersion`: String) {
         self.`schemaVersion` = `schemaVersion`
         self.`dayId` = `dayId`
         self.`inputRevision` = `inputRevision`
@@ -475,10 +476,29 @@ public struct Recap: Codable, Sendable {
         self.`state` = `state`
         self.`summary` = `summary`
         self.`moments` = `moments`
+        self.`questions` = `questions`
         self.`reflectionPrompt` = `reflectionPrompt`
         self.`coverage` = `coverage`
         self.`providerVersion` = `providerVersion`
         self.`promptVersion` = `promptVersion`
+    }
+}
+
+public struct ClarifyingQuestion: Codable, Sendable {
+    public var `momentId`: Id
+    public var `prompt`: String
+    public var `options`: [QuestionOption]
+    public init(`momentId`: Id, `prompt`: String, `options`: [QuestionOption]) {
+        self.`momentId` = `momentId`
+        self.`prompt` = `prompt`
+        self.`options` = `options`
+    }
+}
+
+public struct QuestionOption: Codable, Sendable {
+    public var `label`: String
+    public init(`label`: String) {
+        self.`label` = `label`
     }
 }
 
@@ -926,6 +946,10 @@ public enum WireDecoder {
         case "Coverage": _ = try JSONDecoder().decode(Coverage.self, from: data)
 
         case "Recap": _ = try JSONDecoder().decode(Recap.self, from: data)
+
+        case "ClarifyingQuestion": _ = try JSONDecoder().decode(ClarifyingQuestion.self, from: data)
+
+        case "QuestionOption": _ = try JSONDecoder().decode(QuestionOption.self, from: data)
 
         case "EditInput": _ = try JSONDecoder().decode(EditInput.self, from: data)
 
