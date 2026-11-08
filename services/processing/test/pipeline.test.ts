@@ -402,10 +402,12 @@ test("Claude adapter maps SDK errors to the retry vocabulary and never sends sam
       (e: Error) => e.name === name,
     );
   const body = bodies[0]!;
-  assert.deepEqual(body.tool_choice, {
-    type: "tool",
-    name: "record_observation",
-  });
+  // Forced tool_choice is rejected by some Bedrock models; the reply must still contain the tool call.
+  assert.deepEqual(body.tool_choice, { type: "auto" });
+  assert.equal(
+    (body.tools![0] as { name?: string }).name,
+    "record_observation",
+  );
   assert.equal((body.tools![0] as { strict?: boolean }).strict, true);
   for (const banned of ["temperature", "top_p", "top_k"])
     assert.ok(!(banned in body));

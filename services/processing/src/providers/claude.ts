@@ -86,7 +86,9 @@ export class ClaudeObservationModel implements ObservationModel {
           max_tokens: this.choice.maxOutputTokens,
           system: OBSERVATION_SYSTEM,
           tools: [OBSERVATION_TOOL],
-          tool_choice: { type: "tool", name: OBSERVATION_TOOL.name },
+          // Opus 5.5 on Bedrock rejects forced tool_choice ("tool"/"any"). The prompt requires the
+          // tool, and toolInput() rejects any reply without it, so output stays strict (D51).
+          tool_choice: { type: "auto" },
           messages: [
             {
               role: "user",
@@ -156,7 +158,7 @@ export class ClaudeSynthesisModel implements SynthesisModel {
           max_tokens: this.choice.maxOutputTokens,
           system: SYNTHESIS_SYSTEM,
           tools: [SYNTHESIS_TOOL],
-          tool_choice: { type: "tool", name: SYNTHESIS_TOOL.name },
+          tool_choice: { type: "auto" },
           messages: [{ role: "user", content: synthesisUserMessage(input) }],
         },
         { timeout: this.choice.timeoutMs },
